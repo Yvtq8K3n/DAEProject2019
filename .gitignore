@@ -1,0 +1,52 @@
+# Created by https://www.gitignore.io/api/java,netbeans
+
+### Java ###
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs, see 
+http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+### NetBeans ###
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# End of 
+https://www.gitignore.io/api/java,netbeansandroid:screenOrientation="portrait">
+
+#Rick_sanchez used ignore, it's super effective!
+dist/
+nbproject/
+DAE_PROJECT-ejb/build/
+DAE_PROJECT-ejb/dist/
+DAE_PROJECT-ejb/nbproject/
+DAE_PROJECT-ejb/setup/
+DAE_PROJECT-ejb/test/
+DAE_PROJECT-ejb/build.xml
+DAE_PROJECT-ejb/src/conf
+DAE_PROJECT-war/build/
+DAE_PROJECT-war/dist/
+DAE_PROJECT-war/nbproject/
+DAE_PROJECT-war/build.xml
