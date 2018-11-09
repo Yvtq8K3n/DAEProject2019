@@ -2,6 +2,7 @@ package dtos;
 
 import java.io.Serializable;
 
+//AS anotações devem estar aqui
 public class UserDTO implements Serializable{
 
     protected String username;
