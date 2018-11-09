@@ -2,6 +2,7 @@ package dtos;
 
 import java.io.Serializable;
 
+//Work in progress
 public class StudentDTO extends UserDTO implements Serializable{
 
     private int courseCode;
