@@ -1,5 +1,6 @@
 package entities;
 
+import entities.UserGroup.GROUP;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
@@ -23,7 +24,7 @@ public class Client extends User implements Serializable {
     }
 
     public Client(String username, String password, String name, String email, String address, String contact) {
-        super(username, password, name, email);
+        super(username, password, GROUP.Client, name, email);
         this.address = address;
         this.contact = contact;
     }

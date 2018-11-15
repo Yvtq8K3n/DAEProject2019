@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+        <script name="jquery/jquery.js" library="primefaces"></script>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"></link>
+    </h:head>
+    <h:body>
+        <h:form rendered="#{userManager.loginFlag}">
+            <h:panelGrid columns="2">
+            <h:outputLabel for="usernameInput">Username: </h:outputLabel>
+            <h:inputText id="usernameInput" value="#{userManager.username}" required="true" />
+            <h:outputLabel for="passwordInput">Password: </h:outputLabel>
+            <h:inputSecret id="passwordInput" value="#{userManager.password}" required="true" />
+            <h:commandButton value="Login" action="#{userManager.login}" />
+            </h:panelGrid>
+        </h:form> 
+    </h:body>
+</html>
+

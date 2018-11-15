@@ -5,7 +5,7 @@
  */
 package ejbs;
 
-import entities.Adminstrator;
+import entities.Administrator;
 import entities.Template;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
