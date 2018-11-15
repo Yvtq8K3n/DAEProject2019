@@ -3,45 +3,52 @@ package entities;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "Template")
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Table(name = "Templates")
 public class Template implements Serializable {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
     
-    @NotNull(message = "Template must have a name")
+    @NotNull(message = "Name must be defined")
     private String name;
     
-    @NotNull(message = "Template must have a description")
+    @NotNull(message = "Description must be defined")
     private String description;
     
-    //RELATION
-    private List<Configuration> configurations;
+    @OneToMany(cascade = CascadeType.REMOVE)
+    private List<Artifact> artifacts;    
     
-    protected Template() {
-        this.configurations = new ArrayList<>();
+    public Template() {
+        this.artifacts = new ArrayList<>();
     }
 
     public Template(String name, String description) {
         this.name = name;
         this.description = description;
-        this.configurations = new ArrayList<>();
+        this.artifacts = new ArrayList<>();
     }
+
     
-    public Template(String name, String description, List<Configuration> configurations) {
-        this.name = name;
-        this.description = description;
-        this.configurations = configurations;
+    public List<Artifact> getArtifacts() {
+        return artifacts;
+    }
+
+    public void setArtifacts(List<Artifact> artifacts) {
+        this.artifacts = artifacts;
     }
 
     public String getName() {
@@ -58,14 +65,5 @@ public class Template implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-    
-    public void addConfiguration(Configuration configuration){
-        configurations.add(configuration);
-    }
- 
-    public Configuration removeConfiguration(Configuration configuration){
-        configurations.remove(configuration);
-        return configuration;
     }
 }

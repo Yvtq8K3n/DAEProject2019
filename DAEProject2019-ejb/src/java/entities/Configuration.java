@@ -6,36 +6,22 @@
 package entities;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  *
  * @author Joao Marquez
  */
 @Entity
-public class Configuration implements Serializable {
-
-   
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    
-    @OneToMany(mappedBy = "configuration", cascade = CascadeType.REMOVE)
-    private List<Artifact> artifacts;
+@Table(name="Configurations")
+public class Configuration extends Template implements Serializable {
 
     public Configuration() {
-        this.artifacts = new ArrayList<>();
     }
-    
-    
 
-    
+    public Configuration(String name, String description) {
+        super(name, description);
+    }
     
 }

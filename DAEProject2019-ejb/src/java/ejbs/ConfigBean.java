@@ -29,6 +29,9 @@ public class ConfigBean {
     @EJB//Dà uma instancida do EJB TemplateBean
     private TemplateBean templateBean;
     
+    @EJB//Dà uma instancida do EJB ConfigurationBean
+    private ConfigurationBean configurationBean;
+    
     @EJB//Dà uma istancida do EJB ProductBean
     private ProductBean productBean;
       
@@ -40,6 +43,7 @@ public class ConfigBean {
         adminstratorBean.create("administrator1", "secret", "Manuel", "dae.ei.ipleiria@gmail.com", "Director");
         
         templateBean.create("Template1", "Im just a template");
+        configurationBean.create("Configuration1", "Im just a configuration");
         
         productBean.create("PRODUCT1", "Im just a normal product", "v1.10");
     }

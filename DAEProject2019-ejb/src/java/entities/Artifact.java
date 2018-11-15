@@ -25,23 +25,18 @@ public class Artifact {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     
-    @ManyToOne
-    @JoinColumn(name = "CONFIGURATION_CODE")
-    private Configuration configuration;
-    
     private String name;
-    
     
     private String url;
     
     public Artifact(){
         
     }
-    public Artifact(long id, String name, String url, Configuration configuration) {
+    
+    public Artifact(long id, String name, String url) {
         this.id = id;
         this.name = name;
         this.url = url;
-        this.configuration = configuration;
     }
 
     public long getId() {
