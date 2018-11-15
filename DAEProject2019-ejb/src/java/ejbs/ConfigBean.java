@@ -24,7 +24,7 @@ public class ConfigBean {
     private ClientBean clientBean;
     
     @EJB//Dà uma istancida do EJB AdminstratorBean
-    private AdminstratorBean adminstratorBean;
+    private AdministratorBean adminstratorBean;
     
     @EJB//Dà uma instancida do EJB TemplateBean
     private TemplateBean templateBean;
@@ -35,9 +35,9 @@ public class ConfigBean {
     @PostConstruct//Excecuta assim que o bean é instanciado
     public void populateDB() {
         
-        clientBean.create("1111111", "Manuel", "Manuel", "dae.ei.ipleiria@gmail.com", "Av. José Maceda", "918 923 232");
-        clientBean.create("1111111", "Manuel", "Manuel", "dae.ei.ipleiria@gmail.com", "Av. Alberto Alves", "+00351 256 0033 12");
-        adminstratorBean.create("1111111", "Manuel", "Manuel", "dae.ei.ipleiria@gmail.com", "Director");
+        clientBean.create("client1", "secret", "Manuel", "dae.ei.ipleiria@gmail.com", "Av. José Maceda", "918 923 232");
+        clientBean.create("client2", "secret", "Manuel", "dae.ei.ipleiria@gmail.com", "Av. Alberto Alves", "+00351 256 0033 12");
+        adminstratorBean.create("administrator1", "secret", "Manuel", "dae.ei.ipleiria@gmail.com", "Director");
         
         templateBean.create("Template1", "Im just a template");
         
