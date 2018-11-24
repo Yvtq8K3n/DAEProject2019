@@ -7,6 +7,9 @@ package entities;
 
 import java.io.Serializable;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
@@ -15,13 +18,15 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="Configurations")
-public class Configuration extends Template implements Serializable {
+public class Configuration implements Serializable {
 
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private Long id;
+    
+    
     public Configuration() {
     }
 
-    public Configuration(String name, String description) {
-        super(name, description);
-    }
     
 }

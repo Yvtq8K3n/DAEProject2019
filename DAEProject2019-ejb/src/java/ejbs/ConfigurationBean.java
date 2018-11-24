@@ -25,7 +25,7 @@ public class ConfigurationBean{
     EntityManager em;
    
     public void create(String name, String description) {
-        Configuration configuration = new Configuration(name, description);
+        Configuration configuration = new Configuration();
         em.persist(configuration);
     }
 }

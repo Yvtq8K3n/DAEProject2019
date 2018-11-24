@@ -23,33 +23,40 @@ public class Template implements Serializable {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
     
-    @NotNull(message = "Name must be defined")
+    @NotNull(message = "Template must have a name")
     private String name;
     
-    @NotNull(message = "Description must be defined")
+    @NotNull(message = "Template must have a description")
     private String description;
     
-    @OneToMany(cascade = CascadeType.REMOVE)
-    private List<Artifact> artifacts;    
+    //RELATION
+    private List<Configuration> configurations;
     
     public Template() {
-        this.artifacts = new ArrayList<>();
+        this.configurations = new ArrayList<>();
     }
-
+    
     public Template(String name, String description) {
         this.name = name;
         this.description = description;
-        this.artifacts = new ArrayList<>();
+        this.configurations = new ArrayList<>();
     }
 
+    public Template(String name, String description, List<Configuration> configurations) {
+        this.name = name;
+        this.description = description;
+        this.configurations = configurations;
+    }
     
-    public List<Artifact> getArtifacts() {
-        return artifacts;
+    public void addConfiguration(Configuration configuration){
+        configurations.add(configuration);
     }
-
-    public void setArtifacts(List<Artifact> artifacts) {
-        this.artifacts = artifacts;
+ 
+    public Configuration removeConfiguration(Configuration configuration){
+        configurations.remove(configuration);
+        return configuration;
     }
+    
 
     public String getName() {
         return name;
@@ -66,4 +73,8 @@ public class Template implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
+    
+    
+    
+    
 }
