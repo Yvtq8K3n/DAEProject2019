@@ -26,7 +26,6 @@ public class UserGroup{
         Administrator
     }
     
-    @Id
     @Enumerated(EnumType.STRING)
     private GROUP groupName;
     

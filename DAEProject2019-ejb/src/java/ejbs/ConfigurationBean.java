@@ -24,8 +24,8 @@ public class ConfigurationBean{
     @PersistenceContext(name="DAEProject2019")//Peristance context usa o nome da bd do persistance.xml
     EntityManager em;
    
-    public void create(String name, String description) {
-        Configuration configuration = new Configuration();
+    public void create(String description) {
+        Configuration configuration = new Configuration( description);
         em.persist(configuration);
     }
 }

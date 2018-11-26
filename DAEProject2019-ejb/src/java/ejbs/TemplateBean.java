@@ -6,7 +6,10 @@
 package ejbs;
 
 import entities.Administrator;
+import entities.Configuration;
 import entities.Template;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -27,5 +30,31 @@ public class TemplateBean{
     public void create(String name, String description) {
         Template template = new Template(name, description);
         em.persist(template);
+    }
+    
+    public List<Configuration> getConfigurations(Long id){
+        Template template = em.find(Template.class, id);
+        if (template == null) System.out.println("ERROR");//Temporary
+        
+        return template.getConfigurations();
+    }
+    
+    public void addConfiguration(long id, long idConf){
+        System.out.println("Temp:"+getAll().get(0).getId());
+        System.out.println((getAll().get(0).getId()==id?true:false));
+        Template template = em.find(Template.class, id);
+        if (template == null) System.out.println("ERROR INVALID ID!");//Temporary
+        
+        Configuration configuration = em.find(Configuration.class, idConf);
+        if (configuration == null) System.out.println("ERROR INVALID ID_CONFIG!");
+        
+        template.addConfiguration(configuration);
+    }
+    
+    public List<Template> getAll(){
+        List<Template> templates = new ArrayList<>();
+        templates = em.createNamedQuery("getAllTemplates").getResultList();
+
+        return templates;
     }
 }

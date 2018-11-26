@@ -3,22 +3,85 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <h:head>
-        <title>Facelet Title</title>
+        <title>Templates</title>
         <script name="jquery/jquery.js" library="primefaces"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"></link>
     </h:head>
-    <h:body>
-        <h:form rendered="#{userManager.loginFlag}">
-            <h:panelGrid columns="2">
-            <h:outputLabel for="usernameInput">Username: </h:outputLabel>
-            <h:inputText id="usernameInput" value="#{userManager.username}" required="true" />
-            <h:outputLabel for="passwordInput">Password: </h:outputLabel>
-            <h:inputSecret id="passwordInput" value="#{userManager.password}" required="true" />
-            <h:commandButton value="Login" action="#{userManager.login}" />
-            </h:panelGrid>
-        </h:form> 
+    <h:body> 
+        <div class="jumbotron">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2>A minha LOJA VIRTUAL</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4">
+                    <h:form rendered="#{userManager.loginFlag}">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">Login</h3>
+                                <b:inputText id="usernameInput" label="Username:" value="#{userManager.username}"/>
+                                <b:inputSecret  id="passwordInput" label="Password:" value="#{userManager.password}"/>
+                                <hr></hr>    
+                                <h:commandButton value="Login" action="#{userManager.login}" class="btn btn-primary" />
+                            </div>	
+                        </div>
+                    </h:form>
+                </div>
+                <div class="col-sm-8">
+                    <h:form id="formId">
+                        <h2>Templates</h2>
+                         <!--responsive ="true"-->
+                        <b:dataTable id="Templates" value="#{guestManager.allTemplates}" 
+                            var="rowItem" print="true" 
+                            excel="true" csv="true" pdf="true" copy="true">
+                            <b:dataTableColumn value="#{rowItem.name}" />
+                            <b:dataTableColumn value="#{rowItem.description}" />
+                            <b:dataTableColumn label="Actions">
+                                <h:form>
+                                    <h:commandButton value="Details" class="btn btn-success"
+                                        p:data-target="#modalDetails" p:data-toggle="modal">
+                                        <f:setPropertyActionListener value="${rowItem}"
+                                            target="#{guestManager.selectedTemplate}"/>
+                                        <f:ajax execute = "@form" render = "outputMessage" />
+                                    </h:commandButton>
+                                </h:form>
+                                
+                            </b:dataTableColumn>
+                        </b:dataTable>
+                    </h:form> 
+                </div>
+                <b:modal id="modalDetails" title="Template Details">
+                    <h:form id="outputMessage">
+                        <c:set var="selectedTemplate" value="#{guestManager.selectedTemplate}"/>
+                        <b:inputText label="Id" value="#{selectedTemplate.id}"/>
+                        <b:inputText label="Name" disabled="true" value="#{selectedTemplate.name}"/>
+                        <b:inputTextarea label="Description" value="#{selectedTemplate.description}"/>
+                        
+                        <h:outputText value="Configurations:" style="font-weight:bold"/>
+                        <b:dataTable var="rowItem" value="#{selectedTemplate.configurations}" 
+                            responsive="true" info="false" paginated="false" searching="false">
+                            <b:dataTableColumn value="#{rowItem.description}" />
+                        </b:dataTable>     
+                    </h:form>
+                    <f:facet name="footer">
+                      <b:button value="Close" dismiss="modal" />
+                      <b:button value="Ok" look="primary" dismiss="modal" />
+                    </f:facet>
+                </b:modal>
+            </div>
+        </div>
     </h:body>
 </html>
 
