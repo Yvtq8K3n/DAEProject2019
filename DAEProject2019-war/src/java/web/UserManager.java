@@ -5,12 +5,14 @@
  */
 package web;
 
+
 import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.mail.MessagingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -29,13 +31,14 @@ public class UserManager implements Serializable{
     
     private String password;
     
+    private String message;
+
     Boolean loginFlag = true;
     
     public UserManager() {
     }
     
-    public String login() {
-        
+    public String login() throws MessagingException {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request =
         (HttpServletRequest) context.getExternalContext().getRequest();
@@ -43,7 +46,9 @@ public class UserManager implements Serializable{
             request.login(this.username, this.password);
         } catch (ServletException e) {
             logger.log(Level.WARNING, e.getMessage());
-            return "/faces/login_error?faces-redirect=true";
+            
+            message = "Login Failed: Invalid username or password.";
+            return "/faces/index_login?faces-redirect=true";
         }
         if(isUserInRole("Administrator")){
             logger.info("Administrator");
@@ -54,7 +59,8 @@ public class UserManager implements Serializable{
             return "/faces/client/index?faces-redirect=true";
         }
         
-        return "login_error?faces-redirect=true";        
+        message = "Login Failed: Invalid username or password.";
+        return "/faces/index_login?faces-redirect=true";        
     }
     
     public boolean isUserInRole(String role) {
@@ -102,6 +108,14 @@ public class UserManager implements Serializable{
     public void setPassword(String password) {
         this.password = password;
     }    
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
     
     public Boolean getLoginFlag() {
         return loginFlag;
@@ -110,6 +124,4 @@ public class UserManager implements Serializable{
     public void setLoginFlag(Boolean loginFlag) {
         this.loginFlag = loginFlag;
     }
-    
-    
 }

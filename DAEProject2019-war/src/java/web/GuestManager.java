@@ -1,7 +1,6 @@
 package web;
 
-import ejbs.TemplateBean;
-import entities.Configuration;
+import ejbs.ProductCatalogBean;
 import entities.Template;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ public class GuestManager implements Serializable {
     
     //Gonna disappear after rest    
     @EJB
-    private TemplateBean templateBean;
+    private ProductCatalogBean productCatalogBean;
     
     
     @PostConstruct
@@ -51,19 +50,13 @@ public class GuestManager implements Serializable {
     
     public List<Template> getAllTemplates(){
         List<Template> templates = new ArrayList<>();
-        templates.addAll(templateBean.getAll());
+        templates.addAll(productCatalogBean.getAll());
         
         return templates;
     }
 
     //Case fizermos isto ira ser necessario ter um DTO com uma dummy List<Configuration> vazia
     public Template getSelectedTemplate() {
-        List<Configuration> configurations;
-        if (selectedTemplate!=null && selectedTemplate.getConfigurations() == null){
-            configurations = templateBean.getConfigurations(selectedTemplate.getId());
-            
-            selectedTemplate.setConfigurations(configurations);
-        }
         return selectedTemplate;
     }
 

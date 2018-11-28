@@ -5,8 +5,8 @@
  */
 package ejbs;
 
-import entities.Administrator;
 import entities.Configuration;
+import entities.ProductCatalog;
 import entities.Template;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,38 +22,37 @@ import javax.persistence.PersistenceContext;
 @Stateless //Distinge que é um ejb (componente que não gere instancia nem ciclo de vida)
 //Faz pedidos mas não guardam de quem esta a fazer
 //Faz com que ´não tenha de ter uma instancia para cada utilizador
-public class TemplateBean{
+public class ProductCatalogBean{
 
     @PersistenceContext(name="DAEProject2019")//Peristance context usa o nome da bd do persistance.xml
     EntityManager em;
    
     public void create(String name, String description) {
-        Template template = new Template(name, description);
-        em.persist(template);
+        ProductCatalog productCatalog = new ProductCatalog(name, description);
+        em.persist(productCatalog);
     }
     
     public List<Configuration> getConfigurations(Long id){
-        Template template = em.find(Template.class, id);
-        if (template == null) System.out.println("ERROR");//Temporary
+        ProductCatalog productCatalog = em.find(ProductCatalog.class, id);
+        if (productCatalog == null) System.out.println("ERROR");//Temporary
         
-        return template.getConfigurations();
+        //return productCatalog.getConfigurations();
+        return null;
     }
     
     public void addConfiguration(long id, long idConf){
-        System.out.println("Temp:"+getAll().get(0).getId());
-        System.out.println((getAll().get(0).getId()==id?true:false));
-        Template template = em.find(Template.class, id);
-        if (template == null) System.out.println("ERROR INVALID ID!");//Temporary
+        ProductCatalog productCatalog = em.find(ProductCatalog.class, id);
+        if (productCatalog == null) System.out.println("ERROR INVALID ID!");//Temporary
         
         Configuration configuration = em.find(Configuration.class, idConf);
         if (configuration == null) System.out.println("ERROR INVALID ID_CONFIG!");
         
-        template.addConfiguration(configuration);
+        //productCatalog.addConfiguration(configuration);
     }
     
     public List<Template> getAll(){
         List<Template> templates = new ArrayList<>();
-        templates = em.createNamedQuery("getAllTemplates").getResultList();
+        templates = em.createNamedQuery("getAllProductCatalog").getResultList();
 
         return templates;
     }

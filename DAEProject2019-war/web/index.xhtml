@@ -17,8 +17,15 @@
         <div class="jumbotron">
             <div class="container">
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-11">
                         <h2>A minha LOJA VIRTUAL</h2>
+                    </div>
+                    <div class="col-md-1">
+                        <h:form>
+                            <h:commandButton 
+                                action="/faces/index?faces-redirect=true" 
+                                image="/resources/house.png"/>    
+                        </h:form>
                     </div>
                 </div>
             </div>
@@ -27,7 +34,11 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-4">
-                    <h:form rendered="#{userManager.loginFlag}">
+                    <c:set var="user" value="#{userManager}"/>
+                    <h:form rendered="#{user.loginFlag}">
+                        <c:if test="${not empty user.message}">
+                            <div class="alert alert-danger">${user.message}</div>
+                        </c:if>
                         <div class="card">
                             <div class="card-body">
                                 <h3 class="card-title">Login</h3>
@@ -42,44 +53,20 @@
                 <div class="col-sm-8">
                     <h:form id="formId">
                         <h2>Templates</h2>
-                         <!--responsive ="true"-->
                         <b:dataTable id="Templates" value="#{guestManager.allTemplates}" 
                             var="rowItem" print="true" 
                             excel="true" csv="true" pdf="true" copy="true">
                             <b:dataTableColumn value="#{rowItem.name}" />
                             <b:dataTableColumn value="#{rowItem.description}" />
                             <b:dataTableColumn label="Actions">
-                                <h:form>
-                                    <h:commandButton value="Details" class="btn btn-success"
-                                        p:data-target="#modalDetails" p:data-toggle="modal">
-                                        <f:setPropertyActionListener value="${rowItem}"
-                                            target="#{guestManager.selectedTemplate}"/>
-                                        <f:ajax execute = "@form" render = "outputMessage" />
-                                    </h:commandButton>
-                                </h:form>
-                                
+                                <h:commandLink value="Details" class="btn btn-success" action="guest/details">
+                                    <f:setPropertyActionListener value="${rowItem}"
+                                        target="#{guestManager.selectedTemplate}" />
+                                </h:commandLink>
                             </b:dataTableColumn>
                         </b:dataTable>
                     </h:form> 
                 </div>
-                <b:modal id="modalDetails" title="Template Details">
-                    <h:form id="outputMessage">
-                        <c:set var="selectedTemplate" value="#{guestManager.selectedTemplate}"/>
-                        <b:inputText label="Id" value="#{selectedTemplate.id}"/>
-                        <b:inputText label="Name" disabled="true" value="#{selectedTemplate.name}"/>
-                        <b:inputTextarea label="Description" value="#{selectedTemplate.description}"/>
-                        
-                        <h:outputText value="Configurations:" style="font-weight:bold"/>
-                        <b:dataTable var="rowItem" value="#{selectedTemplate.configurations}" 
-                            responsive="true" info="false" paginated="false" searching="false">
-                            <b:dataTableColumn value="#{rowItem.description}" />
-                        </b:dataTable>     
-                    </h:form>
-                    <f:facet name="footer">
-                      <b:button value="Close" dismiss="modal" />
-                      <b:button value="Ok" look="primary" dismiss="modal" />
-                    </f:facet>
-                </b:modal>
             </div>
         </div>
     </h:body>

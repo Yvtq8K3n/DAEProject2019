@@ -4,25 +4,17 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "Product")
-public class Product extends Template implements Serializable {    
-    
-    @NotNull(message = "Product must have a version")
-    private String baseVersion;
-    
-    //Relation
-    private Client owner;
-    
+@Table(name = "ProductCatalog")
+@NamedQuery(name = "getAllProductCatalog", query = "SELECT p FROM ProductCatalog p")
+public class ProductCatalog extends Template implements Serializable {    
+     
     @ManyToMany
     @JoinTable(
         joinColumns=@JoinColumn(referencedColumnName="ID"),
@@ -30,20 +22,18 @@ public class Product extends Template implements Serializable {
     )
     protected List<Configuration> configurations;
     
-    protected Product() {
+    protected ProductCatalog() {
     }
 
-    public Product(String name, String description, String baseVersion) {
+    public ProductCatalog(String name, String description) {
         this.name = name;
         this.description = description;
-        this.baseVersion = baseVersion;
         this.configurations = new ArrayList<>();
     }
     
-    public Product(String name, String description, String baseVersion, List<Configuration> configuration) {
+    public ProductCatalog(String name, String description, String baseVersion, List<Configuration> configuration) {
         this.name = name;
         this.description = description;
-        this.baseVersion = baseVersion;
         this.configurations = configuration;
     }
     
@@ -55,7 +45,7 @@ public class Product extends Template implements Serializable {
         configurations.remove(configuration);
         return configuration;
     }
-
+    
     public List<Configuration> getConfigurations() {
         return configurations;
     }
@@ -63,5 +53,4 @@ public class Product extends Template implements Serializable {
     public void setConfigurations(List<Configuration> configurations) {
         this.configurations = configurations;
     }
-    
 }

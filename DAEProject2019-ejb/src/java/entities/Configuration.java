@@ -33,7 +33,10 @@ public class Configuration implements Serializable {
     private String description;
     
     @ManyToMany(mappedBy="configurations")
-    private List<Template> templates;
+    private List<Product> products;
+    
+    @ManyToMany(mappedBy="configurations")
+    private List<ProductCatalog> productsCatalog;
     
     public Configuration() {
     }
@@ -57,8 +60,4 @@ public class Configuration implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
-    
-    
-
-    
 }

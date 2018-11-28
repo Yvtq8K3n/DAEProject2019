@@ -25,7 +25,7 @@ public class ConfigBean {
     private AdministratorBean adminstratorBean;
     
     @EJB//Dà uma instancida do EJB TemplateBean
-    private TemplateBean templateBean;
+    private ProductCatalogBean productCatalogBean;
     
     @EJB//Dà uma instancida do EJB ConfigurationBean
     private ConfigurationBean configurationBean;
@@ -39,13 +39,13 @@ public class ConfigBean {
         clientBean.create("client2", "secret", "Manuel", "dae.ei.ipleiria@gmail.com", "Av. Alberto Alves", "+00351 256 0033 12");
         adminstratorBean.create("administrator1", "secret", "Manuel", "dae.ei.ipleiria@gmail.com", "Director");
         
-        templateBean.create("Big Beng", "We can't never be sure if its a Watch of a Explosion");
-        templateBean.create("Wall of China", "This template contain all the procedures in order to sucessfully deploy a wall in a huge scale");
+        productCatalogBean.create("Big Beng", "We can't never be sure if its a Watch of a Explosion");
+        productCatalogBean.create("Wall of China", "This template contain all the procedures in order to sucessfully deploy a wall in a huge scale");
         configurationBean.create("Im just a configuration 1");
         configurationBean.create("Im just a configuration 2");
         
-        templateBean.addConfiguration(1, 1);
-        templateBean.addConfiguration(1, 2);
+        //productCatalogBean.addConfiguration(1, 1);
+        //productCatalogBean.addConfiguration(1, 2);
         
         productBean.create("PRODUCT1", "Im just a normal product", "v1.10");
     }
