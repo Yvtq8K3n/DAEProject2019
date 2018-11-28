@@ -1,74 +1,32 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:b="http://bootsfaces.net/ui"
-      xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
-    <h:head>
-        <title>Templates</title>
-        <script name="jquery/jquery.js" library="primefaces"></script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"></link>
-    </h:head>
-    <h:body> 
-        <div class="jumbotron">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-11">
-                        <h2>A minha LOJA VIRTUAL</h2>
-                    </div>
-                    <div class="col-md-1">
-                        <h:form>
-                            <h:commandButton 
-                                action="/faces/index?faces-redirect=true" 
-                                image="/resources/house.png"/>    
-                        </h:form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-4">
-                    <c:set var="user" value="#{userManager}"/>
-                    <h:form rendered="#{user.loginFlag}">
-                        <c:if test="${not empty user.message}">
-                            <div class="alert alert-danger">${user.message}</div>
-                        </c:if>
-                        <div class="card">
-                            <div class="card-body">
-                                <h3 class="card-title">Login</h3>
-                                <b:inputText id="usernameInput" label="Username:" value="#{userManager.username}"/>
-                                <b:inputSecret  id="passwordInput" label="Password:" value="#{userManager.password}"/>
-                                <hr></hr>    
-                                <h:commandButton value="Login" action="#{userManager.login}" class="btn btn-primary" />
-                            </div>	
-                        </div>
-                    </h:form>
-                </div>
-                <div class="col-sm-8">
-                    <h:form id="formId">
-                        <h2>Templates</h2>
-                        <b:dataTable id="Templates" value="#{guestManager.allTemplates}" 
-                            var="rowItem" print="true" 
-                            excel="true" csv="true" pdf="true" copy="true">
-                            <b:dataTableColumn value="#{rowItem.name}" />
-                            <b:dataTableColumn value="#{rowItem.description}" />
-                            <b:dataTableColumn label="Actions">
-                                <h:commandLink value="Details" class="btn btn-success" action="guest/details">
-                                    <f:setPropertyActionListener value="${rowItem}"
-                                        target="#{guestManager.selectedTemplate}" />
-                                </h:commandLink>
-                            </b:dataTableColumn>
-                        </b:dataTable>
-                    </h:form> 
-                </div>
-            </div>
-        </div>
-    </h:body>
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:b="http://bootsfaces.net/ui"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core">
+ <ui:composition template="./templates/skeleton.xhtml">
+     
+ <ui:define name="title"> Templates </ui:define> 
+ 
+ <ui:define name="main">
+    <h:form id="formId">
+        <h2>Templates</h2>
+        <b:dataTable id="Templates" value="#{guestManager.allTemplates}" 
+            var="rowItem" print="true" 
+            excel="true" csv="true" pdf="true" copy="true">
+            <b:dataTableColumn value="#{rowItem.name}" />
+            <b:dataTableColumn value="#{rowItem.description}" />
+            <b:dataTableColumn label="Actions">
+                <h:commandLink value="Details" class="btn btn-success" action="guest/details">
+                    <f:setPropertyActionListener value="${rowItem}"
+                        target="#{guestManager.selectedTemplate}" />
+                </h:commandLink>
+            </b:dataTableColumn>
+        </b:dataTable>
+    </h:form>  
+ </ui:define>
+ </ui:composition>
 </html>
-

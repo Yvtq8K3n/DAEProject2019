@@ -48,7 +48,7 @@ public class UserManager implements Serializable{
             logger.log(Level.WARNING, e.getMessage());
             
             message = "Login Failed: Invalid username or password.";
-            return "/faces/index_login?faces-redirect=true";
+            return "/faces/index?faces-redirect=true";
         }
         if(isUserInRole("Administrator")){
             logger.info("Administrator");
@@ -60,7 +60,7 @@ public class UserManager implements Serializable{
         }
         
         message = "Login Failed: Invalid username or password.";
-        return "/faces/index_login?faces-redirect=true";        
+        return "/faces/index?faces-redirect=true";        
     }
     
     public boolean isUserInRole(String role) {

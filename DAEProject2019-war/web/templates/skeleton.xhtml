@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:b="http://bootsfaces.net/ui"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title><ui:insert name="title">Academics Management</ui:insert></title>
+        
+        <ui:insert name="css">
+             <!-- other style sheets you might want to include -->
+        </ui:insert>
+    </h:head>
+    <h:body>
+        <div class="jumbotron">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-11">
+                        <h2>A minha LOJA VIRTUAL</h2>
+                    </div>
+                    <div class="col-md-1">
+                        <h:form>
+                            <h:commandButton 
+                                action="/faces/index?faces-redirect=true" 
+                                image="/resources/house.png"/>    
+                        </h:form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4">
+                    <c:set var="user" value="#{userManager}"/>
+                    <h:form rendered="#{user.loginFlag}">
+                        <c:if test="${not empty user.message}">
+                            <div class="alert alert-danger">${user.message}</div>
+                        </c:if>
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">Login</h3>
+                                <b:inputText id="usernameInput" label="Username:" value="#{userManager.username}"/>
+                                <b:inputSecret  id="passwordInput" label="Password:" value="#{userManager.password}"/>
+                                <hr></hr>    
+                                <h:commandButton value="Login" action="#{userManager.login}" class="btn btn-primary" />
+                            </div>	
+                        </div>
+                    </h:form>
+                </div>
+                <div id="main" class="col-sm-8">
+                    <ui:insert name="main">
+                        <!-- All the main application content goes here -->
+                       Desenvolvimento de Aplicações Empresariais Worksheet 7
+                       Eng.ª Informática- 3.º ano – Ramo SI - 2017-18-1S
+                       6 / 10
+                    </ui:insert>
+                </div>
+            </div>
+        </div>
+        
+        <ui:insert name="scripts">
+        <!-- other scripts you might want to include -->
+        </ui:insert>
+    </h:body>
+</html>
