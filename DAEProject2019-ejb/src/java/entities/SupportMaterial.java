@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ejbs;
+package entities;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -22,6 +22,11 @@ import javax.validation.constraints.NotNull;
 @Table(name = "SupportMaterials")
 public class SupportMaterial {
 
+    public enum MaterialType {
+        VIDEO,TUTORIAL,MANUAL,LINK,DOCUMENT
+    }
+    
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

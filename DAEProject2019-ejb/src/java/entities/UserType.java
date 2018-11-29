@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ejbs;
+package entities;
 
 /**
  *
  * @author admin
  */
-public enum MaterialType {
-    VIDEO,TUTORIAL,MANUAL,LINK,DOCUMENT
+public enum UserType {
+    USER,PROGRAMMER
 }
