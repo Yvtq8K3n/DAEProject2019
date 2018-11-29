@@ -34,6 +34,9 @@ public class ConfigBean {
     
     @EJB//Dà uma istancida do EJB ProductBean
     private ProductBean productBean;
+    
+    @EJB
+    private ModuleBean moduleBean;
       
     @PostConstruct//Excecuta assim que o bean é instanciado
     public void populateDB() {
@@ -46,5 +49,7 @@ public class ConfigBean {
         configurationBean.create("Configuration1", "Im just a configuration");
         
         productBean.create("PRODUCT1", "Im just a normal product", "v1.10");
+        
+        moduleBean.create(new Long(1), "module 1", "1.0");
     }
 }
