@@ -6,13 +6,16 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -38,10 +41,18 @@ public class Configuration implements Serializable {
     @ManyToMany(mappedBy="configurations")
     private List<ProductCatalog> productsCatalog;
     
-    public Configuration() {
+    @OneToMany(cascade=CascadeType.REMOVE)
+    private List<Module> modules;
+    
+
+    public Configuration(){ 
+         modules = new ArrayList<>();
+         products= new ArrayList<>();
+         productsCatalog= new ArrayList<>();
     }
 
     public Configuration(String description) {
+        this();
         this.description = description;
     }
 
@@ -59,5 +70,13 @@ public class Configuration implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+    
+     public void addModule(Module module){
+        modules.add(module);
+    }
+    
+    public void rmeoveModule(Module module){
+        modules.remove(module);
     }
 }
