@@ -35,6 +35,9 @@ public class ConfigBean {
     
     @EJB
     private ModuleBean moduleBean;
+    
+    @EJB
+    private CommentBean commentBean;
       
     @PostConstruct//Excecuta assim que o bean é instanciado
     public void populateDB() {  
@@ -50,7 +53,12 @@ public class ConfigBean {
         //productCatalogBean.addConfiguration(1, 1);
         //productCatalogBean.addConfiguration(1, 2);
         
+        
+        
         productBean.create("PRODUCT1", "Im just a normal product", "v1.10");
+        
+        commentBean.create(null, 1,"Initial comment");
+        commentBean.create(1L, 1,"Not initial comment");
         
         moduleBean.create(new Long(1), "module 1", "1.0");
     }

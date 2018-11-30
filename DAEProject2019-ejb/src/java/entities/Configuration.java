@@ -44,11 +44,17 @@ public class Configuration implements Serializable {
     @OneToMany(cascade=CascadeType.REMOVE)
     private List<Module> modules;
     
+    @OneToMany(mappedBy = "configuration", cascade=CascadeType.REMOVE)
+    private List<Comment> comments;
+    
+    
+    
 
     public Configuration(){ 
          modules = new ArrayList<>();
          products= new ArrayList<>();
          productsCatalog= new ArrayList<>();
+         comments =  new ArrayList<>();
     }
 
     public Configuration(String description) {
@@ -78,5 +84,13 @@ public class Configuration implements Serializable {
     
     public void rmeoveModule(Module module){
         modules.remove(module);
+    }
+    
+    public void addComment(Comment comment){
+        comments.add(comment);
+    }
+    
+     public void removeComment(Comment comment){
+        comments.remove(comment);
     }
 }
