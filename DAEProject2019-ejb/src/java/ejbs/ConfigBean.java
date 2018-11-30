@@ -5,6 +5,7 @@
  */
 package ejbs;
 
+import entities.Configuration;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
@@ -47,8 +48,8 @@ public class ConfigBean {
         
         productCatalogBean.create("Big Beng", "We can't never be sure if its a Watch of a Explosion");
         productCatalogBean.create("Wall of China", "This template contain all the procedures in order to sucessfully deploy a wall in a huge scale");
-        configurationBean.create("Im just a configuration 1");
-        configurationBean.create("Im just a configuration 2");
+        configurationBean.create("Im just a configuration 1", Configuration.Status.INACTIVE, "V1.5.0", "Contract data 1");
+        configurationBean.create("Im just a configuration 2", Configuration.Status.INACTIVE, "V1.7.8", "Contract data 2");
         
         //productCatalogBean.addConfiguration(1, 1);
         //productCatalogBean.addConfiguration(1, 2);
@@ -60,6 +61,8 @@ public class ConfigBean {
         commentBean.create(null, 1,"Initial comment");
         commentBean.create(1L, 1,"Not initial comment");
         
-        moduleBean.create(new Long(1), "module 1", "1.0");
+        moduleBean.create("module 1", "1.0");
+        
+        configurationBean.addModule(new Long(2), new Long(5));
     }
 }

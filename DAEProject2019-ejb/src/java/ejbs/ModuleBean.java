@@ -22,8 +22,8 @@ public class ModuleBean {
    @PersistenceContext(name="DAEProject2019")
    EntityManager em;
    
-   public void create(Long id, String name, String version){
-       Module module = new Module(id, name, version);
+   public void create(String name, String version){
+       Module module = new Module(name, version);
        em.persist(module);
    }
 }

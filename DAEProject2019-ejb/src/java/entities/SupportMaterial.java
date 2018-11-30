@@ -26,6 +26,10 @@ public class SupportMaterial {
         VIDEO,TUTORIAL,MANUAL,LINK,DOCUMENT
     }
     
+    public enum UserType {
+        USER,PROGRAMMER
+    }
+    
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -46,8 +50,5 @@ public class SupportMaterial {
     
     @Enumerated(EnumType.STRING)
     private UserType userType;
-    
-    
-    
     
 }

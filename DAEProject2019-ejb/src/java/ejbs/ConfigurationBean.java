@@ -6,6 +6,7 @@
 package ejbs;
 
 import entities.Configuration;
+import entities.Module;
 import entities.Template;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -24,8 +25,33 @@ public class ConfigurationBean{
     @PersistenceContext(name="DAEProject2019")//Peristance context usa o nome da bd do persistance.xml
     EntityManager em;
    
-    public void create(String description) {
-        Configuration configuration = new Configuration( description);
+    public void create(String description, Configuration.Status status, String baseVersion, String contractData) {
+        Configuration configuration = new Configuration(description, status, baseVersion, contractData);
+        System.out.println("CONFIGURATION ID: " + configuration.getId()); 
         em.persist(configuration);
+    }
+    
+    public void addModule(Long configurationId, Long moduleId){
+        try {
+            Configuration configuration = em.find(Configuration.class, configurationId);
+            if (configuration == null) {
+                System.out.println("ERRO NO METODO ADD_MODULE DE CONFIG_BEAN - NÃO ENCONTROU CONFIGURATION");
+            }else{
+                System.out.println("ENCONTROU CONFIGURATION " + configuration.getDescription());
+            }
+            Module module = em.find(Module.class, moduleId);
+            if (module == null) {
+                System.out.println("ERRO NO METODO ADD_MODULE DE CONFIG_BEAN - NÃO ENCONTROU MODULE");   
+            }else{
+                System.out.println("ENCONTROU MODULE " + module.getName());
+            }
+            
+            
+            configuration.addModule(module);
+            em.merge(configuration);
+            
+        } catch (Exception e) {
+            System.out.println("ERRO NO METODO ADD_MODULE DE CONFIG_BEAN " + e.getMessage());
+        }
     }
 }

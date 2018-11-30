@@ -33,7 +33,7 @@ public class Module {
     public Module() {
     }
 
-    public Module(Long id, String name, String version) {
+    public Module(String name, String version) {
         this.id = id;
         this.name = name;
         this.version = version;
@@ -62,7 +62,4 @@ public class Module {
     public void setVersion(String version) {
         this.version = version;
     }
-    
-    
-    
 }

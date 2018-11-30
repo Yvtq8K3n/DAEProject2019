@@ -30,7 +30,14 @@ public class CommentBean{
         Comment parent = null;
        
               
-        if (id !=null) parent = em.find(Comment.class, id);
+        if (id !=null){
+            parent = em.find(Comment.class, id);
+        }
+        
+        if (parent !=null){
+            System.out.println("COMMENT_BEAN CREATE parentid: "+ parent.getId());
+        }
+        
         //if (idConf == null) throw new EJBException();
         Configuration configuration = em.find(Configuration.class, idConf);
         if (configuration == null) System.out.println("ERROR INVALID ID_CONFIG!");
