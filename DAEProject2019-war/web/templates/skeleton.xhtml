@@ -36,22 +36,29 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-4">
-                    <c:set var="user" value="#{userManager}"/>
-                    <h:form rendered="#{user.loginFlag}">
-                        <c:if test="${not empty user.message}">
-                            <div class="alert alert-danger">${user.message}</div>
-                        </c:if>
-                        <div class="card">
-                            <div class="card-body">
-                                <h3 class="card-title">Login</h3>
-                                <b:inputText id="usernameInput" label="Username:" value="#{userManager.username}"/>
-                                <b:inputSecret  id="passwordInput" label="Password:" value="#{userManager.password}"/>
-                                <hr></hr>    
-                                <h:commandButton value="Login" action="#{userManager.login}" class="btn btn-primary" />
-                            </div>	
-                        </div>
+                    <h:form id="contentMenu">
+                        <h:panelGroup layout="block" >
+                            
+                            <c:if test="${!userManager.someUserAuthenticated}">
+                                <ui:include src="/login.xhtml" />
+                            </c:if>
+
+                            <c:if test="${userManager.someUserAuthenticated}">
+                                <c:if test="${userManager.admin}">
+                                    <ui:include src="/admin/menu.xhtml" />
+                                </c:if>
+
+                                <c:if test="${userManager.client}">
+                                    <ui:include src="/client/menu.xhtml" />
+                                </c:if>
+
+                                <ui:include src="/logout.xhtml"/>
+                            </c:if>
+                        </h:panelGroup> 
                     </h:form>
                 </div>
+                
+               
                 <div id="main" class="col-sm-8">
                     <ui:insert name="main">
                         <!-- All the main application content goes here -->
@@ -64,7 +71,7 @@
         </div>
         
         <ui:insert name="scripts">
-        <!-- other scripts you might want to include -->
+            
         </ui:insert>
     </h:body>
 </html>

@@ -5,7 +5,10 @@
  */
 package ejbs;
 
+import entities.Administrator;
 import entities.Client;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -26,5 +29,12 @@ public class ClientBean{
     public void create(String username, String password, String name, String email, String address, String contact) {
         Client client = new Client(username, password, name, email, address, contact);
         em.persist(client);
+    }
+    
+    public List<Client> getAll(){
+        List<Client> clients = new ArrayList<>();
+        clients = em.createNamedQuery("getAllClients").getResultList();
+
+        return clients;
     }
 }

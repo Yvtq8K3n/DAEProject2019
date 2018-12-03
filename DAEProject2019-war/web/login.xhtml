@@ -1,0 +1,32 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:b="http://bootsfaces.net/ui"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core">
+    
+    <c:set var="user" value="#{userManager}"/>
+    <h:form id="loginForm">
+        <c:if test="${not empty user.message}">
+                <div class="alert alert-danger">${user.message}</div>
+        </c:if>
+        <h:messages class="alert alert-danger"/>
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">Login</h3>
+                <b:inputText id="username" label="Username:" required="true"
+                   value="#{userManager.username}" />
+
+                <b:inputSecret id="password" label="Password:" required="true"
+                   value="#{userManager.password}"/>
+                <hr></hr> 
+                
+                <b:commandLink value = "Login" class="btn btn-primary">
+                    <f:ajax execute = "@form" render = ":contentMenu" listener="#{userManager.login}"/>
+                </b:commandLink>
+                 
+            </div>	
+        </div>
+    </h:form>
+</ui:composition>

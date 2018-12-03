@@ -7,6 +7,9 @@ package ejbs;
 
 import entities.Administrator;
 import entities.Client;
+import entities.Template;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -27,5 +30,13 @@ public class AdministratorBean{
     public void create(String username, String password, String name, String email, String occupation) {
         Administrator adminstrator = new Administrator(username, password, name, email, occupation);
         em.persist(adminstrator);
+    }
+    
+    
+    public List<Administrator> getAll(){
+        List<Administrator> administrators = new ArrayList<>();
+        administrators = em.createNamedQuery("getAllAdministrators").getResultList();
+
+        return administrators;
     }
 }

@@ -35,10 +35,25 @@ public class UserManager implements Serializable{
 
     Boolean loginFlag = true;
     
+    private String name;
+   
+   public String getName() {
+      return name;
+   }
+   
+   public void setName(String name) {
+      this.name = name;
+   }
+
+   public String getWelcomeMessage() {
+      return "Hello " + name;
+   }
+    
+    
     public UserManager() {
     }
     
-    public String login() throws MessagingException {
+    public void login() throws MessagingException {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request =
         (HttpServletRequest) context.getExternalContext().getRequest();
@@ -48,23 +63,30 @@ public class UserManager implements Serializable{
             logger.log(Level.WARNING, e.getMessage());
             
             message = "Login Failed: Invalid username or password.";
-            return "/faces/index?faces-redirect=true";
+            //return "/faces/index?faces-redirect=true";
         }
         if(isUserInRole("Administrator")){
             logger.info("Administrator");
-            return "/faces/admin/index?faces-redirect=true";
+            //return "/faces/admin/index?faces-redirect=true";
         }
         if(isUserInRole("Client")){
             logger.info("Client");
-            return "/faces/client/index?faces-redirect=true";
+            //return "/faces/client/index?faces-redirect=true";
         }
         
         message = "Login Failed: Invalid username or password.";
-        return "/faces/index?faces-redirect=true";        
+        //return "/faces/index?faces-redirect=true";        
+    }
+    
+    public boolean isClient(){
+        return isUserInRole("Client");
+    }
+    
+    public boolean isAdmin(){
+        return isUserInRole("Administrator");
     }
     
     public boolean isUserInRole(String role) {
-        
         return (isSomeUserAuthenticated() &&
             FacesContext.getCurrentInstance().getExternalContext().isUserInRole(role));
     }
