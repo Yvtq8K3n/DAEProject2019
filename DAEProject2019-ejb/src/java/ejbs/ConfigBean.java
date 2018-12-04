@@ -5,7 +5,10 @@
  */
 package ejbs;
 
+import java.util.logging.Logger;
+import entities.Comment;
 import entities.Configuration;
+import java.util.logging.Level;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
@@ -39,6 +42,8 @@ public class ConfigBean {
     
     @EJB
     private CommentBean commentBean;
+    
+    private static final Logger logger = Logger.getLogger("ejb::ConfigBean");
       
     @PostConstruct//Excecuta assim que o bean é instanciado
     public void populateDB() {  
@@ -58,8 +63,9 @@ public class ConfigBean {
         
         productBean.create("PRODUCT1", "Im just a normal product", "v1.10");
         
-        commentBean.create(null, 1,"Initial comment");
-        commentBean.create(1L, 1,"Not initial comment");
+        Comment parent = commentBean.create(null, 1,"Initial comment");
+        Comment child = commentBean.create(parent.getId(), 1,"Not initial comment");
+        parent.addChildren(child);
         
         moduleBean.create("module 1", "1.0");
         
