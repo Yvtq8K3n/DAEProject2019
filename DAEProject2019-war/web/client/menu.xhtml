@@ -1,9 +1,25 @@
 <ui:composition 
     xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-    <h2>Include page</h2>
-    <p>Include page blah blah lorem ipsum</p>
-    <p>IM CLIENT BITCHES</p>
+    xmlns:b="http://bootsfaces.net/ui"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core">
+    
+    <h:form id="menu">
+        <div class="card">
+            <div class="card-header">
+                <h3>Menu</h3>
+            </div>
+            <ul class="list-group list-group-flush">
+                <b:commandButton value="Catalog" class="list-group-item" 
+                    action="/faces/index?faces-redirect=true"/>
+               
+                <li class="list-group-item">
+                    <ui:include src="/logout.xhtml" />
+                </li>
+            </ul>
+        </div>
+    </h:form>
 </ui:composition>
+

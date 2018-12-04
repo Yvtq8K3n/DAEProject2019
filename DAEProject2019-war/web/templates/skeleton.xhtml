@@ -10,7 +10,7 @@
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <title><ui:insert name="title">Academics Management</ui:insert></title>
-        
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" crossorigin="anonymous"></link>
         <ui:insert name="css">
              <!-- other style sheets you might want to include -->
         </ui:insert>
@@ -43,7 +43,7 @@
                                 <ui:include src="/login.xhtml" />
                             </c:if>
 
-                            <c:if test="${userManager.someUserAuthenticated}">
+                            <c:if test="${userManager.someUserAuthenticated}">                              
                                 <c:if test="${userManager.admin}">
                                     <ui:include src="/admin/menu.xhtml" />
                                 </c:if>
@@ -51,8 +51,6 @@
                                 <c:if test="${userManager.client}">
                                     <ui:include src="/client/menu.xhtml" />
                                 </c:if>
-
-                                <ui:include src="/logout.xhtml"/>
                             </c:if>
                         </h:panelGroup> 
                     </h:form>

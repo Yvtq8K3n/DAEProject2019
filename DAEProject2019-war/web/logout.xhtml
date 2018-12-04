@@ -6,9 +6,7 @@
     xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
     xmlns:f="http://java.sun.com/jsf/core">
     
-    <h:form id="logoutForm"> 
-        <b:commandLink value = "Logout" class="btn btn-danger">
-            <f:ajax execute = "@form" render = ":contentMenu" listener="#{userManager.logout()}"/>
-        </b:commandLink>
-    </h:form>
+    <b:commandLink value = "Logout" class="btn btn-danger">
+        <f:ajax execute = "@form" render = ":contentMenu" listener="#{userManager.logout()}"/>
+    </b:commandLink>
 </ui:composition>
