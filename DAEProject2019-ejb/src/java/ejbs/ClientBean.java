@@ -7,8 +7,10 @@ package ejbs;
 
 import entities.Administrator;
 import entities.Client;
+import entities.Product;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -36,5 +38,37 @@ public class ClientBean{
         clients = em.createNamedQuery("getAllClients").getResultList();
 
         return clients;
+    }
+    
+    public Client getClient(String username){
+        try {
+            Client client = em.find(Client.class, username);
+            if (client == null) {
+                throw new EJBException();
+            }
+            
+            return client;
+        } catch (EJBException e) {
+            throw new EJBException("ERROR: CANT FIND ENTETY" + e.getMessage());
+        }
+    }
+
+    void addProduct(String username, Long productId) {
+        try {
+            Client client = em.find(Client.class, username);
+            if (client == null) {
+                System.out.println("ERROR: can't find client in addProduct of clientBean");
+            }
+            Product product = em.find(Product.class, productId);
+            if (product == null) {
+                System.out.println("ERROR: can't find product in addProduct of clientBean");
+            }
+            
+            client.addProduct(product);
+            em.merge(client);
+            
+        } catch (EJBException e) {
+            System.out.println("ERROR: addProduct in CLIENT_BEAN" + e.getMessage());
+        }
     }
 }

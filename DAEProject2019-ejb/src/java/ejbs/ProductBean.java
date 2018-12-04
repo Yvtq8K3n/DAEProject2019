@@ -29,4 +29,7 @@ public class ProductBean{
         Product product = new Product(name, description, baseVersion);
         em.persist(product);
     }
+    
+    
+    
 }

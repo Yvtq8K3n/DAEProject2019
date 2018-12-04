@@ -22,7 +22,7 @@ import javax.ejb.Startup;
 @Startup//Assim que faz depply e corre a aplicação o component é instanciado
 public class ConfigBean {
     
-    @EJB//Dà uma instancida do EJB StudentBean
+    @EJB//Dà uma instancida do EJB ClientBean
     private ClientBean clientBean;
     
     @EJB//Dà uma istancida do EJB AdminstratorBean
@@ -62,6 +62,8 @@ public class ConfigBean {
         
         
         productBean.create("PRODUCT1", "Im just a normal product", "v1.10");
+        //clientBean.addProduct("client1", new Long(1));
+        
         
         Comment parent = commentBean.create(null, 1,"Initial comment");
         Comment child = commentBean.create(parent.getId(), 1,"Not initial comment");
@@ -70,5 +72,6 @@ public class ConfigBean {
         moduleBean.create("module 1", "1.0");
         
         configurationBean.addModule(new Long(2), new Long(5));
+        
     }
 }
