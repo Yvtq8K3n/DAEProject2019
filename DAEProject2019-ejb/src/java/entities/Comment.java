@@ -34,7 +34,6 @@ public class Comment implements Serializable{
     String message;
     
     @ManyToOne
-    @JoinColumn(name="parent_id")
     private Comment parent;
 
     @OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
@@ -59,7 +58,11 @@ public class Comment implements Serializable{
     }
     
     public void addChildren(Comment children){
-        children.addChildren(children);
+        this.children.add(children);
+    }
+    
+    public void removeChildren(Comment children){
+        this.children.remove(children);
     }
 
     public Long getId() {

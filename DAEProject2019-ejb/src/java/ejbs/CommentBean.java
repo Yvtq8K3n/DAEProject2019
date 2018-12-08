@@ -26,7 +26,7 @@ public class CommentBean{
     @PersistenceContext(name="DAEProject2019")//Peristance context usa o nome da bd do persistance.xml
     EntityManager em;
    
-    public void create(Long id, long idConf, String msg) {
+    public Comment create(Long id, long idConf, String msg) {
         Comment parent = null;
        
               
@@ -44,5 +44,7 @@ public class CommentBean{
         
         Comment comment =  new Comment(parent, configuration ,"Initial comment");
         em.persist(comment);
+        
+        return comment;
     }
 }

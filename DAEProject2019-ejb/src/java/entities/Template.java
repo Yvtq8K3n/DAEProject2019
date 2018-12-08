@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 public abstract class Template implements Serializable {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy=GenerationType.AUTO)
     protected Long id;
     
     @NotNull(message = "Template must have a name")

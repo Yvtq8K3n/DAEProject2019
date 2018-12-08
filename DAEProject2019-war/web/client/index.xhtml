@@ -3,14 +3,30 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
-    <h:head>
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <!--<h:head>
         <title>Facelet Title</title>
         <script name="jquery/jquery.js" library="primefaces"></script>
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"></link>
     </h:head>
     <h:body>
         <p>Im A client</p>
-    </h:body>
+    </h:body>-->
+    <ui:composition template="../templates/skeleton.xhtml">
+     
+    <ui:define name="title"> Catalog </ui:define> 
+
+    <ui:define name="main">
+       <h:form id="formId">
+           <h2>Templates</h2>
+           <h2>Username: #{clientManager.clientDTO.username}</h2>
+           <h2>name: #{clientManager.clientDTO.name}</h2>
+           <h2>email: #{clientManager.clientDTO.email}</h2>
+           <h2>contact: #{clientManager.clientDTO.contact}</h2>
+           <h2>address: #{clientManager.clientDTO.address}</h2>
+           
+       </h:form>  
+    </ui:define>
+    </ui:composition>
 </html>
 

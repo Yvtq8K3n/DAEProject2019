@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -20,7 +21,8 @@ public class Product extends Template implements Serializable {
     @NotNull(message = "Product must have a version")
     private String baseVersion;
     
-    //Relation
+    @ManyToOne
+    @JoinColumn(name = "CLIENT_CODE")
     private Client owner;
     
     @ManyToMany
