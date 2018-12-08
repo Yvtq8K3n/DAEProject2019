@@ -10,18 +10,17 @@
     <!--Importing Skeleton-->
  <ui:composition template="../../templates/skeleton.xhtml">
      
- <ui:define name="title">Users</ui:define> 
+ <ui:define name="title">Administrators</ui:define> 
  
  <ui:define name="main">
     <h:form id="formId">
-        <h2>Users</h2>
+        <h2>Administrators</h2>
         <c:set var="admin" value="#{administratorManager}"/>
-        <b:dataTable id="Users" value="#{admin.allUsers}" 
+        <b:dataTable id="Users" value="#{admin.allAdministrators}" 
             var="rowItem" print="true" 
             excel="true" csv="true" pdf="true" copy="true">
             <b:dataTableColumn value="#{rowItem.name}" />
             <b:dataTableColumn value="#{rowItem.email}" />
-            <b:dataTableColumn label="Role" value="#{rowItem.group}" />
             <b:dataTableColumn label="Actions">
                 <h:commandLink value="Details" class="btn btn-success" action="guest/details">
                     <f:setPropertyActionListener value="${rowItem}"

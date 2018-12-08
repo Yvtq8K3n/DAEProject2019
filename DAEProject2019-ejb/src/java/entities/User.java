@@ -16,12 +16,17 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @Entity
+@NamedQuery(
+    name = "getAllUsers",
+    query = "SELECT u FROM User u ORDER BY u.name"
+)
 @Table(name = "USERS")
 public class User implements Serializable {
 
@@ -102,5 +107,15 @@ public class User implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getGroup() {
+        return group.getGroupName();
+    }
+
+    public void setGroup(UserGroup group) {
+        this.group = group;
+    }
+    
+    
 
 }

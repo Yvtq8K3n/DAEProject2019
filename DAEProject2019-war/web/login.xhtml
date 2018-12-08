@@ -7,7 +7,6 @@
     xmlns:f="http://java.sun.com/jsf/core">
     
     <c:set var="user" value="#{userManager}"/>
-    <h:form id="loginForm">
         <c:if test="${not empty user.message}">
                 <div class="alert alert-danger">${user.message}</div>
         </c:if>
@@ -25,8 +24,6 @@
                 <b:commandLink value = "Login" class="btn btn-primary">
                     <f:ajax execute = "@form" render = ":contentMenu" listener="#{userManager.login}"/>
                 </b:commandLink>
-                 
             </div>	
         </div>
-    </h:form>
 </ui:composition>

@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:b="http://bootsfaces.net/ui"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://butterfaces.org/components">
+    
+    <b:row>
+        <b:column span="6" id="totalDisplayed" style="text-align:center" >
+            <p>Showing #{guestManager.filterTemplates.size()} entries </p>
+        </b:column>
+        <b:column span="6" class="form-group">
+            <h:panelGrid columns="2" style="text-align: right">
+                <p>Search:</p> 
+                <h:panelGroup style="text-align: left">
+                    <b:inputText name="search" value="#{guestManager.searchTemplate}">
+                        <f:ajax event="keyup" render="formCatalog, totalDisplayed" />
+                    </b:inputText>
+                </h:panelGroup>
+            </h:panelGrid>
+        </b:column>
+    </b:row>
+    <b:row>
+        <h:panelGroup id="formCatalog" layout="block">
+            <p:repeat value="#{guestManager.filterTemplates}" var="template">
+                <b:column span="4">
+                    <b:thumbnail>
+                            <b:image name="The Product" value="/resources/product.png" alt="The Product"/>
+                            <f:facet name="caption">
+                                <h3>#{template.name}</h3>
+                                <p> #{template.description}</p>
+                                <p>
+                                <b:commandButton value="Details" class="btn btn-success" 
+                                    action="/faces/guest/catalog/details?faces-redirect=false">
+                                    <f:setPropertyActionListener value="${template}"
+                                        target="#{guestManager.selectedTemplate}" />
+                                </b:commandButton>
+                                <b:commandButton value="Details" class="btn btn-primary" 
+                                    action="/faces/guest/catalog/details?faces-redirect=false">
+                                    <f:setPropertyActionListener value="${template}"
+                                        target="#{guestManager.selectedTemplate}" />
+                                </b:commandButton>
+                                 </p>
+                            </f:facet>
+                      </b:thumbnail>
+                </b:column>
+            </p:repeat>
+        </h:panelGroup>
+    </b:row>
+    
+    <style>
+        p { 
+            display:inline-block; 
+            max-width:100%; 
+            overflow:hidden; 
+            text-overflow:ellipsis; 
+            white-space:nowrap; 
+        }
+    </style>
+    
+</html>
