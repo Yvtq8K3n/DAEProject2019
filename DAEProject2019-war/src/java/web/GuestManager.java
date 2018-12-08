@@ -5,7 +5,9 @@ import entities.Template;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
@@ -28,7 +30,9 @@ public class GuestManager implements Serializable {
     
     private Template selectedTemplate;
  
-    
+    private List<Template> templates;
+    private List<Template> filterTemplates;
+    private String searchTemplate;   
     
     //Gonna disappear after rest    
     @EJB
@@ -38,6 +42,7 @@ public class GuestManager implements Serializable {
     @PostConstruct
     public void Init(){
         client = ClientBuilder.newClient();
+        refreshFilterTemplates();
     };
     
     
@@ -48,19 +53,46 @@ public class GuestManager implements Serializable {
      * @return 
     */
     
-    public List<Template> getAllTemplates(){
+    public List<Template> getAllProductCatalog(){
         List<Template> templates = new ArrayList<>();
         templates.addAll(productCatalogBean.getAll());
         
         return templates;
     }
-
-    //Case fizermos isto ira ser necessario ter um DTO com uma dummy List<Configuration> vazia
+    
     public Template getSelectedTemplate() {
         return selectedTemplate;
     }
-
     public void setSelectedTemplate(Template selectedTemplate) {
         this.selectedTemplate = selectedTemplate;
     }   
+    
+    
+    ////////////////////////////////////////////////////////////////////////////
+    //The following code is for the Filter in Catalog View /////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    public String getSearchTemplate() {
+        return searchTemplate;
+    }
+    public void setSearchTemplate(String searchTemplate) {
+        this.searchTemplate = searchTemplate;
+        refreshFilterTemplates();
+    }
+    
+    public List<Template> getFilterTemplates(){
+        return filterTemplates;
+    }
+    public void refreshFilterTemplates(){
+        if (searchTemplate==null || searchTemplate.isEmpty()){
+            templates  = getAllProductCatalog();
+            filterTemplates = templates;
+            return;
+        }
+        
+        filterTemplates = templates.stream()
+        .filter(p ->
+            p.getName().toUpperCase().contains(searchTemplate.toUpperCase())
+            || p.getDescription().toUpperCase().contains(searchTemplate.toUpperCase())
+        ).collect(Collectors.toList());
+    }
 }

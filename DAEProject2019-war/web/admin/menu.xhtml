@@ -6,23 +6,36 @@
     xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
     xmlns:f="http://java.sun.com/jsf/core">
     
-    <h:form id="menu">
-        <div class="card">
-            <div class="card-header">
-                <h3>Menu</h3>
-            </div>
-            <ul class="list-group list-group-flush">
-                <b:commandButton value="Catalog" class="list-group-item" 
-                    action="/faces/index?faces-redirect=true"/>
-                
-                <b:commandButton value="Users" class="list-group-item"
-                    action="/faces/admin/users/view?faces-redirect=true"/> 
-               
-                <li class="list-group-item">
-                    <ui:include src="/logout.xhtml" />
-                </li>
-            </ul>
+    <div class="card">
+        <div class="card-header">
+            <h3>Menu</h3>
         </div>
-    </h:form>
+        <div class="list-group list-group-flush">
+            
+            <b:commandButton value="Catalog" class="list-group-item" iconAwesome="fa-calendar fa-lg fa-fw"
+                action="/faces/index?faces-redirect=true"/>
+
+            <a class="list-group-item" href="#sub_cat_users" id="cat_users" data-toggle="collapse">
+                <span class="fa fa-users fa-lg fa-fw"></span>
+                <span>Users</span>
+                <span class="menu-ico-collapse"><i class="fa fa-chevron-down"></i></span>
+            </a>
+            <div class="collapse list-group-submenu" id="sub_cat_users">
+                <b:commandButton value="All Users" class="list-group-item sub-item" 
+                    iconAwesome="fa-users fa-lg fa-fw" style="padding-left: 10%;"
+                    action="/faces/admin/users/view?faces-redirect=true"/>
+                <b:commandButton value="Administrators" class="list-group-item sub-item"
+                    action="/faces/admin/users/view_administrators?faces-redirect=true" style="padding-left: 10%;">
+                    <i class="fas fa-user-tie fa-lg fa-fw"></i>
+                </b:commandButton>
+                <b:commandButton value="Clients" class="list-group-item sub-item" 
+                    iconAwesome="fa-user fa-lg fa-fw" style="padding-left: 10%;"
+                    action="/faces/admin/users/view_clients?faces-redirect=true"/>
+            </div>
+
+            <div class="list-group-item"><ui:include  src="/logout.xhtml"/></div>
+        </div>
+    </div>
+
 </ui:composition>
 

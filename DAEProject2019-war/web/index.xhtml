@@ -6,28 +6,27 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:b="http://bootsfaces.net/ui"
     xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-    xmlns:f="http://java.sun.com/jsf/core">
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://butterfaces.org/components">
     <!--Importing Skeleton-->
  <ui:composition template="./templates/skeleton.xhtml">
      
  <ui:define name="title"> Templates </ui:define> 
  
  <ui:define name="main">
-    <h:form id="formId">
+    <h:form id="catalog">
         <h2>Templates</h2>
-        <b:dataTable id="Templates" value="#{guestManager.allTemplates}" 
-            var="rowItem" print="true" 
-            excel="true" csv="true" pdf="true" copy="true">
-            <b:dataTableColumn value="#{rowItem.name}" />
-            <b:dataTableColumn value="#{rowItem.description}" />
-            <b:dataTableColumn label="Actions">
-                <h:commandLink value="Details" class="btn btn-success" action="guest/details">
-                    <f:setPropertyActionListener value="${rowItem}"
-                        target="#{guestManager.selectedTemplate}" />
-                </h:commandLink>
-            </b:dataTableColumn>
-        </b:dataTable>
-    </h:form>  
+        <b:tabView tabPosition="right">
+            <b:tab title="Catalog View">
+                <f:facet name="anchor"><b:iconAwesome name="calendar"/></f:facet>
+                <ui:include src="/guest/catalog/catalog_view.xhtml"/>
+            </b:tab>
+            <b:tab title="Table View">
+                <f:facet name="anchor"><b:iconAwesome name="table"/></f:facet>
+                <ui:include src="/guest/catalog/table_view.xhtml"/>
+            </b:tab>
+          </b:tabView>
+     </h:form>
  </ui:define>
  </ui:composition>
 </html>

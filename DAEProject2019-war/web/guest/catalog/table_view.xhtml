@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:b="http://bootsfaces.net/ui"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core">
+    
+    <b:dataTable id="Templates" value="#{guestManager.allProductCatalog}" 
+        var="rowItem" print="true" 
+        excel="true" csv="true" pdf="true" copy="true">
+        <b:dataTableColumn value="#{rowItem.name}" />
+        <b:dataTableColumn value="#{rowItem.description}" />
+        <b:dataTableColumn label="Actions">
+            <b:commandButton value="Details" class="btn btn-success" 
+                action="/faces/guest/catalog/details?faces-redirect=false">
+                <f:setPropertyActionListener value="${rowItem}"
+                    target="#{guestManager.selectedTemplate}" />
+            </b:commandButton>
+        </b:dataTableColumn>
+    </b:dataTable>
+</html>

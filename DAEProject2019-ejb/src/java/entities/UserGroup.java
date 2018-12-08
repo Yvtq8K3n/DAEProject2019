@@ -23,7 +23,12 @@ public class UserGroup{
     
     public enum GROUP{
         Client,
-        Administrator
+        Administrator;
+        
+        @Override
+        public String toString() {
+            return this.name();
+        }
     }
     
     @Enumerated(EnumType.STRING)
@@ -42,10 +47,10 @@ public class UserGroup{
         this.user = user;
     }
 
-    public GROUP getGroupName() {
-        return groupName;
+    public String getGroupName() {
+        return groupName.name();
     }
-
+    
     public void setGroupName(GROUP groupName) {
         this.groupName = groupName;
     }
@@ -57,5 +62,6 @@ public class UserGroup{
     public void setUser(User user) {
         this.user = user;
     }
+    
     
 }
