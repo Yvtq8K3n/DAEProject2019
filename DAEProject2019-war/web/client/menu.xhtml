@@ -6,20 +6,20 @@
     xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
     xmlns:f="http://java.sun.com/jsf/core">
     
-    <h:form id="menu">
-        <div class="card">
-            <div class="card-header">
-                <h3>Menu</h3>
-            </div>
-            <ul class="list-group list-group-flush">
-                <b:commandButton value="Catalog" class="list-group-item" 
-                    action="/faces/client/index?faces-redirect=true"/>
-               
-                <li class="list-group-item">
-                    <ui:include src="/logout.xhtml" />
-                </li>
-            </ul>
+   
+    <div class="card">
+        <div class="card-header">
+            <h3>Menu</h3>
         </div>
-    </h:form>
+        <ul class="list-group list-group-flush">
+            <b:commandButton value="Catalog" class="list-group-item" 
+                action="/faces/client/index?faces-redirect=true"/>
+
+            <li class="list-group-item">
+                <ui:include src="/logout.xhtml" />
+            </li>
+        </ul>
+    </div>
+
 </ui:composition>
 
