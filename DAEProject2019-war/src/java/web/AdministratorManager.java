@@ -58,5 +58,8 @@ public class AdministratorManager implements Serializable {
         return users;
     }
     
+    public void remove(){
+        
+    }
     
 }

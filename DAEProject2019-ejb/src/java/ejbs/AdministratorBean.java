@@ -7,12 +7,17 @@ package ejbs;
 
 import entities.Administrator;
 import entities.Client;
-import entities.Template;
+import exceptions.EntityDoesNotExistException;
+import exceptions.EntityExistsException;
+import exceptions.MyConstraintViolationException;
+import exceptions.Utils;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.validation.ConstraintViolationException;
 
 
 /**
@@ -27,9 +32,41 @@ public class AdministratorBean{
     @PersistenceContext(name="DAEProject2019")//Peristance context usa o nome da bd do persistance.xml
     EntityManager em;
    
-    public void create(String username, String password, String name, String email, String occupation) {
-        Administrator adminstrator = new Administrator(username, password, name, email, occupation);
-        em.persist(adminstrator);
+    public void create(String username, String password, String name, String email, String occupation) 
+        throws EntityExistsException, MyConstraintViolationException {
+        
+        try{
+            Administrator adminstrator = em.find(Administrator.class, username);
+            if (adminstrator != null) {
+                throw new EntityExistsException("A user with that username already exists.");
+            }
+            
+            Administrator newAdministrator = new Administrator(username, password, name, email, occupation);
+            em.persist(newAdministrator);
+        }catch (EntityExistsException e) {
+            throw e;
+        }catch (ConstraintViolationException e){
+            throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
+        }catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }  
+    }
+    
+    public void remove(String username) throws EntityDoesNotExistException, MyConstraintViolationException{
+        try{
+            Administrator adminstrator = em.find(Administrator.class, username);
+            if (adminstrator != null) {
+                throw new EntityDoesNotExistException("A user with that username doesnt exists.");
+            }
+              
+            em.remove(adminstrator);
+        }catch (EntityDoesNotExistException e) {
+            throw e;
+        }catch (ConstraintViolationException e){
+            throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
+        }catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
     }
     
     

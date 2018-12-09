@@ -5,15 +5,19 @@
  */
 package ejbs;
 
-import entities.Administrator;
 import entities.Client;
 import entities.Product;
+import exceptions.EntityDoesNotExistException;
+import exceptions.EntityExistsException;
+import exceptions.MyConstraintViolationException;
+import exceptions.Utils;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.validation.ConstraintViolationException;
 
 
 /**
@@ -28,9 +32,42 @@ public class ClientBean{
     @PersistenceContext(name="DAEProject2019")//Peristance context usa o nome da bd do persistance.xml
     EntityManager em;
    
-    public void create(String username, String password, String name, String email, String address, String contact) {
-        Client client = new Client(username, password, name, email, address, contact);
-        em.persist(client);
+    public void create(String username, String password, String name, String email, String address, String contact)
+    throws EntityExistsException, MyConstraintViolationException{
+        
+        try{
+            Client client = em.find(Client.class, username);
+            if (client != null) {
+                throw new EntityExistsException("A user with that username already exists.");
+            }
+            
+            Client newClient = new Client(username, password, name, email, address, contact);
+            em.persist(newClient);
+        }catch (EntityExistsException e) {
+            throw e;
+        }catch (ConstraintViolationException e){
+            throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
+        }catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }  
+    }
+    
+    
+    public void remove(String username) throws EntityDoesNotExistException, MyConstraintViolationException{
+        try{
+            Client client = em.find(Client.class, username);
+            if (client != null) {
+                throw new EntityDoesNotExistException("A user with that username doesnt exists.");
+            }
+              
+            em.remove(client);
+        }catch (EntityDoesNotExistException e) {
+            throw e;
+        }catch (ConstraintViolationException e){
+            throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
+        }catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
     }
     
     public List<Client> getAll(){
