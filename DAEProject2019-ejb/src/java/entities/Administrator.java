@@ -16,7 +16,7 @@ public class Administrator extends User implements Serializable {
     @NotNull(message = "Occupation must not be empty")
     private String occupation;
 
-    protected Administrator() {
+    public Administrator() {
        
     }
 

@@ -10,7 +10,7 @@
         <c:if test="${not empty user.message}">
                 <div class="alert alert-danger">${user.message}</div>
         </c:if>
-        <h:messages class="alert alert-danger"/>
+        <b:messages styleClass="msgs" redisplay="true" for="@parent" recursive="true"/>
         <div class="card">
             <div class="card-body">
                 <h3 class="card-title">Login</h3>

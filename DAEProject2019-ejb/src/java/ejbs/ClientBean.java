@@ -32,17 +32,23 @@ public class ClientBean{
     @PersistenceContext(name="DAEProject2019")//Peristance context usa o nome da bd do persistance.xml
     EntityManager em;
    
-    public void create(String username, String password, String name, String email, String address, String contact)
+    public void create(Client clientDTO)
     throws EntityExistsException, MyConstraintViolationException{
         
         try{
-            Client client = em.find(Client.class, username);
+            Client client = em.find(Client.class, clientDTO.getUsername());
             if (client != null) {
                 throw new EntityExistsException("A user with that username already exists.");
             }
             
-            Client newClient = new Client(username, password, name, email, address, contact);
-            em.persist(newClient);
+            em.persist(new Client(
+                clientDTO.getUsername(), 
+                clientDTO.getPassword(), 
+                clientDTO.getName(), 
+                clientDTO.getEmail(), 
+                clientDTO.getAddress(),
+                clientDTO.getContact())
+            );
         }catch (EntityExistsException e) {
             throw e;
         }catch (ConstraintViolationException e){

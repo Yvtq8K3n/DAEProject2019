@@ -26,7 +26,7 @@ public class Client extends User implements Serializable {
     private List<Product> products;
         
     
-    protected Client() {
+    public Client() {
        products = new ArrayList<>();
     }
 

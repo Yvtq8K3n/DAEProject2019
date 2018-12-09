@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:b="http://bootsfaces.net/ui"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core">
+ <ui:composition template="../../../templates/skeleton.xhtml">
+     
+ <ui:define name="title"> Client </ui:define> 
+ 
+ <ui:define name="main">
+    <h:form id="createAdmin">
+        <h2>Creating Client </h2>
+        <c:set var="client" value="#{administratorManager.newClient}"/>
+        
+        <b:row>
+            <b:column span="6">
+                <b:messages styleClass="msgs" redisplay="true" for="@parent" recursive="true"/>
+                <b:inputText label="Username" value="#{client.username}"/> 
+                <b:inputSecret label="Password" value="#{client.password}"/>
+                <b:inputText label="Name" value="#{client.name}"/>
+                <b:inputText label="Email" value="#{client.email}"/>
+                <b:inputText label="Address" value="#{client.address}"/>
+                <b:inputText label="Contact" value="#{client.contact}"/>
+            
+                <hr></hr>
+                <b:commandButton
+                    value="Create" class="btn btn-primary"
+                    action="${administratorManager.createClient()}">
+                </b:commandButton>
+            </b:column> 
+        </b:row>
+        <br></br>
+    </h:form>  
+ </ui:define>
+ </ui:composition>
+</html>

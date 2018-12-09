@@ -32,17 +32,22 @@ public class AdministratorBean{
     @PersistenceContext(name="DAEProject2019")//Peristance context usa o nome da bd do persistance.xml
     EntityManager em;
    
-    public void create(String username, String password, String name, String email, String occupation) 
+    public void create(Administrator administratorDTO) 
         throws EntityExistsException, MyConstraintViolationException {
         
         try{
-            Administrator adminstrator = em.find(Administrator.class, username);
+            Administrator adminstrator = em.find(Administrator.class, administratorDTO.getUsername());
             if (adminstrator != null) {
                 throw new EntityExistsException("A user with that username already exists.");
             }
             
-            Administrator newAdministrator = new Administrator(username, password, name, email, occupation);
-            em.persist(newAdministrator);
+            em.persist(new Administrator(
+                    administratorDTO.getUsername(), 
+                    "secret",//if we do administratorDTO.getPassword() we get a hashed password;_; not the original
+                    administratorDTO.getName(), 
+                    administratorDTO.getEmail(), 
+                    administratorDTO.getOccupation())
+            );
         }catch (EntityExistsException e) {
             throw e;
         }catch (ConstraintViolationException e){

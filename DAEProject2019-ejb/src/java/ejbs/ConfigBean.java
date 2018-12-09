@@ -5,6 +5,8 @@
  */
 package ejbs;
 
+import entities.Administrator;
+import entities.Client;
 import java.util.logging.Logger;
 import entities.Comment;
 import entities.Configuration;
@@ -48,9 +50,9 @@ public class ConfigBean {
     @PostConstruct//Excecuta assim que o bean é instanciado
     public void populateDB() {  
         try{
-        clientBean.create("client1", "secret", "Manuel", "dae.ei.ipleiria@gmail.com", "Av. José Maceda", "918 923 232");
-        clientBean.create("client2", "secret", "Manuel", "dae.ei.ipleiria@gmail.com", "Av. Alberto Alves", "+00351 256 0033 12");
-        adminstratorBean.create("administrator1", "secret", "Manuel", "dae.ei.ipleiria@gmail.com", "Director");
+            clientBean.create(new Client("client1", "secret", "Manuel", "dae.ei.ipleiria@gmail.com", "Av. José Maceda", "918 923 232"));
+            clientBean.create(new Client("client2", "secret", "Manuel", "dae.ei.ipleiria@gmail.com", "Av. Alberto Alves", "+00351 256 0033 12"));
+            adminstratorBean.create(new Administrator("administrator1", "secret", "Manuel", "dae.ei.ipleiria@gmail.com", "Director"));
         }catch(Exception ex){
             System.out.println(ex);
         }
