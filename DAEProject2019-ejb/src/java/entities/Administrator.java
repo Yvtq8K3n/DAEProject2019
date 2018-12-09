@@ -23,6 +23,15 @@ public class Administrator extends User implements Serializable {
     public Administrator(String username, String password, String name, String email, String occupation) {
         super(username, password, GROUP.Administrator, name, email);
         this.occupation = occupation;
-       
     }
+
+    public String getOccupation() {
+        return occupation;
+    }
+
+    public void setOccupation(String occupation) {
+        this.occupation = occupation;
+    }
+    
+    
 }

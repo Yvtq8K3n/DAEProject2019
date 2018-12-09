@@ -56,7 +56,7 @@ public class ClientBean{
     public void remove(String username) throws EntityDoesNotExistException, MyConstraintViolationException{
         try{
             Client client = em.find(Client.class, username);
-            if (client != null) {
+            if (client == null) {
                 throw new EntityDoesNotExistException("A user with that username doesnt exists.");
             }
               

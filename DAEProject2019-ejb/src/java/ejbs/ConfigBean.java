@@ -47,10 +47,13 @@ public class ConfigBean {
       
     @PostConstruct//Excecuta assim que o bean é instanciado
     public void populateDB() {  
+        try{
         clientBean.create("client1", "secret", "Manuel", "dae.ei.ipleiria@gmail.com", "Av. José Maceda", "918 923 232");
         clientBean.create("client2", "secret", "Manuel", "dae.ei.ipleiria@gmail.com", "Av. Alberto Alves", "+00351 256 0033 12");
         adminstratorBean.create("administrator1", "secret", "Manuel", "dae.ei.ipleiria@gmail.com", "Director");
-        
+        }catch(Exception ex){
+            System.out.println(ex);
+        }
         productCatalogBean.create("Big Beng", "We can't never be sure if its a Watch of a Explosion");
         productCatalogBean.create("Wall of China", "This template contain all the procedures in order to sucessfully deploy a wall in a huge scale");
         configurationBean.create("Im just a configuration 1", Configuration.Status.INACTIVE, "V1.5.0", "Contract data 1");

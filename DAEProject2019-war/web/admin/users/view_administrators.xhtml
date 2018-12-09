@@ -13,6 +13,10 @@
  <ui:define name="title">Administrators</ui:define> 
  
  <ui:define name="main">
+    <b:growl id="growlMsg" globalOnly="true" placementFrom="bottom"
+         show-detail="true" show-summary="false" allowDismiss="true"
+         delay="5000" escape="true" />
+     
     <h:form id="formId">
         <h2>Administrators</h2>
         <c:set var="admin" value="#{administratorManager}"/>
@@ -27,9 +31,17 @@
                     <f:setPropertyActionListener value="${rowItem}"
                         target="#{guestManager.selectedTemplate}" />
                 </h:commandLink>
+                
+                <h:commandLink value="Delete" class="btn btn-danger" id="delete" 
+                    actionListener="#{administratorManager.removeAdministrator}">
+                    <f:param name="deleteAdministratorId" id="deleteAdministratorId" 
+                       value="#{rowItem.username}" />
+                    
+                </h:commandLink>
             </b:dataTableColumn>
+            
         </b:dataTable>
-    </h:form>  
+    </h:form>
  </ui:define>
  </ui:composition>
 </html>

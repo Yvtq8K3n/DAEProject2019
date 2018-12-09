@@ -54,12 +54,13 @@ public class AdministratorBean{
     
     public void remove(String username) throws EntityDoesNotExistException, MyConstraintViolationException{
         try{
-            Administrator adminstrator = em.find(Administrator.class, username);
-            if (adminstrator != null) {
+            Administrator administrator = em.find(Administrator.class, username);
+
+            if (administrator == null) {
                 throw new EntityDoesNotExistException("A user with that username doesnt exists.");
             }
               
-            em.remove(adminstrator);
+            em.remove(administrator);
         }catch (EntityDoesNotExistException e) {
             throw e;
         }catch (ConstraintViolationException e){
