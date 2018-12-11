@@ -5,6 +5,7 @@
  */
 package ejbs;
 
+import dtos.ClientDTO;
 import entities.Client;
 import entities.Product;
 import exceptions.EntityDoesNotExistException;
@@ -32,7 +33,7 @@ public class ClientBean{
     @PersistenceContext(name="DAEProject2019")//Peristance context usa o nome da bd do persistance.xml
     EntityManager em;
    
-    public void create(Client clientDTO)
+    public void create(ClientDTO clientDTO)
     throws EntityExistsException, MyConstraintViolationException{
         
         try{
@@ -44,7 +45,7 @@ public class ClientBean{
             em.persist(new Client(
                 clientDTO.getUsername(), 
                 clientDTO.getPassword(), 
-                clientDTO.getName(), 
+                clientDTO.getName(),
                 clientDTO.getEmail(), 
                 clientDTO.getAddress(),
                 clientDTO.getContact())
@@ -96,7 +97,7 @@ public class ClientBean{
         }
     }
 
-    void addProduct(String username, Long productId) {
+    public void addProduct(String username, Long productId) {
         try {
             Client client = em.find(Client.class, username);
             if (client == null) {

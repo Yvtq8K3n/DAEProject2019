@@ -1,5 +1,6 @@
 package web;
 
+import dtos.ClientDTO;
 import ejbs.AdministratorBean;
 import ejbs.ClientBean;
 import ejbs.ConfigurationBean;
@@ -48,13 +49,13 @@ public class AdministratorManager implements Serializable {
     public void Init(){
         client = ClientBuilder.newClient();
     };    
-    
+
     private ProductCatalog newProductDTO;
-    private entities.Client newClient;//Gonna be a DTOlateranyway
+    private ClientDTO newClient;//Gonna be a DTOlateranyway
     private Administrator newAdministrator;
 
     public AdministratorManager() {
-        newClient = new entities.Client();
+        newClient = new ClientDTO();
         newProductDTO = new entities.ProductCatalog();
         newAdministrator = new Administrator();
     }
@@ -141,10 +142,10 @@ public class AdministratorManager implements Serializable {
     }   
 
     
-    public entities.Client getNewClient() {
+    public ClientDTO getNewClient() {
         return newClient;
     }
-    public void setNewClient(entities.Client newClient) {
+    public void setNewClient(ClientDTO newClient) {
         this.newClient = newClient;
     }
     public Administrator getNewAdministrator() {

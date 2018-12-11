@@ -5,6 +5,8 @@
  */
 package ejbs;
 
+import dtos.ClientDTO;
+import dtos.ProductDTO;
 import entities.Administrator;
 import entities.Client;
 import java.util.logging.Logger;
@@ -50,8 +52,8 @@ public class ConfigBean {
     @PostConstruct//Excecuta assim que o bean é instanciado
     public void populateDB() {  
         try{
-            clientBean.create(new Client("client1", "secret", "Manuel", "dae.ei.ipleiria@gmail.com", "Av. José Maceda", "918 923 232"));
-            clientBean.create(new Client("client2", "secret", "Manuel", "dae.ei.ipleiria@gmail.com", "Av. Alberto Alves", "+00351 256 0033 12"));
+            clientBean.create(new ClientDTO("client1", "secret", "Manuel", "dae.ei.ipleiria@gmail.com", "Av. José Maceda", "918 923 232"));
+            clientBean.create(new ClientDTO("client2", "secret", "Manuel", "dae.ei.ipleiria@gmail.com", "Av. Alberto Alves", "+00351 256 0033 12"));
             adminstratorBean.create(new Administrator("administrator1", "secret", "Manuel", "dae.ei.ipleiria@gmail.com", "Director"));
         }catch(Exception ex){
             System.out.println(ex);
@@ -66,7 +68,7 @@ public class ConfigBean {
         
         
         
-        productBean.create("PRODUCT1", "Im just a normal product", "v1.10");
+        productBean.create(new ProductDTO( "PRODUCT1", "Im just a normal product", "v1.10", "client1"));
         //clientBean.addProduct("client1", new Long(1));
         
         
