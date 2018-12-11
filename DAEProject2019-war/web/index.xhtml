@@ -6,8 +6,7 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:b="http://bootsfaces.net/ui"
     xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:p="http://butterfaces.org/components">
+    xmlns:f="http://java.sun.com/jsf/core">
     <!--Importing Skeleton-->
  <ui:composition template="./templates/skeleton.xhtml">
      
@@ -16,6 +15,12 @@
  <ui:define name="main">
     <h:form id="catalog">
         <h2>Templates</h2>
+        <b:row>
+            <b:column>
+                <h:commandLink value="Create" class="btn btn-success"
+                    action="/admin/catalog/create"/>
+            </b:column>
+        </b:row>
         <b:tabView tabPosition="right">
             <b:tab title="Catalog View">
                 <f:facet name="anchor"><b:iconAwesome name="calendar"/></f:facet>

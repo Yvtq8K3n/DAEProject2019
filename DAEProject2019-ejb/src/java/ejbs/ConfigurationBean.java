@@ -8,6 +8,8 @@ package ejbs;
 import entities.Configuration;
 import entities.Module;
 import entities.Template;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -53,5 +55,12 @@ public class ConfigurationBean{
         } catch (Exception e) {
             System.out.println("ERRO NO METODO ADD_MODULE DE CONFIG_BEAN " + e.getMessage());
         }
+    }
+    
+    public List<Configuration> getAll(){
+        List<Configuration> configurations = new ArrayList<>();
+        configurations = em.createNamedQuery("getAllConfigurations").getResultList();
+
+        return configurations;
     }
 }

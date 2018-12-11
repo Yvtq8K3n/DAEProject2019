@@ -2,8 +2,13 @@ package web;
 
 import ejbs.AdministratorBean;
 import ejbs.ClientBean;
+import ejbs.ConfigurationBean;
 import ejbs.UsersBean;
 import entities.Administrator;
+import entities.Configuration;
+import entities.Product;
+import entities.ProductCatalog;
+import entities.Template;
 import entities.User;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -27,6 +32,7 @@ public class AdministratorManager implements Serializable {
     private static final Logger logger = Logger.getLogger("web.AdministratorManager");
     private UIComponent component;
     private Client client;
+    
           
     //Gonna disappear after rest    
     @EJB
@@ -35,17 +41,21 @@ public class AdministratorManager implements Serializable {
     private AdministratorBean administratorBean;
     @EJB
     private ClientBean clientBean;
+    @EJB
+    private ConfigurationBean configurationBean;
     
     @PostConstruct
     public void Init(){
         client = ClientBuilder.newClient();
     };    
     
+    private ProductCatalog newProductDTO;
     private entities.Client newClient;//Gonna be a DTOlateranyway
     private Administrator newAdministrator;
 
     public AdministratorManager() {
         newClient = new entities.Client();
+        newProductDTO = new entities.ProductCatalog();
         newAdministrator = new Administrator();
     }
     
@@ -68,6 +78,10 @@ public class AdministratorManager implements Serializable {
         users.addAll(clientBean.getAll());
         
         return users;
+    }
+    
+    public List<Configuration> getAllConfigurations(){
+        return configurationBean.getAll();
     }
     
     public String createClient(){
@@ -139,6 +153,16 @@ public class AdministratorManager implements Serializable {
     public void setNewAdministrator(Administrator newAdministrator) {
         this.newAdministrator = newAdministrator;
     }
+
+    public ProductCatalog getNewProductDTO() {
+        return newProductDTO;
+    }
+
+    public void setNewProductDTO(ProductCatalog productDTO) {
+        this.newProductDTO = productDTO;
+    }
+    
+    
     
     
 }

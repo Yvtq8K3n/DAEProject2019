@@ -32,7 +32,7 @@ public class Product extends Template implements Serializable {
     )
     protected List<Configuration> configurations;
     
-    protected Product() {
+    public Product() {
     }
 
     public Product(String name, String description, String baseVersion) {

@@ -22,7 +22,7 @@ public class ProductCatalog extends Template implements Serializable {
     )
     protected List<Configuration> configurations;
     
-    protected ProductCatalog() {
+    public ProductCatalog() {
     }
 
     public ProductCatalog(String name, String description) {

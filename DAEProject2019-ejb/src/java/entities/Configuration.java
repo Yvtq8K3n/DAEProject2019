@@ -18,6 +18,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -28,6 +29,10 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name="Configurations")
+@NamedQuery(
+    name = "getAllConfigurations",
+    query = "SELECT c FROM Configuration c"
+)
 public class Configuration implements Serializable {
     
     public enum Status {
