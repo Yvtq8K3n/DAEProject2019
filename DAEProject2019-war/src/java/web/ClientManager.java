@@ -29,7 +29,7 @@ public class ClientManager implements Serializable {
     @EJB
     private ProductBean pb;
     
-    Client clientDTO;
+    private Client clientDTO;
     
     private List<Product> productDTOs;
     
