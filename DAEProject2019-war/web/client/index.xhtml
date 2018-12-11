@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:b="http://bootsfaces.net/ui">
     <!--<h:head>
         <title>Facelet Title</title>
         <script name="jquery/jquery.js" library="primefaces"></script>
@@ -25,7 +26,13 @@
            <h2>contact: #{clientManager.clientDTO.contact}</h2>
            <h2>address: #{clientManager.clientDTO.address}</h2>
            
-       </h:form>  
+       </h:form> 
+        
+        <b:dataTable id="Templates" value="#{clientManager.productDTOs}" 
+        var="product" print="true" 
+        excel="true" csv="true" pdf="true" copy="true">
+        <b:dataTableColumn value="#{product.description}" />
+    </b:dataTable>
     </ui:define>
     </ui:composition>
 </html>

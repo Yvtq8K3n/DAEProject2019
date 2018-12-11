@@ -1,8 +1,12 @@
 package web;
 
 import ejbs.ClientBean;
+import ejbs.ProductBean;
 import entities.Client;
+import entities.Product;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
@@ -22,17 +26,26 @@ public class ClientManager implements Serializable {
     @EJB
     private ClientBean cb;
     
+    @EJB
+    private ProductBean pb;
+    
     Client clientDTO;
+    
+    private List<Product> productDTOs;
     
     private String user;
     
     public ClientManager(){
-        
+        productDTOs = new ArrayList<>();
     }
     @PostConstruct
     public void Init(){
         //user = userManager.getUsername();
-        clientDTO = cb.getClient(userManager.getUsername());
+        setClientDTO(cb.getClient(userManager.getUsername()));
+    }
+    
+    public void clientProducts(){
+        productDTOs = pb.getClientProducts(userManager.getUsername());
     }
 
     public UserManager getUserManager() {
@@ -57,6 +70,15 @@ public class ClientManager implements Serializable {
 
     public void setClientDTO(Client clientDTO) {
         this.clientDTO = clientDTO;
+        clientProducts();
+    }
+
+    public List<Product> getProductDTOs() {
+        return productDTOs;
+    }
+
+    public void setProductDTOs(List<Product> productDTOs) {
+        this.productDTOs = productDTOs;
     }
     
     

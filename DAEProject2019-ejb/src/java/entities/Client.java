@@ -4,6 +4,7 @@ import entities.UserGroup.GROUP;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -22,7 +23,7 @@ public class Client extends User implements Serializable {
     @NotNull(message = "Contact must not be empty")
     private String contact;
     
-    @OneToMany(mappedBy = "owner")
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.REMOVE)
     private List<Product> products;
         
     
@@ -34,6 +35,8 @@ public class Client extends User implements Serializable {
         super(username, password, GROUP.Client, name, email);
         this.address = address;
         this.contact = contact;
+        products = new ArrayList<>();
+        
     }
     
     public void addProduct(Product product){
@@ -59,4 +62,14 @@ public class Client extends User implements Serializable {
     public void setContact(String contact) {
         this.contact = contact;
     }
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+    
+    
 }

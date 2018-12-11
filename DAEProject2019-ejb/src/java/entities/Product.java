@@ -11,11 +11,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "Product")
+@NamedQuery(
+    name = "getAllProducts",
+    query = "SELECT a FROM Product a ORDER BY a.name"
+)
 public class Product extends Template implements Serializable {    
     
     @NotNull(message = "Product must have a version")
@@ -35,11 +40,12 @@ public class Product extends Template implements Serializable {
     protected Product() {
     }
 
-    public Product(String name, String description, String baseVersion) {
+    public Product(String name, String description, String baseVersion, Client client) {
         this.name = name;
         this.description = description;
         this.baseVersion = baseVersion;
         this.configurations = new ArrayList<>();
+        this.owner = client;
     }
     
     public Product(String name, String description, String baseVersion, List<Configuration> configuration) {
