@@ -1,5 +1,6 @@
 package web;
 
+import dtos.DocumentDTO;
 import ejbs.AdministratorBean;
 import ejbs.ClientBean;
 import ejbs.UsersBean;
@@ -14,14 +15,20 @@ import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIParameter;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
+import util.URILookup;
 
-@Named(value = "administratorManager")
+@ManagedBean
+//@Named(value = "administratorManager")
 @SessionScoped
 public class AdministratorManager implements Serializable {
     private static final Logger logger = Logger.getLogger("web.AdministratorManager");
@@ -35,6 +42,11 @@ public class AdministratorManager implements Serializable {
     private AdministratorBean administratorBean;
     @EJB
     private ClientBean clientBean;
+    
+    private DocumentDTO document;
+    
+    @ManagedProperty(value = "#{uploadManager}")
+    private UploadManager uploadManager;
     
     @PostConstruct
     public void Init(){
@@ -138,6 +150,36 @@ public class AdministratorManager implements Serializable {
     }
     public void setNewAdministrator(Administrator newAdministrator) {
         this.newAdministrator = newAdministrator;
+    }
+    
+    public String uploadDocument() {
+        try {
+            logger.warning("entrou0");
+            logger.warning("File: " +uploadManager.getCompletePathFile());
+            logger.warning("File: " +uploadManager.getCompletePathFile());
+            logger.warning("File: " +uploadManager.getFilename());
+            logger.warning("File: " +String.valueOf(uploadManager.getFile().getSize()));
+            document = new DocumentDTO(uploadManager.getCompletePathFile(), uploadManager.getFilename(), uploadManager.getFile().getContentType());
+            logger.warning("entrou");
+            /*lient.target(URILookup.getBaseAPI())
+                    .path("/files/")
+                    .request(MediaType.TEXT_HTML)
+                    .put(Entity.text(document));
+            logger.warning("entrou2");*/
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
+
+        return "/index.xhtml?faces-redirect=true";
+    }
+    
+    public UploadManager getUploadManager() {
+        return uploadManager;
+    }
+
+    public void setUploadManager(UploadManager uploadManager) {
+        this.uploadManager = uploadManager;
     }
     
     
