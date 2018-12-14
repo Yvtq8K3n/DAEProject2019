@@ -6,7 +6,7 @@
     </context-param>
     <context-param>
         <param-name>SERVER_DOCUMENTS_FOLDER</param-name>
-        <param-value>C:\Users\admin\Desktop\2018-2019\dae\proj\DAEProject2019\DAEProject2019-war\web\resources\files</param-value>
+        <param-value>C:\\DAEProject2019\\resources\\files</param-value>
     </context-param>
     <context-param>
         <param-name>
