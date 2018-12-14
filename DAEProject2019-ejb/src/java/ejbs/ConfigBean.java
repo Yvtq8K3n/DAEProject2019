@@ -60,8 +60,8 @@ public class ConfigBean {
         }
         productCatalogBean.create("Big Beng", "We can't never be sure if its a Watch of a Explosion");
         productCatalogBean.create("Wall of China", "This template contain all the procedures in order to sucessfully deploy a wall in a huge scale");
-        configurationBean.create("Im just a configuration 1", Configuration.Status.INACTIVE, "V1.5.0", "Contract data 1");
-        configurationBean.create("Im just a configuration 2", Configuration.Status.INACTIVE, "V1.7.8", "Contract data 2");
+        configurationBean.create("configuration 1","Im just a configuration 1", Configuration.Status.INACTIVE, "V1.5.0", "Contract data 1");
+        configurationBean.create("configuration 2","Im just a configuration 2", Configuration.Status.INACTIVE, "V1.7.8", "Contract data 2");
         
         //productCatalogBean.addConfiguration(1, 1);
         //productCatalogBean.addConfiguration(1, 2);
@@ -69,6 +69,8 @@ public class ConfigBean {
         
         
         productBean.create(new ProductDTO( "PRODUCT1", "Im just a normal product", "v1.10", "client1"));
+        productBean.create(new ProductDTO( "REMIDA", "Website about energy", "v1.40", "client1"));
+        productBean.create(new ProductDTO( "JAVA EE Aplication", "Complex project", "v1.40", "client1"));
         //clientBean.addProduct("client1", new Long(1));
         
         
