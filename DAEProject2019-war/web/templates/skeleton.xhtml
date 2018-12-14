@@ -1,17 +1,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html 
+<html
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:b="http://bootsfaces.net/ui"
     xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
     xmlns:f="http://java.sun.com/jsf/core">
-    
+
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <title><ui:insert name="title">Academics Management</ui:insert></title>
-        
+
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"/>
@@ -30,26 +30,26 @@
                     <b:column span="11"><h2>A minha LOJA VIRTUAL</h2></b:column>
                     <b:column span="1">
                         <h:form>
-                            <h:commandButton 
-                                action="/faces/index?faces-redirect=true" 
-                                image="/resources/house.png"/>    
+                            <h:commandButton
+                                action="/faces/index?faces-redirect=true"
+                                image="/resources/house.png"/>
                         </h:form>
                     </b:column>
                 </b:row>
             </b:container>
         </b:jumbotron>
-        
+
         <b:container>
             <b:row>
                 <b:column span="4">
                     <h:form id="contentMenu">
                         <h:panelGroup layout="block" >
-                            
+
                             <c:if test="${!userManager.someUserAuthenticated}">
                                 <ui:include src="/login.xhtml" />
                             </c:if>
 
-                            <c:if test="${userManager.someUserAuthenticated}">                              
+                            <c:if test="${userManager.someUserAuthenticated}">
                                 <c:if test="${userManager.admin}">
                                     <ui:include src="/admin/menu.xhtml" />
                                 </c:if>
@@ -58,23 +58,23 @@
                                     <ui:include src="/client/menu.xhtml" />
                                 </c:if>
                             </c:if>
-                        </h:panelGroup> 
+                        </h:panelGroup>
                     </h:form>
                 </b:column>
-                
+
                 <b:column id="main" span="8">
                     <ui:insert name="main">
                        Sorry, Something went wrong.
-                       
-                       A team of highly trained monkeys has been dispatched to deal with this situation. 
+
+                       A team of highly trained monkeys has been dispatched to deal with this situation.
                        If you see them, show them this information.
                     </ui:insert>
                 </b:column>
             </b:row>
         </b:container>
-        
+
         <ui:insert name="scripts">
-            
+
         </ui:insert>
     </h:body>
 </html>
