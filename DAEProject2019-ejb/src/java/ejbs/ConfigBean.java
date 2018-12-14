@@ -61,8 +61,8 @@ public class ConfigBean {
         }catch(Exception ex){
             System.out.println(ex);
         }
-            configurationBean.create("Im just a configuration 1", Configuration.Status.INACTIVE, "V1.5.0", "Contract data 1");
-            configurationBean.create("Im just a configuration 2", Configuration.Status.INACTIVE, "V1.7.8", "Contract data 2");
+            configurationBean.create("Configuration 1","Im just a configuration 1", Configuration.Status.INACTIVE, "V1.5.0", "Contract data 1");
+            configurationBean.create("Configuration 2","Im just a configuration 2", Configuration.Status.INACTIVE, "V1.7.8", "Contract data 2");
 
         try{
             productCatalogBean.create(new ProductDTO("Big Beng", "We can't never be sure if its a Watch of a Explosion","",""), configurationBean.getAll());
