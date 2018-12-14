@@ -76,6 +76,33 @@ public class AdministratorManager implements Serializable {
         newProductDTO = new ProductDTO();
         newAdministrator = new Administrator();
     }
+    
+    public String createClient(){
+        FacesMessage facesMsg;
+        try {
+            clientBean.create(newClient);
+            
+            facesMsg = new FacesMessage(FacesMessage.SEVERITY_INFO, "User Created:", "A user was successfully created");
+        } catch (Exception e) {
+            logger.warning("Problem removing a client in method removeClient.");
+            facesMsg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Create Failed:", "Problem creating a client in method createClient");
+        }
+        FacesContext.getCurrentInstance().addMessage(null, facesMsg);  
+        return "/admin/users/clients/view.xhtml?faces-redirect=true";
+    }
+    public String createAdmin(){
+        FacesMessage facesMsg;
+        try {
+            administratorBean.create(newAdministrator);
+            
+            facesMsg = new FacesMessage(FacesMessage.SEVERITY_INFO, "User Created:", "A user was successfully created");
+        } catch (Exception e) {
+            logger.warning("Problem removing a client in method removeClient.");
+            facesMsg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Create Failed:", "Problem creating a administrator in method createAdministrator");
+        }
+        FacesContext.getCurrentInstance().addMessage(null, facesMsg);  
+        return "/admin/users/administrators/view.xhtml?faces-redirect=true";
+    }
 
     public String createProductCatalog(){
         FacesMessage facesMsg;
