@@ -17,7 +17,7 @@ import javax.persistence.PersistenceContext;
  */
 @Stateless
 @LocalBean
-public class ModuleBean {
+public class ModuleBean{
    
    @PersistenceContext(name="DAEProject2019")
    EntityManager em;

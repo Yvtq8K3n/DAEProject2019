@@ -9,7 +9,7 @@
     xmlns:f="http://java.sun.com/jsf/core">
 
     <b:dataTable id="Templates" value="#{guestManager.allProductCatalog}" 
-        var="rowItem" print="true" 
+        var="rowItem" print="true" lang="en" 
         excel="true" csv="true" pdf="true" copy="true">
         <b:dataTableColumn value="#{rowItem.name}" />
         <b:dataTableColumn value="#{rowItem.description}" />

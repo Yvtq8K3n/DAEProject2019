@@ -26,7 +26,7 @@ public class ProductDTO extends TemplateDTO implements Serializable{
         this.baseVersion = baseVersion;
         this.clientUsername = clientUsername;
     }
-    
+
     @Override
     public void reset() {
         super.reset();

@@ -6,7 +6,6 @@
 package ejbs;
 
 import entities.Administrator;
-import entities.Client;
 import exceptions.EntityDoesNotExistException;
 import exceptions.EntityExistsException;
 import exceptions.MyConstraintViolationException;
@@ -27,7 +26,7 @@ import javax.validation.ConstraintViolationException;
 @Stateless //Distinge que é um ejb (componente que não gere instancia nem ciclo de vida)
 //Faz pedidos mas não guardam de quem esta a fazer
 //Faz com que ´não tenha de ter uma instancia para cada utilizador
-public class AdministratorBean{
+public class AdministratorBean extends Bean<Administrator>{
 
     @PersistenceContext(name="DAEProject2019")//Peristance context usa o nome da bd do persistance.xml
     EntityManager em;

@@ -21,7 +21,7 @@ import javax.persistence.PersistenceContext;
 @Stateless //Distinge que é um ejb (componente que não gere instancia nem ciclo de vida)
 //Faz pedidos mas não guardam de quem esta a fazer
 //Faz com que ´não tenha de ter uma instancia para cada utilizador
-public class CommentBean{
+public class CommentBean extends Bean<Comment>{
 
     @PersistenceContext(name="DAEProject2019")//Peristance context usa o nome da bd do persistance.xml
     EntityManager em;
