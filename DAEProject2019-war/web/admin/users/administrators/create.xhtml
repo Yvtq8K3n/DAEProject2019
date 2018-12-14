@@ -16,14 +16,14 @@
         <h2>Creating Administrator </h2>
         <c:set var="administrator" value="#{administratorManager.newAdministrator}"/>
         
-        <b:row>
+        <b:row>     
             <b:column span="6">
+                <b:messages styleClass="msgs" redisplay="true" for="@parent" recursive="true"/>
                 <b:inputText label="Username" value="#{administrator.username}"/> 
                 <b:inputSecret label="Password" value="#{administrator.password}"/>
                 <b:inputText label="Name" value="#{administrator.name}"/>
                 <b:inputText label="Email" value="#{administrator.email}"/>
                 <b:inputText label="Occupation" value="#{administrator.occupation}"/>
-                <b:messages styleClass="msgs" redisplay="true" for="@parent" recursive="true"/>
             
                 <hr></hr>
                 <b:commandButton

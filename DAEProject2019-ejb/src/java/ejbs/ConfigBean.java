@@ -12,6 +12,9 @@ import entities.Client;
 import java.util.logging.Logger;
 import entities.Comment;
 import entities.Configuration;
+import entities.Product;
+import entities.ProductCatalog;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -58,11 +61,17 @@ public class ConfigBean {
         }catch(Exception ex){
             System.out.println(ex);
         }
-        productCatalogBean.create("Big Beng", "We can't never be sure if its a Watch of a Explosion");
-        productCatalogBean.create("Wall of China", "This template contain all the procedures in order to sucessfully deploy a wall in a huge scale");
-        configurationBean.create("configuration 1","Im just a configuration 1", Configuration.Status.INACTIVE, "V1.5.0", "Contract data 1");
-        configurationBean.create("configuration 2","Im just a configuration 2", Configuration.Status.INACTIVE, "V1.7.8", "Contract data 2");
-        
+            configurationBean.create("Im just a configuration 1", Configuration.Status.INACTIVE, "V1.5.0", "Contract data 1");
+            configurationBean.create("Im just a configuration 2", Configuration.Status.INACTIVE, "V1.7.8", "Contract data 2");
+
+        try{
+            productCatalogBean.create(new ProductDTO("Big Beng", "We can't never be sure if its a Watch of a Explosion","",""), configurationBean.getAll());
+            productCatalogBean.create(new ProductDTO("Wall of China", "This template contain all the procedures in order to sucessfully deploy a wall in a huge scale","",""), configurationBean.getAll());
+        }catch (Exception ex){
+            System.out.println("FUCK");
+            System.out.println(ex);
+        }
+
         //productCatalogBean.addConfiguration(1, 1);
         //productCatalogBean.addConfiguration(1, 2);
         

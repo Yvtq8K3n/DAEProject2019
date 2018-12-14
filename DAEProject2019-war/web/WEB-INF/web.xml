@@ -5,10 +5,18 @@
         <param-value>Development</param-value>
     </context-param>
     <context-param>
+        <param-name>SERVER_DOCUMENTS_FOLDER</param-name>
+        <param-value>C:\Users\admin\Desktop\2018-2019\dae\proj\DAEProject2019\DAEProject2019-war\web\resources\files</param-value>
+    </context-param>
+    <context-param>
         <param-name>
             javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL
         </param-name>
         <param-value>true</param-value>
+    </context-param>
+   <context-param>
+      <param-name>primefaces.THEME</param-name>
+      <param-value>bootstrap</param-value>
     </context-param>
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>

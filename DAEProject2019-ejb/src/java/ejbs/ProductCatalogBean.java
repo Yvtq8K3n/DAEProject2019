@@ -5,14 +5,25 @@
  */
 package ejbs;
 
+import dtos.ProductDTO;
+import dtos.TemplateDTO;
+import entities.Client;
 import entities.Configuration;
+import entities.Product;
 import entities.ProductCatalog;
 import entities.Template;
+import exceptions.EntityDoesNotExistException;
+import exceptions.EntityExistsException;
+import exceptions.MyConstraintViolationException;
+import exceptions.Utils;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.validation.ConstraintViolationException;
 
 
 /**
@@ -22,15 +33,38 @@ import javax.persistence.PersistenceContext;
 @Stateless //Distinge que é um ejb (componente que não gere instancia nem ciclo de vida)
 //Faz pedidos mas não guardam de quem esta a fazer
 //Faz com que ´não tenha de ter uma instancia para cada utilizador
-public class ProductCatalogBean{
+public class ProductCatalogBean extends Bean<ProductCatalog>{
 
     @PersistenceContext(name="DAEProject2019")//Peristance context usa o nome da bd do persistance.xml
     EntityManager em;
    
-    public void create(String name, String description) {
-        ProductCatalog productCatalog = new ProductCatalog(name, description);
-        em.persist(productCatalog);
+    public void create(ProductDTO product, List<Configuration> configurationsDTO) throws EntityDoesNotExistException, MyConstraintViolationException{
+        
+        try{
+            ProductCatalog cat = new ProductCatalog(
+                product.getName(), 
+                product.getDescription()
+            );
+            em.persist(cat);
+            em.flush();//Reconnect bd whit object giving it id
+            
+            for (Configuration cDTO : configurationsDTO){
+                Configuration conf = em.find(Configuration.class, cDTO.getId());
+                if (conf == null) {
+                    throw new EntityDoesNotExistException("A configuration whit that id is Invalid Configuration");
+                }
+                addConfiguration(cat.getId(), conf.getId());
+            }
+            
+        }catch (EntityDoesNotExistException e) {
+            throw e;
+        }catch (ConstraintViolationException e){
+            throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
+        }catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }  
     }
+       
     
     public List<Configuration> getConfigurations(Long id){
         ProductCatalog productCatalog = em.find(ProductCatalog.class, id);
@@ -47,13 +81,13 @@ public class ProductCatalogBean{
         Configuration configuration = em.find(Configuration.class, idConf);
         if (configuration == null) System.out.println("ERROR INVALID ID_CONFIG!");
         
-        //productCatalog.addConfiguration(configuration);
+        productCatalog.addConfiguration(configuration);
     }
     
-    public List<Template> getAll(){
-        List<Template> templates = new ArrayList<>();
+    public Collection<ProductDTO> getAll(){
+        List<ProductDTO> templates = new ArrayList<>();
         templates = em.createNamedQuery("getAllProductCatalog").getResultList();
-
-        return templates;
+        
+        return toDTOs(templates, ProductDTO.class);
     }
 }

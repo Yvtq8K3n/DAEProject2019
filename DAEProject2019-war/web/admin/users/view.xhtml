@@ -17,7 +17,7 @@
         <h2>Users</h2>
         <c:set var="admin" value="#{administratorManager}"/>
         <b:dataTable id="Users" value="#{admin.allUsers}" 
-            var="rowItem" print="true" 
+            var="rowItem" print="true" lang="en"
             excel="true" csv="true" pdf="true" copy="true">
             <b:dataTableColumn value="#{rowItem.name}" />
             <b:dataTableColumn value="#{rowItem.email}" />
