@@ -1,8 +1,11 @@
 package web;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -28,15 +31,16 @@ public class UploadManager {
         if (file != null) {
             try {
                 logger.warning("am-entrou0");
-                //file.ge filename = file.getName().substring(file.getName().lastIndexOf("\\") + 1);
+       
                 filename = file.getSubmittedFileName();
                 logger.warning("am-entrou1"+filename);
-                // completePathFile = FileSystems.getDefault().getPath("./").normalize().toAbsolutePath().toString();
+               
                 completePathFile = URILookup.getServerDocumentsFolder() +"\\"+ filename;
                 logger.warning("am-entrou2"+completePathFile);
                 InputStream in = file.getInputStream();
                 logger.warning("am-entrou3");
                 FileOutputStream out = new FileOutputStream(completePathFile);
+
                 logger.warning("am-entrou4");
 
                 byte[] b = new byte[1024];
@@ -84,6 +88,18 @@ public class UploadManager {
     public void setFilename(String filename) {
         this.filename = filename;
     }
-    
+    public String getPath() throws UnsupportedEncodingException {
+
+    String path = this.getClass().getClassLoader().getResource("").getPath();
+    String fullPath = URLDecoder.decode(path, "UTF-8");
+    String pathArr[] = fullPath.split("/WEB-INF/classes/");
+    System.out.println(fullPath);
+    System.out.println(pathArr[0]);
+    fullPath = pathArr[0];
+
+    return fullPath;
+
+    }
+
     
 }
