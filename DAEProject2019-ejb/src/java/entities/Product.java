@@ -71,5 +71,20 @@ public class Product extends Template implements Serializable {
     public void setConfigurations(List<Configuration> configurations) {
         this.configurations = configurations;
     }
-    
+
+    public String getBaseVersion() {
+        return baseVersion;
+    }
+
+    public void setBaseVersion(String baseVersion) {
+        this.baseVersion = baseVersion;
+    }
+
+    public Client getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Client owner) {
+        this.owner = owner;
+    } 
 }

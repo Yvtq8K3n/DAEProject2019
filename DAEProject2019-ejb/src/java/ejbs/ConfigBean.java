@@ -71,12 +71,15 @@ public class ConfigBean {
             System.out.println("FUCK");
             System.out.println(ex);
         }
+
         //productCatalogBean.addConfiguration(1, 1);
         //productCatalogBean.addConfiguration(1, 2);
         
         
         
         productBean.create(new ProductDTO( "PRODUCT1", "Im just a normal product", "v1.10", "client1"));
+        productBean.create(new ProductDTO( "REMIDA", "Website about energy", "v1.40", "client1"));
+        productBean.create(new ProductDTO( "JAVA EE Aplication", "Complex project", "v1.40", "client1"));
         //clientBean.addProduct("client1", new Long(1));
         
         

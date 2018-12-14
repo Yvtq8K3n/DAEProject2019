@@ -15,10 +15,11 @@
             <b:commandButton value="Catalog" class="list-group-item" iconAwesome="fa-calendar fa-lg fa-fw"
                 action="/faces/index?faces-redirect=true"/>
             
-            <b:commandButton value="My Configurations" class="list-group-item"
-                action="/faces/client/view?faces-redirect=true">
-                <i class="fas fa-book fa-lg fa-fw"></i>
-            </b:commandButton>
+            <b:commandButton value="My Configurations" class="list-group-item" iconAwesome="fa-book fa-lg fa-fw"
+                action="/faces/client/view?faces-redirect=true"/>
+            
+            <b:commandButton value="Profile" class="list-group-item" iconAwesome="fa-user-circle fa-lg fa-fw"
+                action="/faces/client/profile?faces-redirect=true"/>
 
             <div class="list-group-item"><ui:include  src="/logout.xhtml"/></div>
         </div>
