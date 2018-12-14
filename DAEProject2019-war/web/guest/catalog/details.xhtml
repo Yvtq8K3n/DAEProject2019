@@ -13,14 +13,13 @@
  
  <ui:define name="main">
     <h:form id="formId">
-        <c:set var="template" value="#{guestManager.selectedTemplate}"/>
+        <c:set var="template" value="#{guestManager.selectedProduct}"/>
         <h2>Product: #{template.name}</h2>
-        <b:inputText label="Id" value="#{template.id}"/>
         <b:inputText label="Name" disabled="true" value="#{template.name}"/>
         <b:inputTextarea label="Description" value="#{template.description}"/>
 
         <h:outputText value="Configurations:" style="font-weight:bold"/>
-        <b:dataTable var="rowItem" value="#{template.configurations}" 
+        <b:dataTable var="rowItem" value="#{guestManager.configurations}" 
             responsive="true" info="false" paginated="false" searching="false">
             <b:dataTableColumn value="#{rowItem.description}" />
         </b:dataTable>

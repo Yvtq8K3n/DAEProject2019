@@ -13,6 +13,7 @@ import java.io.Serializable;
  */
 public class ProductDTO extends TemplateDTO implements Serializable{
     
+    private Long id;
     private String baseVersion;
     private String clientUsername;
     
@@ -20,7 +21,8 @@ public class ProductDTO extends TemplateDTO implements Serializable{
         
     }
     
-    public ProductDTO(String name, String description, String baseVersion, String clientUsername){
+    public ProductDTO(Long id, String name, String description, String baseVersion, String clientUsername){
+        this.id = id;
         this.name = name;
         this.description = description;
         this.baseVersion = baseVersion;
@@ -48,6 +50,14 @@ public class ProductDTO extends TemplateDTO implements Serializable{
 
     public void setClientUsername(String clientUsername) {
         this.clientUsername = clientUsername;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
     
     

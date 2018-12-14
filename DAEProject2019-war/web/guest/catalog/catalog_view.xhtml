@@ -25,23 +25,23 @@
     </b:row>
     <b:row>
         <h:panelGroup id="formCatalog" layout="block">
-            <ui:repeat value="#{guestManager.filterTemplates}" var="template">
+            <ui:repeat value="#{guestManager.filterTemplates}" var="product">
                 <b:column span="4">
                     <b:thumbnail>
                             <b:image name="The Product" value="/resources/product.png" alt="The Product"/>
                             <f:facet name="caption">
-                                <h3>#{template.name}</h3>
-                                <p> #{template.description}</p>
+                                <h3>#{product.name}</h3>
+                                <p> #{product.description}</p>
                                 <p>
                                 <b:commandButton value="Details" class="btn btn-success" 
                                     action="/faces/guest/catalog/details?faces-redirect=false">
-                                    <f:setPropertyActionListener value="${template}"
-                                        target="#{guestManager.selectedTemplate}" />
+                                    <f:setPropertyActionListener value="${product}"
+                                        target="#{guestManager.selectedProduct}" />
                                 </b:commandButton>
                                 <b:commandButton value="Details" class="btn btn-primary" 
                                     action="/faces/guest/catalog/details?faces-redirect=false">
-                                    <f:setPropertyActionListener value="${template}"
-                                        target="#{guestManager.selectedTemplate}" />
+                                    <f:setPropertyActionListener value="${product}"
+                                        target="#{guestManager.selectedProduct}" />
                                 </b:commandButton>
                                  </p>
                             </f:facet>

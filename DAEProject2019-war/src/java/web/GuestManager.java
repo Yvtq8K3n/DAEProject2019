@@ -2,6 +2,7 @@ package web;
 
 import dtos.ProductDTO;
 import ejbs.ProductCatalogBean;
+import entities.Configuration;
 import entities.Template;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class GuestManager implements Serializable {
     private UIComponent component;
     private Client client;
     
-    private Template selectedTemplate;
+    private ProductDTO selectedProduct;
  
     private List<ProductDTO> templates;
     private List<ProductDTO> filterTemplates;
@@ -66,13 +67,19 @@ public class GuestManager implements Serializable {
         return templates;
     }
     
-    public Template getSelectedTemplate() {
-        return selectedTemplate;
+    public ProductDTO getSelectedProduct() {
+        return selectedProduct;
     }
-    public void setSelectedTemplate(Template selectedTemplate) {
-        this.selectedTemplate = selectedTemplate;
+    public void setSelectedProduct(ProductDTO selectedProduct) {
+        this.selectedProduct = selectedProduct;
     }   
     
+    public List<Configuration> getConfigurations(){
+        List<Configuration> configurations = new ArrayList<>();
+        configurations.addAll(productCatalogBean.getConfigurations(selectedProduct.getId()));
+            
+        return configurations;
+    }
     
     ////////////////////////////////////////////////////////////////////////////
     //The following code is for the Filter in Catalog View /////////////////////

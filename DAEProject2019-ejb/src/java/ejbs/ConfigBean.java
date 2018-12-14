@@ -63,10 +63,10 @@ public class ConfigBean {
         }
             configurationBean.create("Configuration 1","Im just a configuration 1", Configuration.Status.INACTIVE, "V1.5.0", "Contract data 1");
             configurationBean.create("Configuration 2","Im just a configuration 2", Configuration.Status.INACTIVE, "V1.7.8", "Contract data 2");
-
+ 
         try{
-            productCatalogBean.create(new ProductDTO("Big Beng", "We can't never be sure if its a Watch of a Explosion","",""), configurationBean.getAll());
-            productCatalogBean.create(new ProductDTO("Wall of China", "This template contain all the procedures in order to sucessfully deploy a wall in a huge scale","",""), configurationBean.getAll());
+            productCatalogBean.create(new ProductDTO(1L, "Big Beng", "We can't never be sure if its a Watch of a Explosion","",""), configurationBean.getAll());
+            productCatalogBean.create(new ProductDTO(2L, "Wall of China", "This template contain all the procedures in order to sucessfully deploy a wall in a huge scale","",""), configurationBean.getAll());
         }catch (Exception ex){
             System.out.println("FUCK");
             System.out.println(ex);
@@ -77,9 +77,9 @@ public class ConfigBean {
         
         
         
-        productBean.create(new ProductDTO( "PRODUCT1", "Im just a normal product", "v1.10", "client1"));
-        productBean.create(new ProductDTO( "REMIDA", "Website about energy", "v1.40", "client1"));
-        productBean.create(new ProductDTO( "JAVA EE Aplication", "Complex project", "v1.40", "client1"));
+        productBean.create(new ProductDTO(1L, "PRODUCT1", "Im just a normal product", "v1.10", "client1"));
+        productBean.create(new ProductDTO(2L, "REMIDA", "Website about energy", "v1.40", "client1"));
+        productBean.create(new ProductDTO(3L, "JAVA EE Aplication", "Complex project", "v1.40", "client1"));
         //clientBean.addProduct("client1", new Long(1));
         
         

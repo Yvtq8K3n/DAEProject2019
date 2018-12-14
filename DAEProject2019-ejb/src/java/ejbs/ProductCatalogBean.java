@@ -70,8 +70,9 @@ public class ProductCatalogBean extends Bean<ProductCatalog>{
         ProductCatalog productCatalog = em.find(ProductCatalog.class, id);
         if (productCatalog == null) System.out.println("ERROR");//Temporary
         
-        //return productCatalog.getConfigurations();
-        return null;
+        List<Configuration> configurations = productCatalog.getConfigurations();
+        if (configurations == null) System.out.println("ERROR");//Temporary
+        return productCatalog.getConfigurations();
     }
     
     public void addConfiguration(long id, long idConf){

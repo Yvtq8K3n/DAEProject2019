@@ -33,7 +33,7 @@ import javax.ws.rs.core.MediaType;
 import util.URILookup;
 
 @ManagedBean
-//@Named(value = "administratorManager")
+@Named(value = "administratorManager")
 @SessionScoped
 public class AdministratorManager implements Serializable {
     private static final Logger logger = Logger.getLogger("web.AdministratorManager");
@@ -81,7 +81,7 @@ public class AdministratorManager implements Serializable {
         FacesMessage facesMsg;
         try {
             clientBean.create(newClient);
-            
+            clearNewClient();
             facesMsg = new FacesMessage(FacesMessage.SEVERITY_INFO, "User Created:", "A user was successfully created");
         } catch (Exception e) {
             logger.warning("Problem removing a client in method removeClient.");
@@ -98,9 +98,8 @@ public class AdministratorManager implements Serializable {
             facesMsg = new FacesMessage(FacesMessage.SEVERITY_INFO, "User Created:", "A user was successfully created");
         } catch (Exception e) {
             logger.warning("Problem removing a client in method removeClient.");
-            facesMsg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Create Failed:", "Problem creating a administrator in method createAdministrator");
+            FacesExceptionHandler.handleException(e, "FAILED", component, logger);
         }
-        FacesContext.getCurrentInstance().addMessage(null, facesMsg);  
         return "/admin/users/administrators/view.xhtml?faces-redirect=true";
     }
 
@@ -169,6 +168,15 @@ public class AdministratorManager implements Serializable {
     public void removeConfiguration(Configuration selectedConfiguration){
         currentConfigurations.remove(selectedConfiguration);
         allConfigurations.add(selectedConfiguration);
+    }
+    
+    public void clearNewClient(){
+        this.newClient.setUsername(null);
+        this.newClient.setName(null);
+        this.newClient.setPassword(null);
+        this.newClient.setEmail(null);
+        this.newClient.setAddress(null);
+        this.newClient.setContact(null);
     }
     
 
