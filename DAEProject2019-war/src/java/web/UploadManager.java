@@ -3,20 +3,19 @@ package web;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.FileSystems;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import org.primefaces.model.UploadedFile;
+import javax.servlet.http.Part;
 import util.URILookup;
 
 @ManagedBean
 @SessionScoped
 public class UploadManager {
     private static final Logger logger = Logger.getLogger("web.AdministratorManager");
-    UploadedFile file;
+    Part file;
     
     String completePathFile;
     String filename;
@@ -29,12 +28,13 @@ public class UploadManager {
         if (file != null) {
             try {
                 logger.warning("am-entrou0");
-                filename = file.getFileName().substring(file.getFileName().lastIndexOf("\\") + 1);
+                //file.ge filename = file.getName().substring(file.getName().lastIndexOf("\\") + 1);
+                filename = file.getSubmittedFileName();
                 logger.warning("am-entrou1"+filename);
-                 completePathFile = FileSystems.getDefault().getPath("./").normalize().toAbsolutePath().toString();
-                //completePathFile = URILookup.getServerDocumentsFolder() + filename;
+                // completePathFile = FileSystems.getDefault().getPath("./").normalize().toAbsolutePath().toString();
+                completePathFile = URILookup.getServerDocumentsFolder() +"\\"+ filename;
                 logger.warning("am-entrou2"+completePathFile);
-                InputStream in = file.getInputstream();
+                InputStream in = file.getInputStream();
                 logger.warning("am-entrou3");
                 FileOutputStream out = new FileOutputStream(completePathFile);
                 logger.warning("am-entrou4");
@@ -50,22 +50,22 @@ public class UploadManager {
                 in.close();
                 out.close();
 
-                FacesMessage message = new FacesMessage("File: " + file.getFileName() + " uploaded successfully!");
+                FacesMessage message = new FacesMessage("File: " + file.getName() + " uploaded successfully!");
                 FacesContext.getCurrentInstance().addMessage(null, message);
 
             } catch (IOException e) {
-                FacesMessage message = new FacesMessage("ERROR :: File: " + file.getFileName() + " not uploaded!");
+                FacesMessage message = new FacesMessage("ERROR :: File: " + file.getName() + " not uploaded!");
                 FacesContext.getCurrentInstance().addMessage(null, message);
             }
             logger.warning("am-entrou6");
         }
     }
 
-    public UploadedFile getFile() {
+    public Part getFile() {
         return file;
     }
 
-    public void setFile(UploadedFile file) {
+    public void setFile(Part file) {
         this.file = file;
     }
 
