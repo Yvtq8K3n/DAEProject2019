@@ -18,23 +18,14 @@
     <ui:define name="title"> Catalog </ui:define> 
 
     <ui:define name="main">
-        <h:form>
-            <h2>Products</h2>
-            <b:dataTable id="Templates" value="#{clientManager.productDTOs}" 
-                var="product" print="true" 
-                excel="true" csv="true" pdf="true" copy="true">
-                <b:dataTableColumn value="#{product.name}" />
-                <b:dataTableColumn value="#{product.description}" />
-                <b:dataTableColumn value="#{product.baseVersion}" />
-                <b:dataTableColumn label="Actions">
-                    <b:commandButton value="Details" class="btn btn-success" 
-                        action="/faces/guest/catalog/details?faces-redirect=false">
-
-                    </b:commandButton>
-                </b:dataTableColumn>
-
-            </b:dataTable>
-        </h:form>
+       <h:form id="formId">
+           <h2>Profile</h2>
+           <h2>Username: #{clientManager.clientDTO.username}</h2>
+           <h2>name: #{clientManager.clientDTO.name}</h2>
+           <h2>email: #{clientManager.clientDTO.email}</h2>
+           <h2>contact: #{clientManager.clientDTO.contact}</h2>
+           <h2>address: #{clientManager.clientDTO.address}</h2>
+       </h:form> 
     </ui:define>
     </ui:composition>
 </html>
