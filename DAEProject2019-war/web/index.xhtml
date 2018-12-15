@@ -15,12 +15,15 @@
  <ui:define name="main">
     <h:form id="catalog">
         <h2>Templates</h2>
-        <b:row>
-            <b:column>
-                <h:commandLink value="Create" class="btn btn-success"
-                    action="/admin/catalog/create"/>
-            </b:column>
-        </b:row>
+        <c:if test="${userManager.someUserAuthenticated and userManager.admin}">
+            <b:row>
+                <b:column>
+                    <h:commandLink value="Create" class="btn btn-success"
+                        action="/admin/catalog/create"/>
+                </b:column>
+            </b:row>
+        </c:if>
+       
         <b:tabView tabPosition="right">
             <b:tab title="Catalog View">
                 <f:facet name="anchor"><b:iconAwesome name="calendar"/></f:facet>

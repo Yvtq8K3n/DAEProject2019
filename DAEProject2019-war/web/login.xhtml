@@ -22,7 +22,7 @@
                 <hr></hr> 
                 
                 <b:commandLink value = "Login" class="btn btn-primary">
-                    <f:ajax execute = "@form" render = ":contentMenu" listener="#{userManager.login}"/>
+                    <f:ajax execute = "@form" render = ":contentMenu, :main" listener="#{userManager.login}"/>
                 </b:commandLink>
             </div>	
         </div>
