@@ -14,11 +14,11 @@
     <h:form id="formId">    
         <h2>Creating Product</h2>
         <c:set var="template" value="#{administratorManager.newProductDTO}"/>
-        
+        <b:messages styleClass="msgs" redisplay="true" for="@parent" recursive="true"/>
         <b:row>
             <b:column span="6">
-                <b:inputText label="Name" value="#{template.name}"/>
-                <b:inputTextarea label="Description" value="#{template.description}"/>
+                <b:inputText required="true" label="Name" value="#{template.name}"/>
+                <b:inputTextarea required="true" label="Description" value="#{template.description}"/>
             </b:column>
         </b:row>
         <b:row>
@@ -51,13 +51,13 @@
                         </h:commandLink>
                     </b:dataTableColumn>
                 </b:dataTable>
-
+               
+               
                 <hr></hr>
                 <b:commandButton
                     value="Create" class="btn btn-primary"
                     binding="#{administratorManager.component}"
                     action="${administratorManager.createProductCatalog()}" />
-                <h:message for="submit" errorStyle="color:red" />
             </b:column>
         </b:row>
     </h:form>  

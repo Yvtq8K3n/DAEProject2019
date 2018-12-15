@@ -38,7 +38,8 @@ public class ProductCatalogBean extends Bean<ProductCatalog>{
     @PersistenceContext(name="DAEProject2019")//Peristance context usa o nome da bd do persistance.xml
     EntityManager em;
    
-    public void create(ProductDTO product, List<Configuration> configurationsDTO) throws EntityDoesNotExistException, MyConstraintViolationException{
+    public void create(ProductDTO product, List<Configuration> configurationsDTO) 
+            throws EntityDoesNotExistException, MyConstraintViolationException{
         
         try{
             ProductCatalog cat = new ProductCatalog(
@@ -47,7 +48,6 @@ public class ProductCatalogBean extends Bean<ProductCatalog>{
             );
             em.persist(cat);
             em.flush();//Reconnect bd whit object giving it id
-            
             for (Configuration cDTO : configurationsDTO){
                 Configuration conf = em.find(Configuration.class, cDTO.getId());
                 if (conf == null) {
@@ -55,7 +55,6 @@ public class ProductCatalogBean extends Bean<ProductCatalog>{
                 }
                 addConfiguration(cat.getId(), conf.getId());
             }
-            
         }catch (EntityDoesNotExistException e) {
             throw e;
         }catch (ConstraintViolationException e){

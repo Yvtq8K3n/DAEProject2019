@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
@@ -86,6 +87,7 @@ public class AdministratorManager implements Serializable {
         } catch (Exception e) {
             logger.warning("Problem removing a client in method removeClient.");
             facesMsg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Create Failed:", "Problem creating a client in method createClient");
+            return null;
         }
         FacesContext.getCurrentInstance().addMessage(null, facesMsg);  
         return "/admin/users/clients/view.xhtml?faces-redirect=true";
@@ -99,24 +101,26 @@ public class AdministratorManager implements Serializable {
         } catch (Exception e) {
             logger.warning("Problem removing a client in method removeClient.");
             FacesExceptionHandler.handleException(e, "FAILED", component, logger);
+            return null;
         }
         return "/admin/users/administrators/view.xhtml?faces-redirect=true";
     }
 
     public String createProductCatalog(){
-        FacesMessage facesMsg;
+        if (currentConfigurations==null 
+                || currentConfigurations.isEmpty()) {
+            FacesExceptionHandler.handleException(new Exception(), "A template must have configurations", component, logger);
+            return null;
+        }
+           
         try {
             productCatalogBean.create(newProductDTO, currentConfigurations);
-                    
-            facesMsg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Template Created:", "A template was successfully created");
            
             reset();//Resets the form, the only downside of using ajax
         } catch (Exception e) {
-            logger.warning("Problem creating a template in method createProductCatalog.");
-            //facesMsg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Create Failed:", "Problem creating a template in method createProductCatalog");
-            FacesExceptionHandler.handleException(e, "FAILED", component, logger);
-        }
-        //FacesContext.getCurrentInstance().addMessage(null, facesMsg);  
+            FacesExceptionHandler.handleException(e, "An unexpected error has occurred while creating a Template", component, logger);
+            return null;
+        }  
         return "/index.xhtml?faces-redirect=true";
     }
 
@@ -205,10 +209,9 @@ public class AdministratorManager implements Serializable {
     }     
     
     public void reset(){
-        logger.warning("HIHIHIHIH");
         allConfigurations = null;
         currentConfigurations = null;
-        guestManager.reset();
+        //guestManager.reset();
     }
       
     public List<User> getAllUsers(){
