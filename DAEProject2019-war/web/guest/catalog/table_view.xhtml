@@ -9,7 +9,7 @@
     xmlns:f="http://java.sun.com/jsf/core">
 
     <b:dataTable id="Templates" value="#{guestManager.allProductCatalog}" 
-        var="rowItem" print="true" lang="en" 
+        var="rowItem" print="true" lang="en"
         excel="true" csv="true" pdf="true" copy="true">
         <b:dataTableColumn value="#{rowItem.name}" />
         <b:dataTableColumn value="#{rowItem.description}" />
@@ -18,6 +18,12 @@
                 action="/faces/guest/catalog/details?faces-redirect=false">
                 <f:setPropertyActionListener value="${rowItem}"
                     target="#{guestManager.selectedProduct}" />
+            </b:commandButton>
+            <b:commandButton value="Delete" class="btn btn-danger" id="delete" 
+                rendered="${userManager.someUserAuthenticated and userManager.admin}"
+                actionListener="#{administratorManager.removeTemplate}">
+                <f:param name="deletetemplateId" id="deleteTemplateId" 
+                   value="#{rowItem.id}" />
             </b:commandButton>
         </b:dataTableColumn>
     </b:dataTable>

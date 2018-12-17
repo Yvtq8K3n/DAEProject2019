@@ -10,7 +10,7 @@
     
     <b:row>
         <b:column span="6" id="totalDisplayed" style="text-align:center" >
-            <p>Showing #{guestManager.filterTemplates.size()} entries </p>
+            <p>Showing #{guestManager.allProductCatalog.size()} entries </p>
         </b:column>
         <b:column span="6" class="form-group">
             <h:panelGrid columns="2" style="text-align: right">
@@ -25,24 +25,27 @@
     </b:row>
     <b:row>
         <h:panelGroup id="formCatalog" layout="block">
-            <ui:repeat value="#{guestManager.filterTemplates}" var="product">
+            <ui:repeat value="#{guestManager.allProductCatalog}" var="template">
                 <b:column span="4">
                     <b:thumbnail>
                             <b:image name="The Product" value="/resources/product.png" alt="The Product"/>
                             <f:facet name="caption">
-                                <h3>#{product.name}</h3>
-                                <p> #{product.description}</p>
+                                <h3>#{template.name}</h3>
+                                <p> #{template.description}</p>
                                 <p>
-                                <b:commandButton value="Details" class="btn btn-success" 
+                                <b:commandLink value="Details" class="btn btn-success" 
                                     action="/faces/guest/catalog/details?faces-redirect=false">
-                                    <f:setPropertyActionListener value="${product}"
+                                    <f:setPropertyActionListener value="${template}"
                                         target="#{guestManager.selectedProduct}" />
+                                </b:commandLink>
+                                <b:commandButton value="Delete" class="btn btn-danger" id="delete"
+                                    rendered="${userManager.someUserAuthenticated and userManager.admin}"
+                                    action="/faces/index?faces-redirect=true"
+                                    actionListener="#{administratorManager.removeTemplate}">
+                                    <f:param name="deletetemplateId" id="deleteTemplateId" 
+                                       value="#{template.id}" />
                                 </b:commandButton>
-                                <b:commandButton value="Details" class="btn btn-primary" 
-                                    action="/faces/guest/catalog/details?faces-redirect=false">
-                                    <f:setPropertyActionListener value="${product}"
-                                        target="#{guestManager.selectedProduct}" />
-                                </b:commandButton>
+                         
                                  </p>
                             </f:facet>
                       </b:thumbnail>

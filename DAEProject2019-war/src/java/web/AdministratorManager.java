@@ -29,21 +29,15 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.MediaType;
-import util.URILookup;
 
+//@Named(value = "administratorManager")
 @ManagedBean
-@Named(value = "administratorManager")
 @SessionScoped
 public class AdministratorManager implements Serializable {
     private static final Logger logger = Logger.getLogger("web.AdministratorManager");
     private UIComponent component;
     private Client client;
     
-    @ManagedProperty(value = "#{guestManager}")
-    private GuestManager guestManager;
-
     @EJB
     private UsersBean usersBean;
     @EJB
@@ -60,6 +54,10 @@ public class AdministratorManager implements Serializable {
     @ManagedProperty(value = "#{uploadManager}")
     private UploadManager uploadManager;
 
+    @ManagedProperty(value = "#{guestManager}")
+    private GuestManager guestManager;
+
+    
     @PostConstruct
     public void Init(){
         client = ClientBuilder.newClient();
@@ -105,7 +103,7 @@ public class AdministratorManager implements Serializable {
         }
         return "/admin/users/administrators/view.xhtml?faces-redirect=true";
     }
-
+    
     public String createProductCatalog(){
         if (currentConfigurations==null 
                 || currentConfigurations.isEmpty()) {
@@ -152,7 +150,24 @@ public class AdministratorManager implements Serializable {
         }
         FacesContext.getCurrentInstance().addMessage(null, facesMsg);
     }
-
+    public void removeTemplate(ActionEvent event){
+        FacesMessage facesMsg;
+        try {
+            UIParameter param = (UIParameter) event.getComponent().findComponent("deleteTemplateId");
+            Long id = (Long)param.getValue();
+            productCatalogBean.remove(id);
+            
+            logger.warning("ID:"+id);
+            
+            facesMsg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Template Deleted:", "A template was successfully deleted");
+            
+            guestManager.reset();//Forces update of list
+        } catch (Exception e) {
+            logger.warning("Problem removing a template in method removeTemplate.");
+            facesMsg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Delete Failed:", "Problem removing a template in method removeTemplate");
+        }
+        FacesContext.getCurrentInstance().addMessage(null, facesMsg);
+    }
 
     public List<Configuration> getAllConfigurations(){
         if (allConfigurations == null) {
@@ -231,10 +246,6 @@ public class AdministratorManager implements Serializable {
         users.addAll(clientBean.getAll());
         
         return users;
-    }
-
-    public GuestManager getGuestManager() {
-        return guestManager;
     }
 
     public void setGuestManager(GuestManager guestManager) {

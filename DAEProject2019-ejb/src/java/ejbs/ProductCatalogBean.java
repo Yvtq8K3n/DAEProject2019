@@ -64,6 +64,24 @@ public class ProductCatalogBean extends Bean<ProductCatalog>{
         }  
     }
        
+    public void remove(Long id) 
+            throws EntityDoesNotExistException, MyConstraintViolationException{
+        try{
+            ProductCatalog template = em.find(ProductCatalog.class, id);
+
+            if (template == null) {
+                throw new EntityDoesNotExistException("A template with that id doesnt exists.");
+            }
+              
+            em.remove(template);
+        }catch (EntityDoesNotExistException e) {
+            throw e;
+        }catch (ConstraintViolationException e){
+            throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
+        }catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
+    }
     
     public List<Configuration> getConfigurations(Long id){
         ProductCatalog productCatalog = em.find(ProductCatalog.class, id);

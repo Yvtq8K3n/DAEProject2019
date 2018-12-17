@@ -35,7 +35,7 @@
                 <b:dataTableColumn value="#{rowItem.address}" />
                 <b:dataTableColumn value="#{rowItem.contact}" />
                 <b:dataTableColumn label="Actions">
-                    <h:commandLink value="Details" class="btn btn-primary" action="guest/details">
+                    <h:commandLink value="Details" class="btn btn-success" action="guest/details">
                         <f:setPropertyActionListener value="${rowItem}"
                             target="#{guestManager.selectedTemplate}" />
                     </h:commandLink>

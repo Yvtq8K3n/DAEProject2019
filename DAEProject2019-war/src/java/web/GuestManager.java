@@ -34,7 +34,6 @@ public class GuestManager implements Serializable {
     private ProductDTO selectedProduct;
  
     private List<ProductDTO> templates;
-    private List<ProductDTO> filterTemplates;
     private String searchTemplate;   
     
     //Gonna disappear after rest    
@@ -49,7 +48,6 @@ public class GuestManager implements Serializable {
     @PostConstruct
     public void Init(){
         client = ClientBuilder.newClient();
-        refreshFilterTemplates();
     };
     
     
@@ -60,12 +58,7 @@ public class GuestManager implements Serializable {
      * @return 
     */
     
-    public List<ProductDTO> getAllProductCatalog(){
-        List<ProductDTO> templates = new ArrayList<>();
-        templates.addAll(productCatalogBean.getAll());
-        
-        return templates;
-    }
+
     
     public ProductDTO getSelectedProduct() {
         return selectedProduct;
@@ -84,31 +77,33 @@ public class GuestManager implements Serializable {
     ////////////////////////////////////////////////////////////////////////////
     //The following code is for the Filter in Catalog View /////////////////////
     ////////////////////////////////////////////////////////////////////////////
+    public List<ProductDTO> getAllProductCatalog(){
+        templates = new ArrayList<>();
+        
+        if (searchTemplate != null && !searchTemplate.isEmpty()){
+            logger.warning("DAM");
+            templates = productCatalogBean.getAll().stream()
+                .filter(p ->
+                    p.getName().toUpperCase().contains(searchTemplate.toUpperCase())
+                    || p.getDescription().toUpperCase().contains(searchTemplate.toUpperCase())
+                ).collect(Collectors.toList());
+                logger.warning("total"+templates.size());
+        }else templates.addAll(productCatalogBean.getAll());
+        
+        return templates;
+    }
+    
+        
+    
+    
     public String getSearchTemplate() {
         return searchTemplate;
     }
     public void setSearchTemplate(String searchTemplate) {
         this.searchTemplate = searchTemplate;
-        refreshFilterTemplates();
     }
     
-    public List<ProductDTO> getFilterTemplates(){
-        return filterTemplates;
-    }
-    public void refreshFilterTemplates(){
-        if (searchTemplate==null || searchTemplate.isEmpty()){
-            templates  = getAllProductCatalog();
-            filterTemplates = templates;
-            return;
-        }
-        
-        filterTemplates = templates.stream()
-        .filter(p ->
-            p.getName().toUpperCase().contains(searchTemplate.toUpperCase())
-            || p.getDescription().toUpperCase().contains(searchTemplate.toUpperCase())
-        ).collect(Collectors.toList());
-    }
-
+   
     void reset() {
         logger.warning("I WAS CALLED");
         templates  = getAllProductCatalog();

@@ -21,7 +21,7 @@
         <h:form>
             <h2>Products</h2>
             <b:dataTable id="Templates" value="#{clientManager.productDTOs}" 
-                var="product" print="true" 
+                var="product" print="true" lang="en"
                 excel="true" csv="true" pdf="true" copy="true">
                 <b:dataTableColumn value="#{product.name}" />
                 <b:dataTableColumn value="#{product.description}" />
@@ -29,10 +29,9 @@
                 <b:dataTableColumn label="Actions">
                     <b:commandButton value="Details" class="btn btn-success" 
                         action="/faces/guest/catalog/details?faces-redirect=false">
-
                     </b:commandButton>
                 </b:dataTableColumn>
-
+                
             </b:dataTable>
         </h:form>
     </ui:define>

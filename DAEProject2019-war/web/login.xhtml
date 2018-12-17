@@ -21,8 +21,8 @@
                    value="#{userManager.password}"/>
                 <hr></hr> 
                 
-                <b:commandLink value = "Login" class="btn btn-primary">
-                    <f:ajax execute = "@form" render = ":contentMenu, :main" listener="#{userManager.login}"/>
+                <b:commandLink value = "Login" class="btn btn-primary" action="index?faces-redirect=true">
+                    <f:ajax execute = "@form" render = "@form :contentMenu, :main" listener="#{userManager.login}"/>
                 </b:commandLink>
             </div>	
         </div>
