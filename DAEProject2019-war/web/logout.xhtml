@@ -7,6 +7,6 @@
     xmlns:f="http://java.sun.com/jsf/core">  
     
     <b:commandLink value = "Logout" class="btn btn-danger">
-        <f:ajax execute = "@form" render = ":contentMenu" listener="#{userManager.logout()}"/>
+        <f:ajax execute = "@form" render = ":contentMenu, :main" listener="#{userManager.logout()}"/>
     </b:commandLink>
 </ui:composition>

@@ -19,7 +19,7 @@
         <b:inputTextarea label="Description" value="#{template.description}"/>
 
         <h:outputText value="Configurations:" style="font-weight:bold"/>
-        <b:dataTable var="rowItem" value="#{guestManager.configurations}" 
+        <b:dataTable var="rowItem" value="#{guestManager.configurations}" lang="en" 
             responsive="true" info="false" paginated="false" searching="false">
             <b:dataTableColumn value="#{rowItem.description}" />
         </b:dataTable>
