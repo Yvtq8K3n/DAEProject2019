@@ -6,11 +6,16 @@
 package dtos;
 
 import java.io.Serializable;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Olek
  */
+@XmlRootElement(name = "Product")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ProductDTO extends TemplateDTO implements Serializable{
     
     private Long id;
@@ -59,6 +64,4 @@ public class ProductDTO extends TemplateDTO implements Serializable{
     public void setId(Long id) {
         this.id = id;
     }
-    
-    
 }

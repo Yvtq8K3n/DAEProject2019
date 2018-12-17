@@ -30,7 +30,7 @@ import javax.validation.ConstraintViolationException;
 //Faz com que ´não tenha de ter uma instancia para cada utilizador
 public class ClientBean extends Bean<Client>{
 
-    @PersistenceContext(name="DAEProject2019")//Peristance context usa o nome da bd do persistance.xml
+    @PersistenceContext(name="dae_project")//Peristance context usa o nome da bd do persistance.xml
     EntityManager em;
    
     public void create(ClientDTO clientDTO)

@@ -27,7 +27,7 @@ import javax.persistence.PersistenceContext;
 //Faz com que ´não tenha de ter uma instancia para cada utilizador
 public class ConfigurationBean extends Bean<Configuration>{
 
-    @PersistenceContext(name="DAEProject2019")//Peristance context usa o nome da bd do persistance.xml
+    @PersistenceContext(name="dae_project")//Peristance context usa o nome da bd do persistance.xml
     EntityManager em;
    
     public void create(String title, String description, Configuration.Status status, String baseVersion, String contractData) {

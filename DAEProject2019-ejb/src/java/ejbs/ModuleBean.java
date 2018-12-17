@@ -19,7 +19,7 @@ import javax.persistence.PersistenceContext;
 @LocalBean
 public class ModuleBean{
    
-   @PersistenceContext(name="DAEProject2019")
+   @PersistenceContext(name="dae_project")
    EntityManager em;
    
    public void create(String name, String version){

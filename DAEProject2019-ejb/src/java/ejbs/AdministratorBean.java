@@ -5,33 +5,38 @@
  */
 package ejbs;
 
+import dtos.AdministratorDTO;
 import entities.Administrator;
 import exceptions.EntityDoesNotExistException;
 import exceptions.EntityExistsException;
 import exceptions.MyConstraintViolationException;
 import exceptions.Utils;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 
 /**
  *
  * @author Joao Marquez
  */
-@Stateless //Distinge que é um ejb (componente que não gere instancia nem ciclo de vida)
-//Faz pedidos mas não guardam de quem esta a fazer
-//Faz com que ´não tenha de ter uma instancia para cada utilizador
+@Stateless
+@Path("/administrators")
 public class AdministratorBean extends Bean<Administrator>{
 
-    @PersistenceContext(name="DAEProject2019")//Peristance context usa o nome da bd do persistance.xml
+    @PersistenceContext(name="dae_project")//Peristance context usa o nome da bd do persistance.xml
     EntityManager em;
    
-    public void create(Administrator administratorDTO) 
+    public void create(AdministratorDTO administratorDTO) 
         throws EntityExistsException, MyConstraintViolationException {
         
         try{
@@ -74,11 +79,13 @@ public class AdministratorBean extends Bean<Administrator>{
         }
     }
     
-    
-    public List<Administrator> getAll(){
+    @GET
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Path("all")
+    public Collection<AdministratorDTO> getAll(){
         List<Administrator> administrators = new ArrayList<>();
         administrators = em.createNamedQuery("getAllAdministrators").getResultList();
 
-        return administrators;
+        return toDTOs(administrators, AdministratorDTO.class);
     }
 }

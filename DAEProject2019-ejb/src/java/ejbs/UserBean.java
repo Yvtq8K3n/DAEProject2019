@@ -5,9 +5,6 @@
  */
 package ejbs;
 
-import entities.Administrator;
-import entities.Client;
-import entities.Template;
 import entities.User;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +20,9 @@ import javax.persistence.PersistenceContext;
 @Stateless //Distinge que é um ejb (componente que não gere instancia nem ciclo de vida)
 //Faz pedidos mas não guardam de quem esta a fazer
 //Faz com que ´não tenha de ter uma instancia para cada utilizador
-public class UsersBean{
+public class UserBean{
 
-    @PersistenceContext(name="DAEProject2019")//Peristance context usa o nome da bd do persistance.xml
+    @PersistenceContext(name="dae_project")//Peristance context usa o nome da bd do persistance.xml
     EntityManager em;
   
     public List<User> getAll(){

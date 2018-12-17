@@ -35,7 +35,7 @@ import javax.validation.ConstraintViolationException;
 //Faz com que ´não tenha de ter uma instancia para cada utilizador
 public class ProductCatalogBean extends Bean<ProductCatalog>{
 
-    @PersistenceContext(name="DAEProject2019")//Peristance context usa o nome da bd do persistance.xml
+    @PersistenceContext(name="dae_project")//Peristance context usa o nome da bd do persistance.xml
     EntityManager em;
    
     public void create(ProductDTO product, List<Configuration> configurationsDTO) 
@@ -103,7 +103,7 @@ public class ProductCatalogBean extends Bean<ProductCatalog>{
     }
     
     public Collection<ProductDTO> getAll(){
-        List<ProductDTO> templates = new ArrayList<>();
+        List<Product> templates = new ArrayList<>();
         templates = em.createNamedQuery("getAllProductCatalog").getResultList();
         
         return toDTOs(templates, ProductDTO.class);

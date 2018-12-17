@@ -5,6 +5,7 @@
  */
 package entities;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -32,6 +33,7 @@ public class UserGroup{
     }
     
     @Enumerated(EnumType.STRING)
+    @Column(name="GROUP_NAME")
     private GROUP groupName;
     
     @Id

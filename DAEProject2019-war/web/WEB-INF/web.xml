@@ -14,9 +14,9 @@
         </param-name>
         <param-value>true</param-value>
     </context-param>
-   <context-param>
-      <param-name>primefaces.THEME</param-name>
-      <param-value>bootstrap</param-value>
+    <context-param>
+        <param-name>primefaces.THEME</param-name>
+        <param-value>bootstrap</param-value>
     </context-param>
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
@@ -39,17 +39,16 @@
         <error-code>403</error-code>
         <location>/faces/error.xhtml</location>
     </error-page>
-    
     <login-config>
         <auth-method>BASIC</auth-method>
-        <realm-name>DAEProject2019_realm</realm-name>
+        <realm-name>dae_project_realm</realm-name>
     </login-config>
     <security-role>
         <description/>
-        <role-name>Administrator</role-name>
+        <role-name>Client</role-name>
     </security-role>
     <security-role>
         <description/>
-        <role-name>Client</role-name>
+        <role-name>Administrator</role-name>
     </security-role>
 </web-app>

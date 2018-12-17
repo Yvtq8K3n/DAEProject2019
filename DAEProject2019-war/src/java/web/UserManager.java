@@ -36,22 +36,7 @@ public class UserManager implements Serializable{
     private String message;
 
     Boolean loginFlag = true;
-    
-    private String name;
-   
-   public String getName() {
-      return name;
-   }
-   
-   public void setName(String name) {
-      this.name = name;
-   }
-
-   public String getWelcomeMessage() {
-      return "Hello " + name;
-   }
-    
-    
+        
     public UserManager() {
     }
     
@@ -60,7 +45,10 @@ public class UserManager implements Serializable{
         HttpServletRequest request =
         (HttpServletRequest) context.getExternalContext().getRequest();
         try {
+            logger.warning(this.username);
+            logger.warning(this.password);
             request.login(this.username, this.password);
+            
         } catch (ServletException e) {
             logger.log(Level.WARNING, e.getMessage());
             

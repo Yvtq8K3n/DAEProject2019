@@ -28,7 +28,7 @@ public class ClientDTO extends UserDTO implements Serializable{
     }
 
     public ClientDTO(String username, String password, String name, String email, String address, String contact) {
-        super(username, password, address, email);
+        super(username, password, name, email);
         this.address = address;
         this.contact = contact;
     }

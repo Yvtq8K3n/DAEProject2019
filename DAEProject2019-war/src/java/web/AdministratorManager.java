@@ -1,5 +1,6 @@
 package web;
 
+import dtos.AdministratorDTO;
 import dtos.ClientDTO;
 import dtos.DocumentDTO;
 import dtos.ProductDTO;
@@ -7,7 +8,7 @@ import ejbs.AdministratorBean;
 import ejbs.ClientBean;
 import ejbs.ConfigurationBean;
 import ejbs.ProductCatalogBean;
-import ejbs.UsersBean;
+import ejbs.UserBean;
 import entities.Administrator;
 import entities.Configuration;
 import entities.User;
@@ -39,7 +40,7 @@ public class AdministratorManager implements Serializable {
     private Client client;
     
     @EJB
-    private UsersBean usersBean;
+    private UserBean usersBean;
     @EJB
     private AdministratorBean administratorBean;
     @EJB
@@ -65,7 +66,7 @@ public class AdministratorManager implements Serializable {
 
     private ProductDTO newProductDTO;
     private ClientDTO newClient;//Gonna be a DTOlateranyway
-    private Administrator newAdministrator;
+    private AdministratorDTO newAdministrator;
     private List<Configuration> allConfigurations;
     private List<Configuration> currentConfigurations;
 
@@ -73,7 +74,7 @@ public class AdministratorManager implements Serializable {
     public AdministratorManager() {
         newClient = new ClientDTO();
         newProductDTO = new ProductDTO();
-        newAdministrator = new Administrator();
+        newAdministrator = new AdministratorDTO();
     }
     
     public String createClient(){
@@ -205,10 +206,10 @@ public class AdministratorManager implements Serializable {
     public void setNewClient(ClientDTO newClient) {
         this.newClient = newClient;
     }
-    public Administrator getNewAdministrator() {
+    public AdministratorDTO getNewAdministrator() {
         return newAdministrator;
     }
-    public void setNewAdministrator(Administrator newAdministrator) {
+    public void setNewAdministrator(AdministratorDTO newAdministrator) {
         this.newAdministrator = newAdministrator;
     }
 
@@ -235,8 +236,8 @@ public class AdministratorManager implements Serializable {
         
         return users;
     }
-    public List<User> getAllAdministrators(){
-        List<User> users = new ArrayList<>();
+    public List<AdministratorDTO> getAllAdministrators(){
+        List<AdministratorDTO> users = new ArrayList<>();
         users.addAll(administratorBean.getAll());
         
         return users;
