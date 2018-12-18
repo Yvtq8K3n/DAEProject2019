@@ -1,18 +1,16 @@
 package web;
 
 import dtos.ProductDTO;
+import ejbs.ConfigBean;
 import ejbs.ProductCatalogBean;
 import entities.Configuration;
-import entities.Template;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.component.UIComponent;
@@ -26,6 +24,9 @@ import javax.ws.rs.client.ClientBuilder;
 @ManagedBean
 @SessionScoped
 public class GuestManager implements Serializable {
+    
+    @EJB
+    private ConfigBean configBean;
     
     private static final Logger logger = Logger.getLogger("web.GuestManager");
     private UIComponent component;
@@ -50,7 +51,7 @@ public class GuestManager implements Serializable {
         client = ClientBuilder.newClient();
     };
     
-    
+   
     
     /**
     *
@@ -103,7 +104,6 @@ public class GuestManager implements Serializable {
         this.searchTemplate = searchTemplate;
     }
     
-   
     void reset() {
         logger.warning("I WAS CALLED");
         templates  = getAllProductCatalog();

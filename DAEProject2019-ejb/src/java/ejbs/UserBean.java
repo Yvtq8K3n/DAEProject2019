@@ -5,30 +5,36 @@
  */
 package ejbs;
 
+import dtos.UserDTO;
 import entities.User;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 
 /**
  *
  * @author Joao Marquez
  */
-@Stateless //Distinge que é um ejb (componente que não gere instancia nem ciclo de vida)
-//Faz pedidos mas não guardam de quem esta a fazer
-//Faz com que ´não tenha de ter uma instancia para cada utilizador
-public class UserBean{
+@Stateless
+@Path("/users")
+public class UserBean extends Bean<User>{
 
     @PersistenceContext(name="dae_project")//Peristance context usa o nome da bd do persistance.xml
     EntityManager em;
   
-    public List<User> getAll(){
-        List<User> users = new ArrayList<>();
-        users = em.createNamedQuery("getAllUsers").getResultList();
+    @GET
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Collection<UserDTO> getAll(){
+        List<User> users =
+            em.createNamedQuery("getAllUsers").getResultList();
 
-        return users;
+        return toDTOs(users, UserDTO.class);       
     }
 }

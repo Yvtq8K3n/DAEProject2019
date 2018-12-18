@@ -12,36 +12,48 @@ import exceptions.EntityDoesNotExistException;
 import exceptions.EntityExistsException;
 import exceptions.MyConstraintViolationException;
 import exceptions.Utils;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import static javax.ws.rs.HttpMethod.POST;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 
 /**
  *
  * @author Joao Marquez
  */
-@Stateless //Distinge que é um ejb (componente que não gere instancia nem ciclo de vida)
-//Faz pedidos mas não guardam de quem esta a fazer
-//Faz com que ´não tenha de ter uma instancia para cada utilizador
+@Stateless
+@Path("/clients")
 public class ClientBean extends Bean<Client>{
 
     @PersistenceContext(name="dae_project")//Peristance context usa o nome da bd do persistance.xml
     EntityManager em;
    
-    public void create(ClientDTO clientDTO)
-    throws EntityExistsException, MyConstraintViolationException{
-        
+    @POST
+    @RolesAllowed("Administrator")
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_XML)
+    public Response create(ClientDTO clientDTO)
+        throws EntityExistsException, MyConstraintViolationException{
         try{
             Client client = em.find(Client.class, clientDTO.getUsername());
             if (client != null) {
                 throw new EntityExistsException("A user with that username already exists.");
             }
-            
             em.persist(new Client(
                 clientDTO.getUsername(), 
                 clientDTO.getPassword(), 
@@ -50,38 +62,48 @@ public class ClientBean extends Bean<Client>{
                 clientDTO.getAddress(),
                 clientDTO.getContact())
             );
+            
+             return Response.ok().build();
         }catch (EntityExistsException e) {
             throw e;
         }catch (ConstraintViolationException e){
             throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
         }catch (Exception e) {
-            throw new EJBException(e.getMessage());
+            return Response.status(400).entity("A problem has occurred while attempting to create a client.").build();
         }  
     }
     
-    
-    public void remove(String username) throws EntityDoesNotExistException, MyConstraintViolationException{
+    @DELETE
+    @Path("/{username}")
+    @RolesAllowed("Administrator")
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_XML)
+    public Response remove(@PathParam("username") String username) 
+        throws EntityDoesNotExistException, MyConstraintViolationException{
         try{
             Client client = em.find(Client.class, username);
             if (client == null) {
                 throw new EntityDoesNotExistException("A user with that username doesnt exists.");
             }
-              
             em.remove(client);
+            
+            return Response.ok().build();
         }catch (EntityDoesNotExistException e) {
             throw e;
         }catch (ConstraintViolationException e){
             throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
         }catch (Exception e) {
-            throw new EJBException(e.getMessage());
+            return Response.status(400).entity("A problem has occurred while attempting to remove a client.").build();
         }
     }
     
-    public List<Client> getAll(){
-        List<Client> clients = new ArrayList<>();
-        clients = em.createNamedQuery("getAllClients").getResultList();
+    @GET
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Collection<ClientDTO> getAll(){
+        List<Client> clients =
+            em.createNamedQuery("getAllClients").getResultList();
 
-        return clients;
+        return toDTOs(clients, ClientDTO.class);
     }
     
     public Client getClient(String username){
