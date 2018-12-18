@@ -96,10 +96,10 @@ public class AdministratorManager implements Serializable {
         try {
             administratorBean.create(newAdministrator);
             
-            facesMsg = new FacesMessage(FacesMessage.SEVERITY_INFO, "User Created:", "A user was successfully created");
+            //facesMsg = new FacesMessage(FacesMessage.SEVERITY_INFO, "User Created:", "A user was successfully created");
         } catch (Exception e) {
             logger.warning("Problem removing a client in method removeClient.");
-            FacesExceptionHandler.handleException(e, "FAILED", component, logger);
+            FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
             return null;
         }
         return "/admin/users/administrators/view.xhtml?faces-redirect=true";
