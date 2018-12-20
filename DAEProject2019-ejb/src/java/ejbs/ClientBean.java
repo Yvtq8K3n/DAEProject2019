@@ -14,7 +14,8 @@ import exceptions.MyConstraintViolationException;
 import exceptions.Utils;
 import java.util.Collection;
 import java.util.List;
-import javax.annotation.security.RolesAllowed;
+import javax.annotation.security.DeclareRoles;
+import javax.annotation.security.PermitAll;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -23,14 +24,13 @@ import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import static javax.ws.rs.HttpMethod.POST;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
+import javax.annotation.security.RolesAllowed;
 
 /**
  *
@@ -38,6 +38,7 @@ import javax.ws.rs.core.Response;
  */
 @Stateless
 @Path("/clients")
+@DeclareRoles({"Administrator", "Client"})
 public class ClientBean extends Bean<Client>{
 
     @PersistenceContext(name="dae_project")//Peristance context usa o nome da bd do persistance.xml
@@ -75,7 +76,7 @@ public class ClientBean extends Bean<Client>{
     
     @DELETE
     @Path("/{username}")
-    @RolesAllowed("Administrator")
+    @RolesAllowed({"Administrator"})
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_XML)
     public Response remove(@PathParam("username") String username) 
@@ -98,6 +99,7 @@ public class ClientBean extends Bean<Client>{
     }
     
     @GET
+    @RolesAllowed("Administrator")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Collection<ClientDTO> getAll(){
         List<Client> clients =

@@ -2,17 +2,12 @@ package web;
 
 import dtos.AdministratorDTO;
 import dtos.ClientDTO;
-import dtos.DocumentDTO;
+import dtos.DocumentDTO;    
 import dtos.ProductDTO;
 import dtos.UserDTO;
-import ejbs.AdministratorBean;
-import ejbs.ClientBean;
 import ejbs.ConfigurationBean;
 import ejbs.ProductCatalogBean;
-import ejbs.UserBean;
-import entities.Administrator;
 import entities.Configuration;
-import entities.User;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,21 +26,30 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
+import javax.faces.application.Application;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import util.URILookup;
+import lombok.Getter;
+import lombok.Setter;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
+
 
 //@Named(value = "administratorManager")
 @ManagedBean
 @SessionScoped
 public class AdministratorManager implements Serializable {
     private static final Logger logger = Logger.getLogger("web.AdministratorManager");
-    private UIComponent component;
-    private Client client;
-    private HttpAuthenticationFeature feature;
-    private final String baseUri = "http://localhost:8080/DAEProject2019-war/webapi";
+    
+    private @Getter @Setter UIComponent component;
+    
+    private @Getter @Setter ProductDTO newProductDTO;
+    private @Getter @Setter ClientDTO newClient;
+    private @Getter @Setter AdministratorDTO newAdministrator;
+    private List<Configuration> allConfigurations;
+    private List<Configuration> currentConfigurations;
+    private DocumentDTO document;
     
     @EJB
     private ProductCatalogBean productCatalogBean;
@@ -54,34 +58,41 @@ public class AdministratorManager implements Serializable {
 
     @ManagedProperty(value = "#{uploadManager}")
     private UploadManager uploadManager;
-
-    @ManagedProperty(value = "#{userManager}")
-    private UserManager userManager;
-        
-    @PostConstruct
-    public void Init(){
-        feature = HttpAuthenticationFeature.basic(userManager.getUsername(), userManager.getPassword());
-        client.register(feature);
-    };
-
-    private ProductDTO newProductDTO;
-    private ClientDTO newClient;
-    private DocumentDTO document;
-    private AdministratorDTO newAdministrator;
-    private List<Configuration> allConfigurations;
-    private List<Configuration> currentConfigurations;
-
+    
+    @ManagedProperty(value="#{userManager}")
+    private @Getter @Setter UserManager userManager;
     
     public AdministratorManager() {
-        client = ClientBuilder.newClient();
         newClient = new ClientDTO();
         newProductDTO = new ProductDTO();
         newAdministrator = new AdministratorDTO();
+    }
+        
+    @PostConstruct
+    public void Init(){
+        
+    };
+    
+    private Client addHeaderBASIC() {
+        Client client = ClientBuilder.newClient();
+        FacesContext context = FacesContext.getCurrentInstance();
+        javax.faces.application.Application app = context.getApplication();
+        UserManager userManager = app.evaluateExpressionGet(context, "#{userManager}", UserManager.class);
+        
+        logger.warning("Username:"+userManager.getUsername());
+        logger.warning("Password:"+userManager.getPassword());
+        String username = userManager.getUsername();
+        String password = userManager.getPassword();
+        
+        HttpAuthenticationFeature feature = HttpAuthenticationFeature.basic(username, password);
+        client.register(feature);
+        return client;
     }
     
     public String createClient(){
         FacesMessage facesMsg;
         try {
+            Client client = addHeaderBASIC();
             Invocation.Builder invocationBuilder = 
                 client.target(URILookup.getBaseAPI())
                     .path("/clients")
@@ -103,7 +114,7 @@ public class AdministratorManager implements Serializable {
         FacesMessage facesMsg;
         try {
             Invocation.Builder invocationBuilder = 
-                client.target(URILookup.getBaseAPI())
+                addHeaderBASIC().target(URILookup.getBaseAPI())
                     .path("/administrators")
                     .request(MediaType.APPLICATION_XML);
             
@@ -143,12 +154,12 @@ public class AdministratorManager implements Serializable {
             UIParameter param = (UIParameter) event.getComponent().findComponent("deleteClientId");
             String clientId = param.getValue().toString();
             
-            Invocation.Builder invocationBuilder = 
-                client.target(URILookup.getBaseAPI())
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                    .target(URILookup.getBaseAPI())
                     .path("/clients/"+clientId)
                     .request(MediaType.APPLICATION_XML);
             Response response = invocationBuilder.delete();
-
+            logger.warning("Response:"+response.getStatus());
             facesMsg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Client Deleted:", "A client was successfully deleted");
         } catch (Exception e) {
             facesMsg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Delete Failed:", "A problem has occurred while attempting to remove a client.");
@@ -161,8 +172,8 @@ public class AdministratorManager implements Serializable {
             UIParameter param = (UIParameter) event.getComponent().findComponent("deleteAdministratorId");
             String administratorId = param.getValue().toString();
 
-            Invocation.Builder invocationBuilder = 
-                client.target(URILookup.getBaseAPI())
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                    .target(URILookup.getBaseAPI())
                     .path("/administrators/"+administratorId)
                     .request(MediaType.APPLICATION_XML);
             Response response = invocationBuilder.delete();
@@ -201,7 +212,8 @@ public class AdministratorManager implements Serializable {
     }
     public List<UserDTO> getAllUsers(){
         try {
-            List<UserDTO> users=client.target(URILookup.getBaseAPI())
+            List<UserDTO> users=addHeaderBASIC()
+                    .target(URILookup.getBaseAPI())
                     .path("/users")
                     .request(MediaType.APPLICATION_XML)
                     .get(new GenericType<List<UserDTO>>() {});
@@ -214,7 +226,8 @@ public class AdministratorManager implements Serializable {
     }
     public List<AdministratorDTO> getAllAdministrators(){
         try {
-            List<AdministratorDTO> administratos=client.target(URILookup.getBaseAPI())
+            List<AdministratorDTO> administratos=addHeaderBASIC()
+                    .target(URILookup.getBaseAPI())
                     .path("/administrators")
                     .request(MediaType.APPLICATION_XML)
                     .get(new GenericType<List<AdministratorDTO>>() {});
@@ -227,7 +240,7 @@ public class AdministratorManager implements Serializable {
     }
     public List<ClientDTO> getAllClients(){
         try {
-            List<ClientDTO> clients=client.target(URILookup.getBaseAPI())
+            List<ClientDTO> clients=addHeaderBASIC().target(URILookup.getBaseAPI())
                     .path("/clients")
                     .request(MediaType.APPLICATION_XML)
                     .get(new GenericType<List<ClientDTO>>() {});
@@ -248,13 +261,6 @@ public class AdministratorManager implements Serializable {
         //guestManager.reset();
     }
     
-    public UIComponent getComponent() {
-        return component;
-    }
-
-    public void setComponent(UIComponent component) {
-        this.component = component;
-    }
 
     public String uploadDocument() {
         try {
@@ -265,7 +271,7 @@ public class AdministratorManager implements Serializable {
             logger.warning("File: " +String.valueOf(uploadManager.getFile().getSize()));
             document = new DocumentDTO(uploadManager.getCompletePathFile(), uploadManager.getFilename(), uploadManager.getFile().getContentType());
             logger.warning("entrou");
-            /*lient.target(URILookup.getBaseAPI())
+            /*client.target(URILookup.getBaseAPI())
                     .path("/files/")
                     .request(MediaType.TEXT_HTML)
                     .put(Entity.text(document));
@@ -286,24 +292,7 @@ public class AdministratorManager implements Serializable {
         this.uploadManager = uploadManager;
     }
 
-    public ClientDTO getNewClient() {
-        return newClient;
-    }
-    public void setNewClient(ClientDTO newClient) {
-        this.newClient = newClient;
-    }
-    public AdministratorDTO getNewAdministrator() {
-        return newAdministrator;
-    }
-    public void setNewAdministrator(AdministratorDTO newAdministrator) {
-        this.newAdministrator = newAdministrator;
-    }
-    public ProductDTO getNewProductDTO() {
-        return newProductDTO;
-    }
-    public void setNewProductDTO(ProductDTO productDTO) {
-        this.newProductDTO = productDTO;
-    }
+    
     public List<Configuration> getCurrentConfigurations(){
         return currentConfigurations;
     }
@@ -318,6 +307,5 @@ public class AdministratorManager implements Serializable {
     }
     public void setCurrentConfigurations(List<Configuration> currentConfigurations) {
         this.currentConfigurations = currentConfigurations;
-    }     
-
+    }    
 }

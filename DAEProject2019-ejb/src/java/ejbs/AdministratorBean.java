@@ -14,8 +14,8 @@ import exceptions.Utils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -37,6 +37,7 @@ import javax.ws.rs.core.Response;
  */
 @Stateless
 @Path("/administrators")
+@PermitAll
 public class AdministratorBean extends Bean<Administrator>{
 
     @PersistenceContext(name="dae_project")//Peristance context usa o nome da bd do persistance.xml

@@ -1,7 +1,6 @@
 package web;
 
 import dtos.ProductDTO;
-import ejbs.ConfigBean;
 import ejbs.ProductCatalogBean;
 import entities.Configuration;
 import java.io.Serializable;
@@ -24,10 +23,7 @@ import javax.ws.rs.client.ClientBuilder;
 @ManagedBean
 @SessionScoped
 public class GuestManager implements Serializable {
-    
-    @EJB
-    private ConfigBean configBean;
-    
+        
     private static final Logger logger = Logger.getLogger("web.GuestManager");
     private UIComponent component;
     private Client client;
@@ -66,7 +62,7 @@ public class GuestManager implements Serializable {
     }
     public void setSelectedProduct(ProductDTO selectedProduct) {
         this.selectedProduct = selectedProduct;
-    }   
+    }
     
     public List<Configuration> getConfigurations(){
         List<Configuration> configurations = new ArrayList<>();
@@ -93,7 +89,7 @@ public class GuestManager implements Serializable {
         
         return templates;
     }
-    
+   
         
     
     
@@ -106,6 +102,6 @@ public class GuestManager implements Serializable {
     
     void reset() {
         logger.warning("I WAS CALLED");
-        templates  = getAllProductCatalog();
+        //templates  = getAllProductCatalog();
     }
 }

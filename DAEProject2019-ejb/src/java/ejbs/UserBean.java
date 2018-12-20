@@ -9,6 +9,7 @@ import dtos.UserDTO;
 import entities.User;
 import java.util.Collection;
 import java.util.List;
+import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -24,6 +25,7 @@ import javax.ws.rs.core.MediaType;
  */
 @Stateless
 @Path("/users")
+@PermitAll
 public class UserBean extends Bean<User>{
 
     @PersistenceContext(name="dae_project")//Peristance context usa o nome da bd do persistance.xml
@@ -34,7 +36,7 @@ public class UserBean extends Bean<User>{
     public Collection<UserDTO> getAll(){
         List<User> users =
             em.createNamedQuery("getAllUsers").getResultList();
-
+        
         return toDTOs(users, UserDTO.class);       
     }
 }

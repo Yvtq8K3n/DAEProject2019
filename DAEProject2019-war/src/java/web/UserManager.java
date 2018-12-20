@@ -43,10 +43,7 @@ public class UserManager implements Serializable{
         HttpServletRequest request =
         (HttpServletRequest) context.getExternalContext().getRequest();
         try {
-            logger.warning(this.username);
-            logger.warning(this.password);
             request.login(this.username, this.password);
-            
         } catch (ServletException e) {
             logger.log(Level.WARNING, e.getMessage());
             
