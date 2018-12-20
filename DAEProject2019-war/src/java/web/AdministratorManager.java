@@ -27,6 +27,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.faces.application.Application;
+import javax.inject.Named;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -36,7 +37,7 @@ import lombok.Setter;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 
 
-//@Named(value = "administratorManager")
+@Named(value = "administratorManager")
 @ManagedBean
 @SessionScoped
 public class AdministratorManager implements Serializable {
