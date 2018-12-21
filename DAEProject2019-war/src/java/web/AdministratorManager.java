@@ -299,7 +299,8 @@ public class AdministratorManager implements Serializable {
         return "/index.xhtml?faces-redirect=true";
     }
 
-    public void emailExample(){/*
+    public void emailExample(){
+        /*
         EmailDTO email = emailManager.removeProposta(admin, currentProposta, recipients);
         
         Invocation.Builder invocationBuilder = addHeaderBASIC()
@@ -307,7 +308,7 @@ public class AdministratorManager implements Serializable {
                     .path("/email")
                     .request(MediaType.APPLICATION_XML);
         Response response = invocationBuilder.post(Entity.xml(email));
-                  **/  
+        */  
     }
 
     public EmailManager getEmailManager() {

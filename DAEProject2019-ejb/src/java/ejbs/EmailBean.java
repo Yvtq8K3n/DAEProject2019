@@ -8,7 +8,6 @@ import java.util.Properties;
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -39,7 +38,6 @@ public class EmailBean {
     @RolesAllowed({"Administrator","Client"})
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_XML)
-    @Asynchronous
     public synchronized Response send(EmailDTO email) throws AddressException, MessagingException 
     {
         String userEmail = email.getUserEmail();
