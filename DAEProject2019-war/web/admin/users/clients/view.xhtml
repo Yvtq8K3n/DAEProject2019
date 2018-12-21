@@ -13,9 +13,6 @@
  <ui:define name="title">Administrators</ui:define> 
  
  <ui:define name="main">
-    <b:growl id="growlMsg" globalOnly="true" placementFrom="bottom"
-         show-detail="true" show-summary="false" allowDismiss="true"
-         delay="5000" escape="true" />
      
     <h:form id="formId">
         <h2>Clients</h2>
@@ -30,6 +27,7 @@
             <b:dataTable id="Users" value="#{admin.allClients}" 
                 var="rowItem" print="true" lang="en"
                 excel="true" csv="true" pdf="true" copy="true">
+                <b:dataTableColumn value="#{rowItem.username}" />
                 <b:dataTableColumn value="#{rowItem.name}" />
                 <b:dataTableColumn value="#{rowItem.email}" />
                 <b:dataTableColumn value="#{rowItem.address}" />

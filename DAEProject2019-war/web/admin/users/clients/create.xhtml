@@ -19,12 +19,16 @@
         <b:row>
             <b:column span="7">
                 <b:messages styleClass="msgs" redisplay="true" for="@parent" recursive="true"/>
-                <b:inputText label="Username" value="#{client.username}"/> 
-                <b:inputSecret label="Password" value="#{client.password}"/>
-                <b:inputText label="Name" value="#{client.name}"/>
-                <b:inputText label="Email" value="#{client.email}"/>
-                <b:inputText label="Address" value="#{client.address}"/>
-                <b:inputText label="Contact" value="#{client.contact}"/>
+                <b:inputText label="Username" required="true" value="#{client.username}"/> 
+                <b:inputSecret label="Password" required="true" value="#{client.password}"/>
+                <b:inputText label="Name" required="true" value="#{client.name}"/>
+                <b:inputText label="Email" required="true" 
+                    value="#{client.email}"
+                    validatorMessage="Invalid Email">
+                    <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
+                </b:inputText>
+                <b:inputText label="Address" required="true" value="#{client.address}"/>
+                <b:inputText label="Contact" required="true" value="#{client.contact}"/>
             
                 <hr></hr>
                 <b:commandButton

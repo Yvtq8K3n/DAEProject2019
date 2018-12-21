@@ -26,7 +26,6 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
-import javax.faces.application.Application;
 import javax.inject.Named;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
@@ -35,12 +34,16 @@ import util.URILookup;
 import lombok.Getter;
 import lombok.Setter;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
+import util.MessageHandler;
 
 
 @Named(value = "administratorManager")
 @ManagedBean
 @SessionScoped
 public class AdministratorManager implements Serializable {
+    private static final int HTTP_CREATED = Response.Status.CREATED.getStatusCode();
+    private static final int HTTP_OK = Response.Status.OK.getStatusCode();
+    
     private static final Logger logger = Logger.getLogger("web.AdministratorManager");
     
     private @Getter @Setter UIComponent component;
@@ -80,8 +83,6 @@ public class AdministratorManager implements Serializable {
         javax.faces.application.Application app = context.getApplication();
         UserManager userManager = app.evaluateExpressionGet(context, "#{userManager}", UserManager.class);
         
-        logger.warning("Username:"+userManager.getUsername());
-        logger.warning("Password:"+userManager.getPassword());
         String username = userManager.getUsername();
         String password = userManager.getPassword();
         
@@ -100,19 +101,21 @@ public class AdministratorManager implements Serializable {
                     .request(MediaType.APPLICATION_XML);
             
             Response response = invocationBuilder.post(Entity.xml(newClient));
-        
             newClient.reset();
-            facesMsg = new FacesMessage(FacesMessage.SEVERITY_INFO, "User Created:", "A user was successfully created");
-            FacesContext.getCurrentInstance().addMessage(null, facesMsg);  
+            
+            String message = response.readEntity(String.class);
+            if (response.getStatus() != HTTP_CREATED){
+                throw new Exception(message);
+            }
+            
+            MessageHandler.successMessage("Client Created:", message);
         } catch (Exception e) {
-            facesMsg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Create Failed:", "Problem creating a client in method createClient");
-            FacesContext.getCurrentInstance().addMessage(null, facesMsg);  
+            FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
             return null;
         }
         return "/admin/users/clients/view.xhtml?faces-redirect=true";
     }
     public String createAdmin(){
-        FacesMessage facesMsg;
         try {
             Invocation.Builder invocationBuilder = 
                 addHeaderBASIC().target(URILookup.getBaseAPI())
@@ -120,12 +123,15 @@ public class AdministratorManager implements Serializable {
                     .request(MediaType.APPLICATION_XML);
             
             Response response = invocationBuilder.post(Entity.xml(newAdministrator));
-        
             newAdministrator.reset();
             
-            //facesMsg = new FacesMessage(FacesMessage.SEVERITY_INFO, "User Created:", "A user was successfully created");
+            String message = response.readEntity(String.class);
+            if (response.getStatus() != HTTP_CREATED){
+                throw new Exception(message);
+            }
+            
+            MessageHandler.successMessage("Administrator Created:",message);
         } catch (Exception e) {
-            logger.warning("Problem removing a client in method removeClient.");
             FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
             return null;
         }
@@ -148,9 +154,8 @@ public class AdministratorManager implements Serializable {
         }  
         return "/index.xhtml?faces-redirect=true";
     }
-
+    
     public void removeClient(ActionEvent event){
-        FacesMessage facesMsg;
         try {
             UIParameter param = (UIParameter) event.getComponent().findComponent("deleteClientId");
             String clientId = param.getValue().toString();
@@ -160,15 +165,18 @@ public class AdministratorManager implements Serializable {
                     .path("/clients/"+clientId)
                     .request(MediaType.APPLICATION_XML);
             Response response = invocationBuilder.delete();
-            logger.warning("Response:"+response.getStatus());
-            facesMsg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Client Deleted:", "A client was successfully deleted");
+            
+            String message = response.readEntity(String.class);
+            if (response.getStatus() != HTTP_OK){
+                throw new Exception(message);
+            }
+            
+            MessageHandler.successMessage("Client Deleted:", message);
         } catch (Exception e) {
-            facesMsg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Delete Failed:", "A problem has occurred while attempting to remove a client.");
+            MessageHandler.failMessage("Delete Failed:", e.getMessage());
         }
-        FacesContext.getCurrentInstance().addMessage(null, facesMsg);
     }
     public void removeAdministrator(ActionEvent event){
-        FacesMessage facesMsg;
         try {
             UIParameter param = (UIParameter) event.getComponent().findComponent("deleteAdministratorId");
             String administratorId = param.getValue().toString();
@@ -179,11 +187,15 @@ public class AdministratorManager implements Serializable {
                     .request(MediaType.APPLICATION_XML);
             Response response = invocationBuilder.delete();
             
-            facesMsg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Administrator Deleted:", "A administrator was successfully deleted");
+            String message = response.readEntity(String.class);
+            if (response.getStatus() != HTTP_OK){
+                throw new Exception(message);
+            }
+            
+            MessageHandler.successMessage("Administrator Deleted:", message);
         } catch (Exception e) {
-            facesMsg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Delete Failed:", "A problem has occurred while attempting to remove a client.");
+            MessageHandler.failMessage("Delete Failed:", e.getMessage());
         }
-        FacesContext.getCurrentInstance().addMessage(null, facesMsg);
     }
     public void removeTemplate(ActionEvent event){
         FacesMessage facesMsg;
@@ -308,5 +320,8 @@ public class AdministratorManager implements Serializable {
     }
     public void setCurrentConfigurations(List<Configuration> currentConfigurations) {
         this.currentConfigurations = currentConfigurations;
-    }    
+    }
+    
+    
+    
 }

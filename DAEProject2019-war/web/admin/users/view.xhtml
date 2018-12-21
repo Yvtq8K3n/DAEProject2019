@@ -19,6 +19,7 @@
         <b:dataTable id="Users" value="#{admin.allUsers}" 
             var="rowItem" print="true" lang="en"
             excel="true" csv="true" pdf="true" copy="true">
+            <b:dataTableColumn value="#{rowItem.username}"/> 
             <b:dataTableColumn value="#{rowItem.name}" />
             <b:dataTableColumn value="#{rowItem.email}" />
             <b:dataTableColumn label="Role" value="#{rowItem.group}" />

@@ -11,7 +11,6 @@ import exceptions.EntityDoesNotExistException;
 import exceptions.EntityExistsException;
 import exceptions.MyConstraintViolationException;
 import exceptions.Utils;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.annotation.security.PermitAll;
@@ -53,7 +52,7 @@ public class AdministratorBean extends Bean<Administrator>{
         try{
             Administrator adminstrator = em.find(Administrator.class, administratorDTO.getUsername());
             if (adminstrator != null) {
-                throw new EntityExistsException("A administrator with that username already exists.");
+                throw new EntityExistsException("Username already taken.");
             }
             
             em.persist(new Administrator(
@@ -64,13 +63,13 @@ public class AdministratorBean extends Bean<Administrator>{
                     administratorDTO.getOccupation())
             );
             
-            return Response.ok().build();
+            return Response.status(Response.Status.CREATED).entity("User was successfully created.").build();
         }catch (EntityExistsException e) {
-            throw e;
+            return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
         }catch (ConstraintViolationException e){
-            throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
         }catch (Exception e) {
-            return Response.status(400).entity("A problem has occurred while attempting to create an administrator.").build();
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
         }  
     }
     
@@ -88,13 +87,13 @@ public class AdministratorBean extends Bean<Administrator>{
             }
             em.remove(administrator);
             
-            return Response.ok().build();
+            return Response.status(Response.Status.OK).entity("User was successfully deleted.").build();
         }catch (EntityDoesNotExistException e) {
-            throw e;
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }catch (ConstraintViolationException e){
-            throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
         }catch (Exception e) {
-            return Response.status(400).entity("A problem has occurred while attempting to remove an administrator.").build();
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
         }
     }
     
