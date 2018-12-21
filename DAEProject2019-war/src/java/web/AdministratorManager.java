@@ -3,6 +3,7 @@ package web;
 import dtos.AdministratorDTO;
 import dtos.ClientDTO;
 import dtos.DocumentDTO;    
+import dtos.EmailDTO;
 import dtos.ProductDTO;
 import dtos.UserDTO;
 import ejbs.ConfigurationBean;
@@ -66,6 +67,9 @@ public class AdministratorManager implements Serializable {
     @ManagedProperty(value="#{userManager}")
     private @Getter @Setter UserManager userManager;
     
+    @ManagedProperty(value="#{emailManager}")
+    private EmailManager emailManager;
+    
     public AdministratorManager() {
         newClient = new ClientDTO();
         newProductDTO = new ProductDTO();
@@ -94,9 +98,8 @@ public class AdministratorManager implements Serializable {
     public String createClient(){
         FacesMessage facesMsg;
         try {
-            Client client = addHeaderBASIC();
-            Invocation.Builder invocationBuilder = 
-                client.target(URILookup.getBaseAPI())
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                    .target(URILookup.getBaseAPI())
                     .path("/clients")
                     .request(MediaType.APPLICATION_XML);
             
@@ -271,7 +274,6 @@ public class AdministratorManager implements Serializable {
     public void reset(){
         allConfigurations = null;
         currentConfigurations = null;
-        //guestManager.reset();
     }
     
 
@@ -297,6 +299,25 @@ public class AdministratorManager implements Serializable {
         return "/index.xhtml?faces-redirect=true";
     }
 
+    public void emailExample(){/*
+        EmailDTO email = emailManager.removeProposta(admin, currentProposta, recipients);
+        
+        Invocation.Builder invocationBuilder = addHeaderBASIC()
+                    .target(URILookup.getBaseAPI())
+                    .path("/email")
+                    .request(MediaType.APPLICATION_XML);
+        Response response = invocationBuilder.post(Entity.xml(email));
+                  **/  
+    }
+
+    public EmailManager getEmailManager() {
+        return emailManager;
+    }
+
+    public void setEmailManager(EmailManager emailManager) {
+        this.emailManager = emailManager;
+    }    
+    
     public UploadManager getUploadManager() {
         return uploadManager;
     }
