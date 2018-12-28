@@ -7,7 +7,7 @@ package ejbs;
 
 import dtos.ClientDTO;
 import entities.Client;
-import entities.Product;
+import entities.Configuration;
 import exceptions.EntityDoesNotExistException;
 import exceptions.EntityExistsException;
 import exceptions.MyConstraintViolationException;
@@ -127,7 +127,7 @@ public class ClientBean extends Bean<Client>{
             if (client == null) {
                 System.out.println("ERROR: can't find client in addProduct of clientBean");
             }
-            Product product = em.find(Product.class, productId);
+            Configuration product = em.find(Configuration.class, productId);
             if (product == null) {
                 System.out.println("ERROR: can't find product in addProduct of clientBean");
             }

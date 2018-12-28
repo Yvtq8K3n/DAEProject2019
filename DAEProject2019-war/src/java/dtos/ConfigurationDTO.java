@@ -16,15 +16,15 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "Product")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ProductDTO extends TemplateDTO implements Serializable{
+public class ConfigurationDTO extends TemplateDTO implements Serializable{
     
     private String baseVersion;
     private String clientUsername;
 
-    public ProductDTO(){
+    public ConfigurationDTO(){
     }
   
-    public ProductDTO(Long id, String name, String description, String baseVersion, String clientUsername){
+    public ConfigurationDTO(Long id, String name, String description, String baseVersion, String clientUsername){
         super(id, name, description);
         this.baseVersion = baseVersion;
         this.clientUsername = clientUsername;

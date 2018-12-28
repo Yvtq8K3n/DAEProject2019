@@ -2,15 +2,17 @@ package web;
 
 import dtos.AdministratorDTO;
 import dtos.ClientDTO;
+import dtos.ParameterDTO;
 import dtos.DocumentDTO;    
 import dtos.EmailDTO;
-import dtos.ProductDTO;
+import dtos.ConfigurationDTO;
+import dtos.TemplateDTO;
 import dtos.UserDTO;
 import ejbs.ConfigurationBean;
-import ejbs.ProductCatalogBean;
-import entities.Configuration;
+import ejbs.TemplateBean;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
@@ -49,15 +51,15 @@ public class AdministratorManager implements Serializable {
     
     private @Getter @Setter UIComponent component;
     
-    private @Getter @Setter ProductDTO newProductDTO;
+    private @Getter @Setter TemplateDTO newProductDTO;
     private @Getter @Setter ClientDTO newClient;
     private @Getter @Setter AdministratorDTO newAdministrator;
-    private List<Configuration> allConfigurations;
-    private List<Configuration> currentConfigurations;
+    private List<ParameterDTO> allConfigurations;
+    private List<ParameterDTO> currentConfigurations;
     private DocumentDTO document;
     
     @EJB
-    private ProductCatalogBean productCatalogBean;
+    private TemplateBean productCatalogBean;
     @EJB
     private ConfigurationBean configurationBean;
 
@@ -72,7 +74,7 @@ public class AdministratorManager implements Serializable {
     
     public AdministratorManager() {
         newClient = new ClientDTO();
-        newProductDTO = new ProductDTO();
+        newProductDTO = new TemplateDTO();
         newAdministrator = new AdministratorDTO();
     }
         
@@ -146,11 +148,49 @@ public class AdministratorManager implements Serializable {
             FacesExceptionHandler.handleException(new Exception(), "A template must have configurations", component, logger);
             return null;
         }
-           
+        
+        //Create ProductCatalog
         try {
-            productCatalogBean.create(newProductDTO, currentConfigurations);
+            logger.info(newProductDTO.getName());
+            logger.info(newProductDTO.getDescription());
+            Invocation.Builder invocationBuilder = 
+                addHeaderBASIC().target(URILookup.getBaseAPI())
+                    .path("/catalog")
+                    .request(MediaType.APPLICATION_XML);
+        
+            Response response = invocationBuilder.post(Entity.xml(newProductDTO));
+            
+            logger.info("Template Created:"+response.getStatus());
+            String message = response.readEntity(String.class);
+            if (response.getStatus() != HTTP_CREATED){
+                throw new Exception(message);
+            }
+            MessageHandler.successMessage("Template Created:", message);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
+            return null;
+        }  
+        
+        //Associate Configurations to ProductCatalog
+        try{
+            Invocation.Builder invocationBuilder = 
+                addHeaderBASIC().target(URILookup.getBaseAPI())
+                    .path("/catalog/"+newProductDTO.getId())
+                    .request(MediaType.APPLICATION_JSON);
+            Response response = invocationBuilder.post(Entity.json(currentConfigurations.iterator()));
            
-            reset();//Resets the form, the only downside of using ajax
+            logger.info("Configurations Associated:"+response.getStatus());
+            String message = response.readEntity(String.class);
+            if (response.getStatus() != HTTP_CREATED){
+                throw new Exception(message);
+            }
+            
+            MessageHandler.successMessage("Configurations Associated:",message);
+            
+            //productCatalogBean.create(newProductDTO, currentConfigurations);
+            newProductDTO.reset();
+            allConfigurations = null;
+            currentConfigurations = null;
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "An unexpected error has occurred while creating a Template", component, logger);
             return null;
@@ -219,11 +259,11 @@ public class AdministratorManager implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, facesMsg);
     }
       
-    public List<Configuration> getAllConfigurations(){
-        if (allConfigurations == null) {
+    public List<ParameterDTO> getAllConfigurations(){
+        /*if (allConfigurations == null) {
             allConfigurations = new ArrayList<>();
             allConfigurations.addAll(configurationBean.getAll());
-        }
+        }*/
         return allConfigurations;
     }
     public List<UserDTO> getAllUsers(){
@@ -328,19 +368,19 @@ public class AdministratorManager implements Serializable {
     }
 
     
-    public List<Configuration> getCurrentConfigurations(){
+    public List<ParameterDTO> getCurrentConfigurations(){
         return currentConfigurations;
     }
-    public void addConfiguration(Configuration selectedConfiguration){
+    public void addConfiguration(ParameterDTO selectedConfiguration){
         allConfigurations.remove(selectedConfiguration);
         if (currentConfigurations == null) currentConfigurations = new ArrayList<>();
         currentConfigurations.add(selectedConfiguration);
     }
-    public void removeConfiguration(Configuration selectedConfiguration){
+    public void removeConfiguration(ParameterDTO selectedConfiguration){
         currentConfigurations.remove(selectedConfiguration);
         allConfigurations.add(selectedConfiguration);
     }
-    public void setCurrentConfigurations(List<Configuration> currentConfigurations) {
+    public void setCurrentConfigurations(List<ParameterDTO> currentConfigurations) {
         this.currentConfigurations = currentConfigurations;
     }
     

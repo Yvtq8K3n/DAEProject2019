@@ -1,78 +1,47 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package entities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-/**
- *
- * @author Joao Marquez
- */
 @Entity
-@Table(name="Configurations")
+@Table(name = "Configuration")
 @NamedQuery(
     name = "getAllConfigurations",
-    query = "SELECT c FROM Configuration c"
+    query = "SELECT c FROM Configuration c ORDER BY c.name"
 )
-public class Configuration implements Serializable {
+public class Configuration extends Software implements Serializable {    
     
     public enum Status {
         ACTIVE,INACTIVE,SUSPEND
     }
-
-    @Id
-    @Column(name="ID")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
     
-    @NotNull(message = "Configuration must have title")
-    private String title;
+    @NotNull(message = "Product must have a version")
+    private String baseVersion;
     
-    @NotNull(message = "Template must have a description")
-    private String description;
+    @ManyToOne
+    @JoinColumn(name = "CLIENT_CODE")
+    private Client owner;
     
     @Enumerated(EnumType.STRING)
     private Status status;
     
-    @NotNull(message = "Configuration must have base version")
-    private String baseVersion;
-    
     @NotNull(message = "Configuration must have base Contract Data")
-    private String contractData;
-    
-    @ManyToMany(mappedBy="configurations")
-    private List<Product> products;
-    
-    @ManyToMany(mappedBy="configurations")
-    private List<ProductCatalog> productsCatalog;
-    
+    private String contractDate;
+
     @OneToMany(cascade=CascadeType.REMOVE)
     private List<Module> modules;
-    
-    @OneToMany(mappedBy = "configuration", cascade=CascadeType.REMOVE)
-    private List<Comment> comments;
-    
-    @ElementCollection(targetClass=String.class)
-    private List<String> hardware;
     
     @ElementCollection(targetClass=String.class)
     private List<String> cloudServices;
@@ -81,162 +50,123 @@ public class Configuration implements Serializable {
     private List<String> activeLicences;
     
     @ElementCollection(targetClass=String.class)
-    private List<String> params;
+    protected List<String> params;
     
-    @ElementCollection(targetClass=String.class)
-    private List<String> extensions;
+    @OneToMany(cascade=CascadeType.REMOVE)
+    private List<Artifact> artifacts;
     
-    @Column(name="demo") //Set column name
-    @ElementCollection(targetClass=String.class)
-    private List<String> demo;
-    
-    
-    
+    @OneToMany(cascade=CascadeType.REMOVE)
+    private List<Comment> comments;
 
-    public Configuration(){ 
-         modules = new ArrayList<>();
-         products= new ArrayList<>();
-         productsCatalog= new ArrayList<>();
-         comments =  new ArrayList<>();
-         hardware = new ArrayList<>();
-         cloudServices = new ArrayList<>();
-         activeLicences = new ArrayList<>();
-         params = new ArrayList<>();
-         extensions = new ArrayList<>();
-         demo = new ArrayList<>();
+    public Configuration() {
+        this.hardware = new ArrayList<>();
+        this.extensions = new ArrayList<>();
+        this.modules = new ArrayList<>();
+        this.cloudServices = new ArrayList<>();
+        this.activeLicences = new ArrayList<>();
+        this.params = new ArrayList<>();
+        this.artifacts = new ArrayList<>();
+        this.comments = new ArrayList<>();
     }
 
-    public Configuration(String title, String description, Status status, String baseVersion, String contractData) {
+    public Configuration(String name, String description, String baseVersion, Client client, String contractDate) {
         this();
-        this.title = title;
+        this.name = name;
         this.description = description;
-        this.status = status;
+        this.status = Status.ACTIVE;
         this.baseVersion = baseVersion;
-        this.contractData = contractData;
+        this.owner = client;
+        this.contractDate = contractDate;
     }
     
-    
-    
-    public void addModule(Module module){
-        modules.add(module);
+    public void addModule(Module module) {
+       modules.add(module);
     }
-    
-    public void rmeoveModule(Module module){
+    public Module removeModule(Module module) {
         modules.remove(module);
+        return module;
     }
-    
-    public void addComment(Comment comment){
-        comments.add(comment);
+    public List<Module> getModule() {
+        return modules;
     }
-    
-     public void removeComment(Comment comment){
-        comments.remove(comment);
-    }
-     
-    public void addProduct(Product product){
-        this.products.add(product);
-    }
-    
-    public void removeProduct(Product product){
-        this.products.remove(product);
-    }
-         
-    public void addHardware(String hardware){
-        this.hardware.add(hardware);
-    }
-    
-    public void removeHardware(String hardware){
-        this.hardware.remove(hardware);
-    }
-    
-    public void addCloudService(String cloudService){
-        this.cloudServices.add(cloudService);
-    }
-    
-    public void removeCloudService(String cloudService){
-        this.cloudServices.remove(cloudService);
-    }
-    
-    public void addActiveLicence(String activeLicence){
-        this.activeLicences.add(activeLicence);
-    }
-    
-    public void removeActiveLicence(String activeLicence){
-        this.activeLicences.remove(activeLicence);
-    }
-    
-    public void addParam(String param){
-        this.params.add(param);
-    }
-    
-    public void removeParam(String param){
-        this.params.remove(param);
-    }
-    
-    public void addExtension(String extension){
-        this.extensions.add(extension);
-    }
-    
-    public void removeExtension(String extension){
-        this.extensions.remove(extension);
-    }
-    
-    public void addDemo(String demo){
-        this.demo.add(demo);
-    }
-    
-    public void removeDemo(String demo){
-        this.demo.remove(demo);
-    }
-    
-     //GETTERS AND SETTERS
-
-    public Long getId() {
-        return id;
+    public void setModule(List<Module> modules) {
+        this.modules = modules;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
+    /**
+     *
+     * Getters and Setters
+     */
+    
     public String getBaseVersion() {
         return baseVersion;
     }
-
     public void setBaseVersion(String baseVersion) {
         this.baseVersion = baseVersion;
     }
 
-    public String getContractData() {
-        return contractData;
+    public Client getOwner() {
+        return owner;
+    }
+    public void setOwner(Client owner) {
+        this.owner = owner;
+    } 
+
+    public Status getStatus() {
+        return status;
+    }
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
-    public void setContractData(String contractData) {
-        this.contractData = contractData;
+    public String getContractDate() {
+        return contractDate;
     }
+    public void setContractDate(String contractDate) {
+        this.contractDate = contractDate;
+    }
+
+    public List<Module> getModules() {
+        return modules;
+    }
+    public void setModules(List<Module> modules) {
+        this.modules = modules;
+    }
+
+    public List<String> getCloudServices() {
+        return cloudServices;
+    }
+    public void setCloudServices(List<String> cloudServices) {
+        this.cloudServices = cloudServices;
+    }
+
+    public List<String> getActiveLicences() {
+        return activeLicences;
+    }
+    public void setActiveLicences(List<String> activeLicences) {
+        this.activeLicences = activeLicences;
+    }
+
+    public List<String> getParams() {
+        return params;
+    }
+    public void setParams(List<String> params) {
+        this.params = params;
+    }
+
+    public List<Artifact> getArtifacts() {
+        return artifacts;
+    }
+    public void setArtifacts(List<Artifact> artifacts) {
+        this.artifacts = artifacts;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+    
     
 }

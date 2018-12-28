@@ -1,7 +1,7 @@
 package web;
 
-import dtos.ProductDTO;
-import ejbs.ProductCatalogBean;
+import dtos.ConfigurationDTO;
+import ejbs.TemplateBean;
 import entities.Configuration;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -28,14 +28,14 @@ public class GuestManager implements Serializable {
     private UIComponent component;
     private Client client;
     
-    private ProductDTO selectedProduct;
+    private ConfigurationDTO selectedProduct;
  
-    private List<ProductDTO> templates;
+    private List<ConfigurationDTO> templates;
     private String searchTemplate;   
     
     //Gonna disappear after rest    
     @EJB
-    private ProductCatalogBean productCatalogBean;
+    private TemplateBean productCatalogBean;
     
     public void GuestManager(){
         
@@ -57,16 +57,16 @@ public class GuestManager implements Serializable {
     
 
     
-    public ProductDTO getSelectedProduct() {
+    public ConfigurationDTO getSelectedProduct() {
         return selectedProduct;
     }
-    public void setSelectedProduct(ProductDTO selectedProduct) {
+    public void setSelectedProduct(ConfigurationDTO selectedProduct) {
         this.selectedProduct = selectedProduct;
     }
     
     public List<Configuration> getConfigurations(){
         List<Configuration> configurations = new ArrayList<>();
-        configurations.addAll(productCatalogBean.getConfigurations(selectedProduct.getId()));
+        //configurations.addAll(productCatalogBean.getConfigurations(selectedProduct.getId()));
             
         return configurations;
     }
@@ -74,7 +74,7 @@ public class GuestManager implements Serializable {
     ////////////////////////////////////////////////////////////////////////////
     //The following code is for the Filter in Catalog View /////////////////////
     ////////////////////////////////////////////////////////////////////////////
-    public List<ProductDTO> getAllProductCatalog(){
+    public List<ConfigurationDTO> getAllProductCatalog(){
         templates = new ArrayList<>();
         
         if (searchTemplate != null && !searchTemplate.isEmpty()){

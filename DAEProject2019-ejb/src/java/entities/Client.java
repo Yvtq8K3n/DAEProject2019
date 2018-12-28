@@ -24,7 +24,7 @@ public class Client extends User implements Serializable {
     private String contact;
     
     @OneToMany(mappedBy = "owner", cascade = CascadeType.REMOVE)
-    private List<Product> products;
+    private List<Configuration> products;
         
     
     public Client() {
@@ -39,11 +39,11 @@ public class Client extends User implements Serializable {
         
     }
     
-    public void addProduct(Product product){
+    public void addProduct(Configuration product){
         products.add(product);
     }
     
-    public void removeProduct(Product product){
+    public void removeProduct(Configuration product){
         products.remove(product);
     }
 
@@ -63,11 +63,11 @@ public class Client extends User implements Serializable {
         this.contact = contact;
     }
 
-    public List<Product> getProducts() {
+    public List<Configuration> getProducts() {
         return products;
     }
 
-    public void setProducts(List<Product> products) {
+    public void setProducts(List<Configuration> products) {
         this.products = products;
     }
     

@@ -6,34 +6,37 @@
 package dtos;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Olek
+ * @author Joao Marquez
  */
-@XmlRootElement(name = "Product")
+@XmlRootElement(name = "Module")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class TemplateDTO implements Serializable{
-    private Long id;
-    protected String name;
-    protected String description;
-
-    public TemplateDTO() {
-    }
+public class ModuleDTO implements Serializable{
     
-    public TemplateDTO(Long id, String name, String description) {
+    private Long id;
+    private String name;
+    private String version;
+    
+    public ModuleDTO(){
+    }
+
+    public ModuleDTO(Long id, String name, String version) {
         this.id = id;
         this.name = name;
-        this.description = description;
+        this.version = version;
     }
     
     public void reset() {
-        setId(null);
-        setName(null);
-        setDescription(null);
+       setId(null);
+       setName(null);
+       setVersion(null);
     }
 
     public Long getId() {
@@ -43,7 +46,7 @@ public class TemplateDTO implements Serializable{
     public void setId(Long id) {
         this.id = id;
     }
-    
+
     public String getName() {
         return name;
     }
@@ -52,13 +55,11 @@ public class TemplateDTO implements Serializable{
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
+    public String getVersion() {
+        return version;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setVersion(String version) {
+        this.version = version;
     }
-    
-    
 }

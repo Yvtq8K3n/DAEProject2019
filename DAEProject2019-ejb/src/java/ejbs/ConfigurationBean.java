@@ -5,17 +5,28 @@
  */
 package ejbs;
 
-import entities.Configuration;
+import dtos.ConfigurationDTO;
+import entities.Client;
 import entities.Module;
-import entities.Product;
-import entities.Template;
+import entities.Configuration;
+import entities.Software;
 import exceptions.EntityDoesNotExistException;
+import exceptions.EntityExistsException;
+import exceptions.Utils;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.validation.ConstraintViolationException;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 
 /**
@@ -30,10 +41,35 @@ public class ConfigurationBean extends Bean<Configuration>{
     @PersistenceContext(name="dae_project")//Peristance context usa o nome da bd do persistance.xml
     EntityManager em;
    
-    public void create(String title, String description, Configuration.Status status, String baseVersion, String contractData) {
-        Configuration configuration = new Configuration(title, description, status, baseVersion, contractData);
-        System.out.println("CONFIGURATION ID: " + configuration.getId()); 
-        em.persist(configuration);
+    @POST
+    @RolesAllowed("Administrator")
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_XML)
+    public Response create(ConfigurationDTO confDTO) {
+        try{
+            if (confDTO.getClientUsername() == null)
+                throw new EntityDoesNotExistException("Invalid Username");
+            
+            Client client = em.find(Client.class, confDTO.getClientUsername());
+            if(client == null) 
+                throw new EntityDoesNotExistException("Client not found.");
+            
+            Configuration conf = new Configuration(
+                    confDTO.getName(), 
+                    confDTO.getDescription(),
+                    confDTO.getBaseVersion(), 
+                    client, 
+                    confDTO.getContractDate()
+            );
+            em.persist(conf);
+        return Response.status(Response.Status.CREATED).entity("Configuration was successfully created.").build();
+        }catch (EntityDoesNotExistException e) {
+            return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
+        }catch (ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
+        }catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
+        } 
     }
     
     public void addModule(Long configurationId, Long moduleId){
@@ -60,15 +96,15 @@ public class ConfigurationBean extends Bean<Configuration>{
         }
     }
     
-    public List<Configuration> getProductConfigurations(Long productId)
+    public Collection<ConfigurationDTO> getProductConfigurations(Long productId)
      throws EntityDoesNotExistException{
         try {
-            Product product = em.find(Product.class, productId);
+            Configuration product = em.find(Configuration.class, productId);
             if(product == null){
                 throw new EntityDoesNotExistException("Product with id: " + productId + " does not exist!!!");
             }
             List<Configuration> configurations = new ArrayList<>();
-            return configurations;
+            return toDTOs(configurations, ConfigurationDTO.class);
         }catch (EntityDoesNotExistException e) {
             throw e;
         }catch (Exception e) {
@@ -76,10 +112,10 @@ public class ConfigurationBean extends Bean<Configuration>{
         }
     }
     
-    public List<Configuration> getAll(){
-        List<Configuration> configurations = new ArrayList<>();
-        configurations = em.createNamedQuery("getAllConfigurations").getResultList();
+    public Collection<ConfigurationDTO> getAll(){
+        List<Configuration> configurations =
+               em.createNamedQuery("getAllConfigurations").getResultList();
 
-        return configurations;
+        return toDTOs(configurations, ConfigurationDTO.class);
     }
 }

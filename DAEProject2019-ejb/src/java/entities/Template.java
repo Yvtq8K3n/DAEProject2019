@@ -1,52 +1,65 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import javax.validation.constraints.NotNull;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
-@MappedSuperclass
-public abstract class Template implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    protected Long id;
+@Entity
+@Table(name = "Template")
+@NamedQuery(name = "getAllTemplates", query = "SELECT t FROM Template t")
+public class Template extends Software implements Serializable {    
     
-    @NotNull(message = "Template must have a name")
-    protected String name;
+    @ManyToMany
+    @JoinTable(
+        joinColumns=@JoinColumn(referencedColumnName="ID"),
+        inverseJoinColumns=@JoinColumn(name="CONF_ID", referencedColumnName="ID")
+    )
+    private List<Module> modules;
+            
+    @ManyToMany
+    @JoinTable(
+        joinColumns=@JoinColumn(referencedColumnName="ID"),
+        inverseJoinColumns=@JoinColumn(name="CONF_ID", referencedColumnName="ID")
+    )
+    private List<Artifact> artifacts;
     
-    @NotNull(message = "Template must have a description")
-    protected String description;
-                
-    abstract void  addConfiguration(Configuration configuration);
-    abstract Configuration removeConfiguration(Configuration configuration);
-    abstract List<Configuration> getConfigurations();
-    abstract void setConfigurations(List<Configuration> configurations);
- 
-    public Long getId() {
-        return id;
+    @ManyToMany
+    @JoinTable(
+        joinColumns=@JoinColumn(referencedColumnName="ID"),
+        inverseJoinColumns=@JoinColumn(name="CONF_ID", referencedColumnName="ID")
+    )
+    private List<SupportMaterial> supportMaterials;
+    
+    public Template() {
+        this.hardware = new ArrayList<>();
+        this.extensions = new ArrayList<>();
+        this.modules = new ArrayList<>();
+        this.supportMaterials = new ArrayList<>();
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
+    public Template(String name, String description) {
+        this();
         this.name = name;
+        this.description = description;     
     }
-
-    public String getDescription() {
-        return description;
+    
+    public void addModule(Module module) {
+       modules.add(module);
     }
-
-    public void setDescription(String description) {
-        this.description = description;
-    } 
+    public Module removeModule(Module module) {
+        modules.remove(module);
+        return module;
+    }
+    public List<Module> getModule() {
+        return modules;
+    }
+    public void setModule(List<Module> modules) {
+        this.modules = modules;
+    }
 }
