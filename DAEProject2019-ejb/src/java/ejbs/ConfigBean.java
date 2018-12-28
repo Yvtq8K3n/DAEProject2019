@@ -74,8 +74,8 @@ public class ConfigBean {
             productBean.create(new ProductDTO(3L, "JAVA EE Aplication", "Complex project", "v1.40", "client1"));
             //clientBean.addProduct("client1", new Long(1));
 
-            Comment parent = commentBean.create(null, 1,"Initial comment");
-            Comment child = commentBean.create(parent.getId(), 1,"Not initial comment");
+            Comment parent = commentBean.create(null, 5,"Initial comment");
+            Comment child = commentBean.create(parent.getId(), 5,"Not initial comment");
             parent.addChildren(child);
 
             moduleBean.create("module 1", "1.0");

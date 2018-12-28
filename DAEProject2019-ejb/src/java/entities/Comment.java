@@ -40,17 +40,17 @@ public class Comment implements Serializable{
     private List<Comment> children;
     
     @ManyToOne
-    @JoinColumn(name="config_id")
-    private Configuration configuration;
+    @JoinColumn(name="product_id")
+    private Product product;
 
     public Comment() {
         children = new ArrayList<>();
     }
     
-    public Comment(Comment parent, Configuration configuration, String message) {
+    public Comment(Comment parent, Product configuration, String message) {
         this.parent = parent;
         this.message = message;
-        this.configuration=configuration;
+        this.product=configuration;
     }
     
     public void setParent(Comment parent){
@@ -89,12 +89,12 @@ public class Comment implements Serializable{
         this.children = children;
     }
     
-    public Configuration getConfiguration() {
-        return configuration;
+    public Product getConfiguration() {
+        return product;
     }
 
-    public void setConfiguration(Configuration configuration) {
-        this.configuration = configuration;
+    public void setConfiguration(Product product) {
+        this.product = product;
     }
     
 }

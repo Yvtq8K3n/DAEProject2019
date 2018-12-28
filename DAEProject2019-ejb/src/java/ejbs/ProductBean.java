@@ -10,7 +10,7 @@ import entities.Client;
 import entities.Module;
 import entities.Product;
 import entities.Template;
-import static entities.Template_.description;
+//import static entities.Template_.description;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -44,28 +44,41 @@ public class ProductBean extends Bean<Product>{
         em.merge(client);
     }
 
-    public List<Product> getAll() {
+    public List<ProductDTO> getAll() {
+        List<ProductDTO> productDTOs = new ArrayList<>();
         List<Product> products = new ArrayList<>();
         products = em.createNamedQuery("getAllProducts").getResultList();
-        return products;
+        for(Product p : products){
+            productDTOs.add(new ProductDTO(p.getId(), 
+                                            p.getName(), 
+                                            p.getDescription(), 
+                                            p.getBaseVersion(), 
+                                            p.getOwner().getUsername()));
+        }
+        return productDTOs;
     }
     
     
-    public List<Product> getClientProducts(String username){
-        List<Product> products = new ArrayList<>();
+    public List<ProductDTO> getClientProducts(String username){
+        List<ProductDTO> products = new ArrayList<>();
         try {
             Client client = em.find(Client.class, username);
             if (client == null) {
                
             }
             for(Product product : client.getProducts()){
-                products.add(product);
+                products.add(new ProductDTO(product.getId(), 
+                        product.getName(), 
+                        product.getDescription(), 
+                        product.getBaseVersion(), 
+                        product.getOwner().getUsername()));
             }
             
         } catch (Exception e) {
         }
         return products;
     }
+    
     
     
 }
