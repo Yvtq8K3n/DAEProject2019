@@ -1,6 +1,5 @@
 package web;
 
-import dtos.ProductDTO;
 import ejbs.ClientBean;
 import ejbs.ProductBean;
 import entities.Client;
@@ -32,8 +31,7 @@ public class ClientManager implements Serializable {
     
     private Client clientDTO;
     
-    private List<ProductDTO> productDTOs;
-    
+    private List<Product> productDTOs;
     
     private String user;
     
@@ -45,7 +43,7 @@ public class ClientManager implements Serializable {
         //user = userManager.getUsername();
         setClientDTO(cb.getClient(userManager.getUsername()));
     }
-
+    
     public void clientProducts(){
         productDTOs = pb.getClientProducts(userManager.getUsername());
     }
@@ -75,11 +73,11 @@ public class ClientManager implements Serializable {
         clientProducts();
     }
 
-    public List<ProductDTO> getProductDTOs() {
+    public List<Product> getProductDTOs() {
         return productDTOs;
     }
 
-    public void setProductDTOs(List<ProductDTO> productDTOs) {
+    public void setProductDTOs(List<Product> productDTOs) {
         this.productDTOs = productDTOs;
     }
     

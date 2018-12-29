@@ -8,7 +8,6 @@ package ejbs;
 import entities.Client;
 import entities.Comment;
 import entities.Configuration;
-import entities.Product;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -27,7 +26,7 @@ public class CommentBean extends Bean<Comment>{
     @PersistenceContext(name="dae_project")//Peristance context usa o nome da bd do persistance.xml
     EntityManager em;
    
-    public Comment create(Long id, long idProduct, String msg) {
+    public Comment create(Long id, long idConf, String msg) {
         Comment parent = null;
        
               
@@ -40,10 +39,10 @@ public class CommentBean extends Bean<Comment>{
         }
         
         //if (idConf == null) throw new EJBException();
-        Product product = em.find(Product.class, idProduct);
-        if (product == null) System.out.println("ERROR INVALID ID_CONFIG!");
+        Configuration configuration = em.find(Configuration.class, idConf);
+        if (configuration == null) System.out.println("ERROR INVALID ID_CONFIG!");
         
-        Comment comment =  new Comment(parent, product ,"Initial comment");
+        Comment comment =  new Comment(parent, configuration ,"Initial comment");
         em.persist(comment);
         
         return comment;

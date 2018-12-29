@@ -5,7 +5,6 @@
  */
 package entities;
 
-import com.sun.istack.Nullable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,9 +17,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -62,17 +59,17 @@ public class Configuration implements Serializable {
     @NotNull(message = "Configuration must have base Contract Data")
     private String contractData;
     
-    @ManyToOne
-    @Nullable
-    @JoinColumn(name = "PRODUCT_CODE")
-    private Product product;
+    @ManyToMany(mappedBy="configurations")
+    private List<Product> products;
     
     @ManyToMany(mappedBy="configurations")
-    @Nullable
     private List<ProductCatalog> productsCatalog;
     
     @OneToMany(cascade=CascadeType.REMOVE)
     private List<Module> modules;
+    
+    @OneToMany(mappedBy = "configuration", cascade=CascadeType.REMOVE)
+    private List<Comment> comments;
     
     @ElementCollection(targetClass=String.class)
     private List<String> hardware;
@@ -98,7 +95,9 @@ public class Configuration implements Serializable {
 
     public Configuration(){ 
          modules = new ArrayList<>();
+         products= new ArrayList<>();
          productsCatalog= new ArrayList<>();
+         comments =  new ArrayList<>();
          hardware = new ArrayList<>();
          cloudServices = new ArrayList<>();
          activeLicences = new ArrayList<>();
@@ -116,16 +115,6 @@ public class Configuration implements Serializable {
         this.contractData = contractData;
     }
     
-    public Configuration(String title, String description, Status status, String baseVersion, String contractData, Product product) {
-        this();
-        this.title = title;
-        this.description = description;
-        this.status = status;
-        this.baseVersion = baseVersion;
-        this.contractData = contractData;
-        this.product = product;
-    }
-    
     
     
     public void addModule(Module module){
@@ -134,6 +123,22 @@ public class Configuration implements Serializable {
     
     public void rmeoveModule(Module module){
         modules.remove(module);
+    }
+    
+    public void addComment(Comment comment){
+        comments.add(comment);
+    }
+    
+     public void removeComment(Comment comment){
+        comments.remove(comment);
+    }
+     
+    public void addProduct(Product product){
+        this.products.add(product);
+    }
+    
+    public void removeProduct(Product product){
+        this.products.remove(product);
     }
          
     public void addHardware(String hardware){
@@ -233,12 +238,5 @@ public class Configuration implements Serializable {
     public void setContractData(String contractData) {
         this.contractData = contractData;
     }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
+    
 }

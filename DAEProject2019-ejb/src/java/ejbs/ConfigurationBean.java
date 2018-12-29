@@ -36,13 +36,6 @@ public class ConfigurationBean extends Bean<Configuration>{
         em.persist(configuration);
     }
     
-    public void create(String title, String description, Configuration.Status status, String baseVersion, String contractData, Long product_code) {
-        Product product = em.find(Product.class, product_code);
-        Configuration configuration = new Configuration(title, description, status, baseVersion, contractData, product);
-        System.out.println("CONFIGURATION ID: " + configuration.getId());
-        em.persist(configuration);
-    }
-    
     public void addModule(Long configurationId, Long moduleId){
         try {
             Configuration configuration = em.find(Configuration.class, configurationId);
