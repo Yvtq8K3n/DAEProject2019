@@ -36,7 +36,6 @@ import javax.ws.rs.core.Response;
  */
 @Stateless
 @Path("/administrators")
-@PermitAll
 public class AdministratorBean extends Bean<Administrator>{
 
     @PersistenceContext(name="dae_project")//Peristance context usa o nome da bd do persistance.xml

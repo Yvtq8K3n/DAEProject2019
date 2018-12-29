@@ -42,6 +42,7 @@
             <url-pattern>/webapi/*</url-pattern>
             <url-pattern>/webapi/administrator/*</url-pattern>
             <url-pattern>/webapi/client/*</url-pattern>
+             <url-pattern>/webapi/catalog/*</url-pattern>
             <url-pattern>/webapi/users/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>

@@ -34,7 +34,6 @@ public class Module {
     }
 
     public Module(String name, String version) {
-        this.id = id;
         this.name = name;
         this.version = version;
     }

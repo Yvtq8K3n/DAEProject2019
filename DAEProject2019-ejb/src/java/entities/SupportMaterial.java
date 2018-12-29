@@ -5,6 +5,7 @@
  */
 package entities;
 
+import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -20,7 +21,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "SupportMaterials")
-public class SupportMaterial {
+public class SupportMaterial implements Serializable {
 
     public enum MaterialType {
         VIDEO,TUTORIAL,MANUAL,LINK,DOCUMENT
