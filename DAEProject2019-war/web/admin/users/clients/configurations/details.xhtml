@@ -6,24 +6,92 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:b="http://bootsfaces.net/ui"
     xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-    xmlns:f="http://java.sun.com/jsf/core">
- <ui:composition template="../../templates/skeleton.xhtml">
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+ <ui:composition template="../../../../templates/skeleton.xhtml">
      
  <ui:define name="title"> Details </ui:define> 
  
  <ui:define name="main">
+    <c:set var="configuration" value="#{administratorManager.configurationDTO}"/>
     <h:form id="formId">
-        <c:set var="template" value="#{guestManager.selectedProduct}"/>
-        <h2>Product: #{template.name}</h2>
-        <b:inputText label="Name" disabled="true" value="#{template.name}"/>
-        <b:inputTextarea label="Description" value="#{template.description}"/>
+        <h2>Configuration: #{configuration.name}</h2>
 
-        <h:outputText value="Configurations:" style="font-weight:bold"/>
-        <b:dataTable var="rowItem" value="#{guestManager.configurations}" lang="en" 
+        <b:inputText label="Owner" disabled="true" value="#{configuration.owner}"/>
+        
+        <b:inputText label="Base Version:" value="#{configuration.baseVersion}"/>
+        
+        <b:inputText label="Contract Date:" value="#{configuration.contractDate}"/>
+
+        <h3>Status:</h3>
+        <b:radiobutton value="#{configuration.status}">
+            <f:selectItems value="#{administratorManager.configurationDTO.allStatus}" />
+        </b:radiobutton>
+        
+        <h3>Modules:</h3>
+        <b:dataTable var="rowItem" value="#{administratorManager.configurationModules}" lang="en" 
             responsive="true" info="false" paginated="false" searching="false">
-            <b:dataTableColumn value="#{rowItem.description}" />
+            <b:dataTableColumn value="#{rowItem.id}" />
+            <b:dataTableColumn value="#{rowItem.name}" />
+            <b:dataTableColumn value="#{rowItem.version}" />
+                       
+            <b:dataTableColumn label="Actions">
+                <b:commandButton value="Delete" class="btn btn-danger" id="delete" 
+                    rendered="${userManager.someUserAuthenticated and userManager.admin}"
+                    actionListener="#{administratorManager.removeTemplate}">
+                    <f:param name="deletetemplateId" id="deleteTemplateId" 
+                       value="#{rowItem.id}" />
+                </b:commandButton>
+            </b:dataTableColumn>
         </b:dataTable>
-    </h:form>  
+        
+        <h3>Artifacts:</h3>
+        <b:button value="Create" look="warning" p:data-target="#amodal" p:data-toggle="modal" size="lg"/>
+       
+        <b:dataTable var="rowItem" value="#{administratorManager.configurationArtifacts}" lang="en" 
+            responsive="true" info="false" paginated="false" searching="false">
+            <b:dataTableColumn value="#{rowItem.desiredName}" />
+            <b:dataTableColumn value="#{rowItem.filepath}" />
+            <b:dataTableColumn value="#{rowItem.mimeType}" />
+                       
+            <b:dataTableColumn label="Actions">
+                <b:commandButton value="Delete" class="btn btn-danger" id="delete" 
+                    rendered="${userManager.someUserAuthenticated and userManager.admin}"
+                    actionListener="#{administratorManager.removeTemplate}">
+                    <f:param name="deletetemplateId" id="deleteTemplateId" 
+                       value="#{rowItem.id}" />
+                </b:commandButton>
+            </b:dataTableColumn>
+        </b:dataTable>
+
+        <h3>Comments:</h3>
+        <b:dataTable var="rowItem" value="#{administratorManager.configurationModules}" lang="en" 
+            responsive="true" info="false" paginated="false" searching="false">
+            <b:dataTableColumn value="#{rowItem.id}" />
+            <b:dataTableColumn value="#{rowItem.name}" />
+            <b:dataTableColumn value="#{rowItem.version}" />
+                       
+            <b:dataTableColumn label="Actions">
+                <b:commandButton value="Delete" class="btn btn-danger" id="delete" 
+                    rendered="${userManager.someUserAuthenticated and userManager.admin}"
+                    actionListener="#{administratorManager.removeTemplate}">
+                    <f:param name="deletetemplateId" id="deleteTemplateId" 
+                       value="#{rowItem.id}" />
+                </b:commandButton>
+            </b:dataTableColumn>
+        </b:dataTable>
+    </h:form>
+     <b:modal id="amodal" title="Modal Example" styleClass="modalPseudoClass">
+        <h:form enctype="multipart/form-data">
+            <b:growl id="messages" showDetail="true" />
+            <h:inputFile value="#{uploadManager.file}" ></h:inputFile>
+            <b:commandButton
+                value="Submit" 
+                ajax="false" 
+                actionListener="#{uploadManager.upload}" 
+                action="#{administratorManager.uploadDocument}"/>
+      </h:form>
+    </b:modal>
  </ui:define>
  </ui:composition>
 </html>

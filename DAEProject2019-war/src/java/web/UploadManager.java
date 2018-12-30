@@ -30,8 +30,9 @@ public class UploadManager {
         if (file != null) {
             try {
                 logger.warning("am-entrou0");
-       
-                filename = file.getName();//file.getSubmittedFileName();
+                
+                filename = extractFileName(file);//file.getSubmittedFileName();
+                
                 logger.warning("am-entrou1"+filename);
                
                 completePathFile = URILookup.getServerDocumentsFolder() +"\\"+ filename;
@@ -99,6 +100,16 @@ public class UploadManager {
     return fullPath;
 
     }
-
+    
+    private String extractFileName(Part part) {
+        String contentDisp = part.getHeader("content-disposition");
+        String[] items = contentDisp.split(";");
+        for (String s : items) {
+            if (s.trim().startsWith("filename")) {
+                return s.substring(s.indexOf("=") + 2, s.length()-1);
+            }
+        }
+        return "";
+    }
     
 }

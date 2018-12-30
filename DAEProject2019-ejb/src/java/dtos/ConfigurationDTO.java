@@ -6,6 +6,9 @@
 package dtos;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -18,18 +21,22 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ConfigurationDTO extends TemplateDTO implements Serializable{
     
+    public enum Status {
+        ACTIVE,INACTIVE,SUSPEND
+    }
+    
     private String baseVersion;
-    private String clientUsername;
-    private String status;
+    private String owner;
+    private Status status;
     private String contractDate;
 
     public ConfigurationDTO(){
     }
   
-    public ConfigurationDTO(Long id, String name, String description, String baseVersion, String clientUsername, String status, String contractDate){
+    public ConfigurationDTO(Long id, String name, String description, String baseVersion, String owner, Status status, String contractDate){
         super(id, name, description);
         this.baseVersion = baseVersion;
-        this.clientUsername = clientUsername;
+        this.owner = owner;
         this.status = status;
         this.contractDate = contractDate;
     }
@@ -38,7 +45,7 @@ public class ConfigurationDTO extends TemplateDTO implements Serializable{
     public void reset() {
         super.reset();
         setBaseVersion(null);
-        setClientUsername(null);
+        setOwner(null);
         setStatus(null);
         setContractDate(null);
     }
@@ -51,19 +58,19 @@ public class ConfigurationDTO extends TemplateDTO implements Serializable{
         this.baseVersion = baseVersion;
     }
 
-    public String getClientUsername() {
-        return clientUsername;
+    public String getOwner() {
+        return owner;
     }
 
-    public void setClientUsername(String clientUsername) {
-        this.clientUsername = clientUsername;
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
@@ -75,5 +82,8 @@ public class ConfigurationDTO extends TemplateDTO implements Serializable{
         this.contractDate = contractDate;
     }
     
-    
+    public List<String> getAllStatus(){
+        return Stream.of(Status.values())
+            .map(Enum::name).collect(Collectors.toList());
+    }
 }

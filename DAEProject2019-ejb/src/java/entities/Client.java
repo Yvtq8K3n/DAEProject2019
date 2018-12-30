@@ -23,7 +23,7 @@ public class Client extends User implements Serializable {
     @NotNull(message = "Contact must not be empty")
     private String contact;
     
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval=true)
     private List<Configuration> products;
         
     

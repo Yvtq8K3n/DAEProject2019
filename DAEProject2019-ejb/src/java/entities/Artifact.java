@@ -5,6 +5,7 @@
  */
 package entities;
 
+import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,52 +18,57 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "Artifacts")
-public class Artifact {
+public class Artifact implements Serializable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private int id;
     
-    private String name;
+    private String filepath;
+
+    private String desiredName;
     
-    private String url;
+    private String mimeType;
     
     public Artifact(){
         
     }
     
-    public Artifact(long id, String name, String url) {
-        this.id = id;
-        this.name = name;
-        this.url = url;
+    public Artifact(String filepath, String desiredName, String mimeType) {
+        this.filepath = filepath;
+        this.desiredName = desiredName;
+        this.mimeType = mimeType;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getFilepath() {
+        return filepath;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFilepath(String filepath) {
+        this.filepath = filepath;
     }
 
-    public String getUrl() {
-        return url;
+    public String getDesiredName() {
+        return desiredName;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setDesiredName(String desiredName) {
+        this.desiredName = desiredName;
     }
-    
-    
-    
-    
-    
+
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+    }        
 }

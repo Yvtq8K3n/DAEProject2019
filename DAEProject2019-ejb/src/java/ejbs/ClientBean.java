@@ -6,12 +6,14 @@
 package ejbs;
 
 import dtos.ClientDTO;
+import dtos.ConfigurationDTO;
 import entities.Client;
 import entities.Configuration;
 import exceptions.EntityDoesNotExistException;
 import exceptions.EntityExistsException;
 import exceptions.MyConstraintViolationException;
 import exceptions.Utils;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.annotation.security.DeclareRoles;
@@ -31,6 +33,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.core.GenericEntity;
 
 /**
  *
@@ -107,6 +110,36 @@ public class ClientBean extends Bean<Client>{
             em.createNamedQuery("getAllClients").getResultList();
 
         return toDTOs(clients, ClientDTO.class);
+    }
+    
+    @GET
+    @Path("/{username}/configurations")
+    @RolesAllowed("Administrator")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response getClientConfigurations(@PathParam("username") String username){
+        try{
+            if (username == null)
+                throw new EntityDoesNotExistException("Invalid Username");
+            
+            Client client = em.find(Client.class, username);
+            if(client == null) 
+                throw new EntityDoesNotExistException("Client not found.");
+
+            Collection<ConfigurationDTO> configurationDTO
+                    = toDTOs(client.getProducts(), ConfigurationDTO.class);
+            configurationDTO.forEach((c) -> { c.setOwner(username);});
+            
+            GenericEntity<List<ConfigurationDTO>> entity =
+                new GenericEntity<List<ConfigurationDTO>>(new ArrayList<>(configurationDTO)) {};      
+
+            return Response.status(Response.Status.OK).entity(entity).build();
+        }catch (EntityDoesNotExistException e) {
+            return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
+        }catch (ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
+        }catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
+        } 
     }
     
     @GET
