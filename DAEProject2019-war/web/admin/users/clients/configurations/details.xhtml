@@ -6,7 +6,8 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:b="http://bootsfaces.net/ui"
     xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-    xmlns:f="http://java.sun.com/jsf/core">
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
  <ui:composition template="../../../../templates/skeleton.xhtml">
      
  <ui:define name="title"> Details </ui:define> 
@@ -45,11 +46,13 @@
         </b:dataTable>
         
         <h3>Artifacts:</h3>
-        <b:dataTable var="rowItem" value="#{administratorManager.configurationModules}" lang="en" 
+        <b:button value="Create" look="warning" p:data-target="#amodal" p:data-toggle="modal" size="lg"/>
+       
+        <b:dataTable var="rowItem" value="#{administratorManager.configurationArtifacts}" lang="en" 
             responsive="true" info="false" paginated="false" searching="false">
-            <b:dataTableColumn value="#{rowItem.id}" />
-            <b:dataTableColumn value="#{rowItem.name}" />
-            <b:dataTableColumn value="#{rowItem.version}" />
+            <b:dataTableColumn value="#{rowItem.desiredName}" />
+            <b:dataTableColumn value="#{rowItem.filepath}" />
+            <b:dataTableColumn value="#{rowItem.mimeType}" />
                        
             <b:dataTableColumn label="Actions">
                 <b:commandButton value="Delete" class="btn btn-danger" id="delete" 
@@ -60,7 +63,7 @@
                 </b:commandButton>
             </b:dataTableColumn>
         </b:dataTable>
-        
+
         <h3>Comments:</h3>
         <b:dataTable var="rowItem" value="#{administratorManager.configurationModules}" lang="en" 
             responsive="true" info="false" paginated="false" searching="false">
@@ -77,8 +80,18 @@
                 </b:commandButton>
             </b:dataTableColumn>
         </b:dataTable>
- 
-    </h:form>  
+    </h:form>
+     <b:modal id="amodal" title="Modal Example" styleClass="modalPseudoClass">
+        <h:form enctype="multipart/form-data">
+            <b:growl id="messages" showDetail="true" />
+            <h:inputFile value="#{uploadManager.file}" ></h:inputFile>
+            <b:commandButton
+                value="Submit" 
+                ajax="false" 
+                actionListener="#{uploadManager.upload}" 
+                action="#{administratorManager.uploadDocument}"/>
+      </h:form>
+    </b:modal>
  </ui:define>
  </ui:composition>
 </html>

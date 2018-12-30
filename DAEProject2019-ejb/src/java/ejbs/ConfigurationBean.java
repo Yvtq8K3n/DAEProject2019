@@ -6,7 +6,9 @@
 package ejbs;
 
 import dtos.ConfigurationDTO;
+import dtos.DocumentDTO;
 import dtos.ModuleDTO;
+import entities.Artifact;
 import entities.Client;
 import entities.Module;
 import entities.Configuration;
@@ -72,7 +74,6 @@ public class ConfigurationBean extends Bean<Configuration>{
             client.addProduct(conf);
             
             em.persist(client);
-            em.persist(conf);
         return Response.status(Response.Status.CREATED).entity("Configuration was successfully created.").build();
         }catch (EntityDoesNotExistException e) {
             return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
@@ -115,7 +116,62 @@ public class ConfigurationBean extends Bean<Configuration>{
         }
     }
     
-        
+    @POST
+    @RolesAllowed("Administrator")
+    @Path("{id}/artifacts")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response addArtifact(@PathParam("id") Long id, DocumentDTO doc){
+        try {
+            if (id == null)
+                throw new EntityDoesNotExistException("Invalid configuration");
+            
+            Configuration configuration = em.find(Configuration.class, id);
+            if(configuration == null) 
+                throw new EntityDoesNotExistException("Configuration not found.");
+
+            Artifact artifact = new Artifact(
+                doc.getFilepath(), 
+                doc.getDesiredName(), 
+                doc.getMimeType()
+            );
+            
+            configuration.addArtifact(artifact);
+            em.persist(configuration);
+            
+        return Response.status(Response.Status.CREATED).entity("Module was successfully created.").build();
+        }catch (EntityDoesNotExistException e) {
+            return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
+        }catch (ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
+        }catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
+        }
+    }
+    
+    public void addModule(Long configurationId, Long moduleId){
+        try {
+            Configuration configuration = em.find(Configuration.class, configurationId);
+            if (configuration == null) {
+                System.out.println("ERRO NO METODO ADD_MODULE DE CONFIG_BEAN - NÃO ENCONTROU CONFIGURATION");
+            }else{
+                System.out.println("ENCONTROU CONFIGURATION " + configuration.getDescription());
+            }
+            Module module = em.find(Module.class, moduleId);
+            if (module == null) {
+                System.out.println("ERRO NO METODO ADD_MODULE DE CONFIG_BEAN - NÃO ENCONTROU MODULE");   
+            }else{
+                System.out.println("ENCONTROU MODULE " + module.getName());
+            }     
+            
+            configuration.addModule(module);
+            em.merge(configuration);
+            
+        } catch (Exception e) {
+            System.out.println("ERRO NO METODO ADD_MODULE DE CONFIG_BEAN " + e.getMessage());
+        }
+    }
+
+    
     @GET
     @Path("/{id}/modules")
     @RolesAllowed("Administrator")
@@ -144,45 +200,34 @@ public class ConfigurationBean extends Bean<Configuration>{
         } 
     }
     
-    public void addModule(Long configurationId, Long moduleId){
-        try {
-            Configuration configuration = em.find(Configuration.class, configurationId);
-            if (configuration == null) {
-                System.out.println("ERRO NO METODO ADD_MODULE DE CONFIG_BEAN - NÃO ENCONTROU CONFIGURATION");
-            }else{
-                System.out.println("ENCONTROU CONFIGURATION " + configuration.getDescription());
-            }
-            Module module = em.find(Module.class, moduleId);
-            if (module == null) {
-                System.out.println("ERRO NO METODO ADD_MODULE DE CONFIG_BEAN - NÃO ENCONTROU MODULE");   
-            }else{
-                System.out.println("ENCONTROU MODULE " + module.getName());
-            }
+    @GET
+    @Path("/{id}/artifacts")
+    @RolesAllowed("Administrator")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response getClientConfigurations(@PathParam("id") Long id){
+        try{
+            if (id == null)
+                throw new EntityDoesNotExistException("Invalid configuration");
             
-            
-            configuration.addModule(module);
-            em.merge(configuration);
-            
-        } catch (Exception e) {
-            System.out.println("ERRO NO METODO ADD_MODULE DE CONFIG_BEAN " + e.getMessage());
-        }
-    }
-    
-    public Collection<ConfigurationDTO> getProductConfigurations(Long productId)
-     throws EntityDoesNotExistException{
-        try {
-            Configuration product = em.find(Configuration.class, productId);
-            if(product == null){
-                throw new EntityDoesNotExistException("Product with id: " + productId + " does not exist!!!");
-            }
-            List<Configuration> configurations = new ArrayList<>();
-            return toDTOs(configurations, ConfigurationDTO.class);
+             Configuration configuration = em.find(Configuration.class, id);
+            if(configuration == null) 
+                throw new EntityDoesNotExistException("Configuration not found.");
+
+            Collection<DocumentDTO> artifactsDTO
+                    = toDTOs(configuration.getArtifacts(), DocumentDTO.class);
+            GenericEntity<List<DocumentDTO>> entity =
+                new GenericEntity<List<DocumentDTO>>(new ArrayList<>(artifactsDTO)) {};      
+
+            return Response.status(Response.Status.OK).entity(entity).build();
         }catch (EntityDoesNotExistException e) {
-            throw e;
+            return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
+        }catch (ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
         }catch (Exception e) {
-            throw new EJBException(e.getMessage());
-        }
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
+        } 
     }
+
     
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -193,4 +238,5 @@ public class ConfigurationBean extends Bean<Configuration>{
 
         return toDTOs(configurations, ConfigurationDTO.class);
     }
+
 }

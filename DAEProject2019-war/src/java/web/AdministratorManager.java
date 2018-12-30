@@ -354,9 +354,6 @@ public class AdministratorManager implements Serializable {
     }
     public List<ModuleDTO> getConfigurationModules(){
         try {
-            logger.warning("HOLA");
-            logger.warning("id"+String.valueOf(configurationDTO.getId()));
-            logger.warning("Name"+String.valueOf(configurationDTO.getName()));
             Invocation.Builder invocationBuilder = addHeaderBASIC()
                     .target(URILookup.getBaseAPI())
                     .path("/configurations/")
@@ -377,7 +374,27 @@ public class AdministratorManager implements Serializable {
         }
     }
     
-    
+    public List<DocumentDTO> getConfigurationArtifacts(){
+        try {
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                    .target(URILookup.getBaseAPI())
+                    .path("/configurations/")
+                    .path(String.valueOf(configurationDTO.getId()))
+                    .path("/artifacts")
+                    .request(MediaType.APPLICATION_XML);
+            
+            Response response = invocationBuilder.get(Response.class);
+
+            List<DocumentDTO> artifactDTO =
+                response.readEntity(new GenericType<List<DocumentDTO>>() {}); 
+          
+            logger.warning("artifact:"+artifactDTO.size());
+            return artifactDTO;
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
+    }
 
     public String uploadDocument() {
         try {
@@ -387,18 +404,24 @@ public class AdministratorManager implements Serializable {
             logger.warning("File: " +uploadManager.getFilename());
             logger.warning("File: " +String.valueOf(uploadManager.getFile().getSize()));
             document = new DocumentDTO(uploadManager.getCompletePathFile(), uploadManager.getFilename(), uploadManager.getFile().getContentType());
+            
             logger.warning("entrou");
-            /*client.target(URILookup.getBaseAPI())
-                    .path("/files/")
-                    .request(MediaType.TEXT_HTML)
-                    .put(Entity.text(document));
-            logger.warning("entrou2");*/
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                    .target(URILookup.getBaseAPI())
+                    .path("/configurations/")
+                    .path(String.valueOf(configurationDTO.getId()))
+                    .path("/artifacts")
+                    .request(MediaType.APPLICATION_XML);
+            
+            Response response = invocationBuilder.post(Entity.text(document));      
+          
+            logger.warning("entrou2");
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
             return null;
         }
 
-        return "/index.xhtml?faces-redirect=true";
+        return "/faces/index.xhtml?faces-redirect=true";
     }
 
     public void emailExample(){

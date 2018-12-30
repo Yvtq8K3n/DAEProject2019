@@ -52,7 +52,7 @@ public class Configuration extends Software implements Serializable {
     @ElementCollection(targetClass=String.class)
     protected List<String> params;
     
-    @OneToMany(cascade=CascadeType.REMOVE)
+    @OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
     private List<Artifact> artifacts;
     
     @OneToMany(cascade=CascadeType.REMOVE)
@@ -85,6 +85,14 @@ public class Configuration extends Software implements Serializable {
     public Module removeModule(Module module) {
         modules.remove(module);
         return module;
+    }
+    
+    public void addArtifact(Artifact artifact) {
+       artifacts.add(artifact);
+    }
+    public Artifact removeArtifact(Artifact artifact) {
+        artifacts.remove(artifact);
+        return artifact;
     }
 
     /**
