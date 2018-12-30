@@ -14,20 +14,24 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Olek
  */
-@XmlRootElement(name = "Product")
+@XmlRootElement(name = "Configuration")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ConfigurationDTO extends TemplateDTO implements Serializable{
     
     private String baseVersion;
     private String clientUsername;
+    private String status;
+    private String contractDate;
 
     public ConfigurationDTO(){
     }
   
-    public ConfigurationDTO(Long id, String name, String description, String baseVersion, String clientUsername){
+    public ConfigurationDTO(Long id, String name, String description, String baseVersion, String clientUsername, String status, String contractDate){
         super(id, name, description);
         this.baseVersion = baseVersion;
         this.clientUsername = clientUsername;
+        this.status = status;
+        this.contractDate = contractDate;
     }
 
     @Override
@@ -35,6 +39,8 @@ public class ConfigurationDTO extends TemplateDTO implements Serializable{
         super.reset();
         setBaseVersion(null);
         setClientUsername(null);
+        setStatus(null);
+        setContractDate(null);
     }
 
     public String getBaseVersion() {
@@ -52,4 +58,22 @@ public class ConfigurationDTO extends TemplateDTO implements Serializable{
     public void setClientUsername(String clientUsername) {
         this.clientUsername = clientUsername;
     }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getContractDate() {
+        return contractDate;
+    }
+
+    public void setContractDate(String contractDate) {
+        this.contractDate = contractDate;
+    }
+    
+    
 }

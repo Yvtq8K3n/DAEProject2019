@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:b="http://bootsfaces.net/ui"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core">
+ <ui:composition template="../../templates/skeleton.xhtml">
+     
+ <ui:define name="title"> Details </ui:define> 
+ 
+ <ui:define name="main">
+    <h:form id="formId">
+        <c:set var="template" value="#{guestManager.selectedProduct}"/>
+        <h2>Product: #{template.name}</h2>
+        <b:inputText label="Name" disabled="true" value="#{template.name}"/>
+        <b:inputTextarea label="Description" value="#{template.description}"/>
+
+        <h:outputText value="Configurations:" style="font-weight:bold"/>
+        <b:dataTable var="rowItem" value="#{guestManager.configurations}" lang="en" 
+            responsive="true" info="false" paginated="false" searching="false">
+            <b:dataTableColumn value="#{rowItem.description}" />
+        </b:dataTable>
+    </h:form>  
+ </ui:define>
+ </ui:composition>
+</html>

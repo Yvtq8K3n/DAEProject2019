@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class EmailDTO  implements Serializable{
 
     private String userEmail;
+    private String password;
     private String subject;
     private String body;
     private List<String> recipients;
@@ -18,8 +19,9 @@ public class EmailDTO  implements Serializable{
     public EmailDTO() {
     }
 
-    public EmailDTO(String userEmail,String subject, String body, List<String> recipients) {
+    public EmailDTO(String userEmail, String password, String subject, String body, List<String> recipients) {
         this.userEmail = userEmail;
+        this.password = password;
         this.subject = subject;
         this.body = body;
         this.recipients = recipients;
@@ -31,6 +33,14 @@ public class EmailDTO  implements Serializable{
 
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getSubject() {
