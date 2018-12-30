@@ -100,6 +100,7 @@ public class ClientBean extends Bean<Client>{
     
     @GET
     @RolesAllowed("Administrator")
+    @Path("all")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Collection<ClientDTO> getAll(){
         List<Client> clients =
@@ -108,14 +109,20 @@ public class ClientBean extends Bean<Client>{
         return toDTOs(clients, ClientDTO.class);
     }
     
-    public Client getClient(String username){
+    @GET
+    @RolesAllowed("Client")
+    @Path("cliento/{username}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public ClientDTO getClient(@PathParam("username") String username)
+    throws EntityDoesNotExistException{
         try {
             Client client = em.find(Client.class, username);
             if (client == null) {
-                throw new EJBException();
+                throw new EntityDoesNotExistException("User with id: " + username + " does not exist!!!");
             }
-            
-            return client;
+            return toDTO(client, ClientDTO.class);
+        } catch (EntityDoesNotExistException e) {
+            throw e;
         } catch (EJBException e) {
             throw new EJBException("ERROR: CANT FIND ENTETY" + e.getMessage());
         }

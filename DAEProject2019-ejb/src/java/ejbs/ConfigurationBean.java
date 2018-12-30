@@ -16,6 +16,7 @@ import exceptions.Utils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
@@ -36,8 +37,10 @@ import javax.ws.rs.core.Response;
  *
  * @author Joao Marquez
  */
+
 @Stateless
 @Path("/configurations")
+@DeclareRoles({"Administrator", "Client"})
 //Distinge que é um ejb (componente que não gere instancia nem ciclo de vida)
 //Faz pedidos mas não guardam de quem esta a fazer
 //Faz com que ´não tenha de ter uma instancia para cada utilizador
@@ -80,26 +83,24 @@ public class ConfigurationBean extends Bean<Configuration>{
     }
     
     @GET 
-    @RolesAllowed("Administrator")
+    @RolesAllowed("Client")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Path("/user/{username}")
-    public Collection<ConfigurationDTO> getClientConfigurations(@PathParam("username") String username){
-        Client client = em.find(Client.class, username);
-        if (client == null) {
-            System.out.println("ERRO NO METODO getClientConfigurations DE CONFIG_BEAN - NÃO ENCONTROU CLIENTE");
+    @Path("/clientConfigurations/{username}")
+    public Collection<ConfigurationDTO> getClientConfigurations(@PathParam("username") String username)
+    throws EntityDoesNotExistException{
+       List<Configuration> configurations = new ArrayList<>();
+        try {
+            Client client = em.find(Client.class, username);
+            if (client == null) {
+                throw new EntityDoesNotExistException("User with id: " + username + " does not exist!!!");
+            }
+            configurations = client.getProducts();
+        }catch (EntityDoesNotExistException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new EJBException(e.getMessage());
         }
-        List<ConfigurationDTO> configurationDTOs = new ArrayList<>();
-        for(Configuration configuration : client.getProducts()){
-            configurationDTOs.add(new ConfigurationDTO(configuration.getId(), 
-                                                       configuration.getName(), 
-                                                       configuration.getDescription(), 
-                                                       configuration.getBaseVersion(), 
-                                                       client.getUsername(), 
-                                                       configuration.getStatus().toString(), 
-                                                       configuration.getContractDate()));
-            
-        }
-        return configurationDTOs;
+        return toDTOs(configurations, ConfigurationDTO.class);
     }
     
     public void addModule(Long configurationId, Long moduleId){
@@ -146,8 +147,7 @@ public class ConfigurationBean extends Bean<Configuration>{
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("all")
     public Collection<ConfigurationDTO> getAll(){
-        Collection<Configuration> configurations =
-               em.createNamedQuery("getAllConfigurations").getResultList();
+        Collection<Configuration> configurations = em.createNamedQuery("getAllConfigurations").getResultList();
 
         return toDTOs(configurations, ConfigurationDTO.class);
     }

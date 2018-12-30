@@ -2,7 +2,7 @@ package web;
 
 import dtos.AdministratorDTO;
 import dtos.ClientDTO;
-import dtos.ParameterDTO;
+import dtos.ModuleDTO;
 import dtos.DocumentDTO;    
 import dtos.EmailDTO;
 import dtos.ConfigurationDTO;
@@ -54,8 +54,8 @@ public class AdministratorManager implements Serializable {
     private @Getter @Setter TemplateDTO newProductDTO;
     private @Getter @Setter ClientDTO newClient;
     private @Getter @Setter AdministratorDTO newAdministrator;
-    private List<ParameterDTO> allConfigurations;
-    private List<ParameterDTO> currentConfigurations;
+    private List<ModuleDTO> allConfigurations;
+    private List<ModuleDTO> currentConfigurations;
     private DocumentDTO document;
     
     @EJB
@@ -259,7 +259,7 @@ public class AdministratorManager implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, facesMsg);
     }
       
-    public List<ParameterDTO> getAllConfigurations(){
+    public List<ModuleDTO> getAllConfigurations(){
         /*if (allConfigurations == null) {
             allConfigurations = new ArrayList<>();
             allConfigurations.addAll(configurationBean.getAll());
@@ -297,7 +297,7 @@ public class AdministratorManager implements Serializable {
     public List<ClientDTO> getAllClients(){
         try {
             List<ClientDTO> clients=addHeaderBASIC().target(URILookup.getBaseAPI())
-                    .path("/clients")
+                    .path("/clients/all")
                     .request(MediaType.APPLICATION_XML)
                     .get(new GenericType<List<ClientDTO>>() {});
 
@@ -368,19 +368,19 @@ public class AdministratorManager implements Serializable {
     }
 
     
-    public List<ParameterDTO> getCurrentConfigurations(){
+    public List<ModuleDTO> getCurrentConfigurations(){
         return currentConfigurations;
     }
-    public void addConfiguration(ParameterDTO selectedConfiguration){
+    public void addConfiguration(ModuleDTO selectedConfiguration){
         allConfigurations.remove(selectedConfiguration);
         if (currentConfigurations == null) currentConfigurations = new ArrayList<>();
         currentConfigurations.add(selectedConfiguration);
     }
-    public void removeConfiguration(ParameterDTO selectedConfiguration){
+    public void removeConfiguration(ModuleDTO selectedConfiguration){
         currentConfigurations.remove(selectedConfiguration);
         allConfigurations.add(selectedConfiguration);
     }
-    public void setCurrentConfigurations(List<ParameterDTO> currentConfigurations) {
+    public void setCurrentConfigurations(List<ModuleDTO> currentConfigurations) {
         this.currentConfigurations = currentConfigurations;
     }
     

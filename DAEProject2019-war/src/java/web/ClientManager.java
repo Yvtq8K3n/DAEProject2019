@@ -1,5 +1,6 @@
 package web;
 
+import dtos.ClientDTO;
 import dtos.ConfigurationDTO;
 import ejbs.ClientBean;
 import ejbs.ConfigurationBean;
@@ -18,6 +19,7 @@ import javax.inject.Named;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
@@ -31,13 +33,7 @@ public class ClientManager implements Serializable {
     @ManagedProperty(value="#{userManager}")
     private UserManager userManager;
     
-    @EJB
-    private ClientBean cb;
-    
-    @EJB
-    private ConfigurationBean confBean;
-    
-    private Client clientDTO;
+    private ClientDTO clientDTO;
     
     private javax.ws.rs.client.Client client;
     
@@ -51,20 +47,22 @@ public class ClientManager implements Serializable {
     }
     @PostConstruct
     public void Init(){
-        //user = userManager.getUsername();
-        //HttpAuthenticationFeature feature = HttpAuthenticationFeature.basic(userManager.getUsername(), userManager.getPassword());
-        HttpAuthenticationFeature feature = HttpAuthenticationFeature.basic("administrator1", "secret");
+        HttpAuthenticationFeature feature = HttpAuthenticationFeature.basic(userManager.getUsername(), userManager.getPassword());
         client.register(feature);
-        setClientDTO(cb.getClient(userManager.getUsername()));
+        setClientDTO(getClient(userManager.getUsername()));
+    }
+    
+    public ClientDTO getClient(String username){
+        return client.target(URILookup.getBaseAPI())
+                    .path("/clients/cliento")
+                    .path(username)
+                    .request(MediaType.APPLICATION_XML)
+                    .get(ClientDTO.class); 
     }
     
     public void clientProducts(){
-        /*for(ConfigurationDTO confDTO : confBean.getClientConfigurations(userManager.getUsername())){
-            configurationDTOs.add(confDTO);
-        }*/
-        System.out.println("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO: " + URILookup.getBaseAPI());
         configurationDTOs = client.target(URILookup.getBaseAPI())
-                    .path("/configurations/user")
+                    .path("/configurations/clientConfigurations")
                     .path(clientDTO.getUsername())
                     .request(MediaType.APPLICATION_XML)
                     .get(new GenericType<Collection<ConfigurationDTO>>() {
@@ -87,11 +85,11 @@ public class ClientManager implements Serializable {
         this.user = user;
     }
 
-    public Client getClientDTO() {
+    public ClientDTO getClientDTO() {
         return clientDTO;
     }
 
-    public void setClientDTO(Client clientDTO) {
+    public void setClientDTO(ClientDTO clientDTO) {
         this.clientDTO = clientDTO;
         clientProducts();
     }

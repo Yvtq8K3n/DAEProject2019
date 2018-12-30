@@ -42,12 +42,13 @@
             <url-pattern>/webapi/*</url-pattern>
             <url-pattern>/webapi/administrator/*</url-pattern>
             <url-pattern>/webapi/client/*</url-pattern>
-             <url-pattern>/webapi/catalog/*</url-pattern>
+            <url-pattern>/webapi/catalog/*</url-pattern>
             <url-pattern>/webapi/users/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
             <description/>
             <role-name>Administrator</role-name>
+            <role-name>Client</role-name>
         </auth-constraint>
     </security-constraint>
     <error-page>
@@ -64,6 +65,23 @@
         <auth-constraint>
             <description>asdsa</description>
             <role-name>Administrator</role-name>
+        </auth-constraint>
+    </security-constraint>
+    <security-constraint>
+        <display-name>ClientPages</display-name>
+        <web-resource-collection>
+            <web-resource-name>ClientPages</web-resource-name>
+            <description>Pages</description>
+            <url-pattern>/configurations</url-pattern>
+        </web-resource-collection>
+        <web-resource-collection>
+            <web-resource-name>ClientPagesClients</web-resource-name>
+            <description>Pages</description>
+            <url-pattern>/clients</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <description>ooooooo</description>
+            <role-name>Client</role-name>
         </auth-constraint>
     </security-constraint>
     <login-config>
