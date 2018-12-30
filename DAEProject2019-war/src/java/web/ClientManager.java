@@ -41,7 +41,7 @@ public class ClientManager implements Serializable {
     @PostConstruct
     public void Init(){
         //user = userManager.getUsername();
-        setClientDTO(cb.getClient(userManager.getUsername()));
+        //setClientDTO(cb.getClient(userManager.getUsername()));
     }
     
     public void clientProducts(){

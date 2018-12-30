@@ -2,10 +2,10 @@ package web;
 
 import dtos.AdministratorDTO;
 import dtos.ClientDTO;
-import dtos.ParameterDTO;
 import dtos.DocumentDTO;    
 import dtos.EmailDTO;
 import dtos.ConfigurationDTO;
+import dtos.ModuleDTO;
 import dtos.TemplateDTO;
 import dtos.UserDTO;
 import ejbs.ConfigurationBean;
@@ -50,12 +50,13 @@ public class AdministratorManager implements Serializable {
     private static final Logger logger = Logger.getLogger("web.AdministratorManager");
     
     private @Getter @Setter UIComponent component;
-    
     private @Getter @Setter TemplateDTO newProductDTO;
-    private @Getter @Setter ClientDTO newClient;
+    private @Getter @Setter ClientDTO clientDTO;
+    private @Getter @Setter ConfigurationDTO configurationDTO;
     private @Getter @Setter AdministratorDTO newAdministrator;
-    private List<ParameterDTO> allConfigurations;
-    private List<ParameterDTO> currentConfigurations;
+    private @Getter @Setter List<ConfigurationDTO> configurationsDTO;
+    private List<ConfigurationDTO> allConfigurations;
+    private List<ConfigurationDTO> currentConfigurations;
     private DocumentDTO document;
     
     @EJB
@@ -73,7 +74,7 @@ public class AdministratorManager implements Serializable {
     private EmailManager emailManager;
     
     public AdministratorManager() {
-        newClient = new ClientDTO();
+        clientDTO = new ClientDTO();
         newProductDTO = new TemplateDTO();
         newAdministrator = new AdministratorDTO();
     }
@@ -105,8 +106,8 @@ public class AdministratorManager implements Serializable {
                     .path("/clients")
                     .request(MediaType.APPLICATION_XML);
             
-            Response response = invocationBuilder.post(Entity.xml(newClient));
-            newClient.reset();
+            Response response = invocationBuilder.post(Entity.xml(clientDTO));
+            clientDTO.reset();
             
             String message = response.readEntity(String.class);
             if (response.getStatus() != HTTP_CREATED){
@@ -258,8 +259,31 @@ public class AdministratorManager implements Serializable {
         }
         FacesContext.getCurrentInstance().addMessage(null, facesMsg);
     }
+    public void removeConfiguration(ActionEvent event){
+        FacesMessage facesMsg;
+        try {
+            UIParameter param = (UIParameter) event.getComponent().findComponent("deleteConfigurationId");
+            Long id = (Long)param.getValue();
+            
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                    .target(URILookup.getBaseAPI())
+                    .path("/configurations/")
+                    .path(String.valueOf(id))
+                    .request(MediaType.APPLICATION_XML);
+             Response response = invocationBuilder.delete();
+            
+            String message = response.readEntity(String.class);
+            if (response.getStatus() != HTTP_OK){
+                throw new Exception(message);
+            }
+            
+            MessageHandler.successMessage("Configuration Deleted:", message);
+        } catch (Exception e) {
+            MessageHandler.failMessage("Delete Failed:", e.getMessage());
+        }
+    }
       
-    public List<ParameterDTO> getAllConfigurations(){
+    public List<ConfigurationDTO> getAllConfigurations(){
         /*if (allConfigurations == null) {
             allConfigurations = new ArrayList<>();
             allConfigurations.addAll(configurationBean.getAll());
@@ -307,14 +331,52 @@ public class AdministratorManager implements Serializable {
             return null;
         }
     }
-    
-    /*public void setGuestManager(GuestManager guestManager) {
-        this.guestManager = guestManager;
-    }*/
-    public void reset(){
-        allConfigurations = null;
-        currentConfigurations = null;
+
+    public List<ConfigurationDTO> getClientConfigurations(){
+        try {
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                    .target(URILookup.getBaseAPI())
+                    .path("/clients/")
+                    .path(clientDTO.getUsername())
+                    .path("/configurations")
+                    .request(MediaType.APPLICATION_XML);
+            
+            Response response = invocationBuilder.get(Response.class);
+
+            List<ConfigurationDTO> configurationsDTO =
+                response.readEntity(new GenericType<List<ConfigurationDTO>>() {}); 
+          
+            return configurationsDTO;
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
     }
+    public List<ModuleDTO> getConfigurationModules(){
+        try {
+            logger.warning("HOLA");
+            logger.warning("id"+String.valueOf(configurationDTO.getId()));
+            logger.warning("Name"+String.valueOf(configurationDTO.getName()));
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                    .target(URILookup.getBaseAPI())
+                    .path("/configurations/")
+                    .path(String.valueOf(configurationDTO.getId()))
+                    .path("/modules")
+                    .request(MediaType.APPLICATION_XML);
+            
+            Response response = invocationBuilder.get(Response.class);
+
+            List<ModuleDTO> modulesDTO =
+                response.readEntity(new GenericType<List<ModuleDTO>>() {}); 
+          
+            logger.warning("modules:"+modulesDTO.size());
+            return modulesDTO;
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
+    }
+    
     
 
     public String uploadDocument() {
@@ -354,7 +416,6 @@ public class AdministratorManager implements Serializable {
     public EmailManager getEmailManager() {
         return emailManager;
     }
-
     public void setEmailManager(EmailManager emailManager) {
         this.emailManager = emailManager;
     }    
@@ -362,28 +423,24 @@ public class AdministratorManager implements Serializable {
     public UploadManager getUploadManager() {
         return uploadManager;
     }
-
     public void setUploadManager(UploadManager uploadManager) {
         this.uploadManager = uploadManager;
     }
 
-    
-    public List<ParameterDTO> getCurrentConfigurations(){
+    public List<ConfigurationDTO> getCurrentConfigurations(){
         return currentConfigurations;
     }
-    public void addConfiguration(ParameterDTO selectedConfiguration){
+    public void addConfiguration(ConfigurationDTO selectedConfiguration){
         allConfigurations.remove(selectedConfiguration);
         if (currentConfigurations == null) currentConfigurations = new ArrayList<>();
         currentConfigurations.add(selectedConfiguration);
     }
-    public void removeConfiguration(ParameterDTO selectedConfiguration){
+    public void removeConfiguration(ConfigurationDTO selectedConfiguration){
         currentConfigurations.remove(selectedConfiguration);
         allConfigurations.add(selectedConfiguration);
     }
-    public void setCurrentConfigurations(List<ParameterDTO> currentConfigurations) {
+    public void setCurrentConfigurations(List<ConfigurationDTO> currentConfigurations) {
         this.currentConfigurations = currentConfigurations;
     }
-    
-    
-    
+
 }

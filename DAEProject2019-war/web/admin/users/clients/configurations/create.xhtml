@@ -13,15 +13,36 @@
  
  <ui:define name="main">
     <h:form id="formId">
-        <c:set var="template" value="#{guestManager.selectedProduct}"/>
-        <h2>Product: #{template.name}</h2>
-        <b:inputText label="Name" disabled="true" value="#{template.name}"/>
-        <b:inputTextarea label="Description" value="#{template.description}"/>
+        <c:set var="client" value="#{administratorManager.clientDTO}"/>
+        <h2>Configuration #{template.name}</h2>
+        <b:inputText label="Username" disabled="true" value="#{client.username}"/>
+        
+        <b:inputText label="Name" disabled="true" value="#{client.name}"/>
+        
+        <b:inputText label="Email" disabled="true" value="#{client.email}"/>
 
-        <h:outputText value="Configurations:" style="font-weight:bold"/>
-        <b:dataTable var="rowItem" value="#{guestManager.configurations}" lang="en" 
+        <b:inputText label="Contact" disabled="true" value="#{client.contact}"/>
+        
+        <b:inputText label="Address" disabled="true" value="#{client.address}"/>
+        
+        <h:outputText value="Modules" style="font-weight:bold"/>
+        <b:dataTable var="rowItem" value="#{administratorManager.clientConfigurations}" lang="en" 
             responsive="true" info="false" paginated="false" searching="false">
+            <b:dataTableColumn value="#{rowItem.name}" />
             <b:dataTableColumn value="#{rowItem.description}" />
+            <b:dataTableColumn label="Actions">
+                <b:commandButton value="Details" class="btn btn-success" 
+                    action="/faces/guest/catalog/details?faces-redirect=false">
+                    <f:setPropertyActionListener value="${rowItem}"
+                        target="#{null}" />
+                </b:commandButton>
+                <b:commandButton value="Delete" class="btn btn-danger" id="delete" 
+                    rendered="${userManager.someUserAuthenticated and userManager.admin}"
+                    actionListener="#{administratorManager.removeTemplate}">
+                    <f:param name="deletetemplateId" id="deleteTemplateId" 
+                       value="#{rowItem.id}" />
+                </b:commandButton>
+            </b:dataTableColumn>
         </b:dataTable>
     </h:form>  
  </ui:define>

@@ -69,7 +69,7 @@ public class TemplateBean extends Bean<Template>{
     @RolesAllowed("Administrator")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_XML)
-    public Response addModule(@PathParam("id") Long id, List<Long> modules) 
+    public Response addModule(@PathParam("id") Long id, Long idModule) 
             throws EntityDoesNotExistException, MyConstraintViolationException, IOException{
         try{
             if (id == null) throw new EntityDoesNotExistException("Template doesn't exists.");
@@ -78,9 +78,11 @@ public class TemplateBean extends Bean<Template>{
                 throw new EntityDoesNotExistException("Template doesn't exists.");
             }
             
-            for (Long moduleId : modules){
-                addModule(id, moduleId);
-            }
+            if(idModule == null) throw new EntityDoesNotExistException("Module was not found");
+            Module module = em.find(Module.class, idModule);
+            if (template == null) throw new EntityDoesNotExistException("Module was not found");
+            
+            em.persist(template);
             
             return Response.status(Response.Status.CREATED).entity("Configurations were successfully associated whit the Template.").build();
         }catch (EntityDoesNotExistException e) {
@@ -110,21 +112,7 @@ public class TemplateBean extends Bean<Template>{
             throw new EJBException(e.getMessage());
         }
     }
-    
-    private void addModule(Long id, Long idModule) throws EntityDoesNotExistException{
-        if(id == null) throw new EntityDoesNotExistException("Template was not found");
-        Template template = em.find(Template.class, id);
-        if (template == null) throw new EntityDoesNotExistException("Template was not found");
         
-        if(idModule == null) throw new EntityDoesNotExistException("Module was not found");
-        Module module = em.find(Module.class, idModule);
-        if (template == null) throw new EntityDoesNotExistException("Module was not found");
-        
-        template.addModule(module);
-        em.persist(template);
-    }
-    
-    
     /*public List<Configuration> getConfigurations(Long id){
         Template productCatalog = em.find(Template.class, id);
         if (productCatalog == null) System.out.println("ERROR");//Temporary

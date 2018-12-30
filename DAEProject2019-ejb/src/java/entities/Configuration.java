@@ -86,12 +86,6 @@ public class Configuration extends Software implements Serializable {
         modules.remove(module);
         return module;
     }
-    public List<Module> getModule() {
-        return modules;
-    }
-    public void setModule(List<Module> modules) {
-        this.modules = modules;
-    }
 
     /**
      *

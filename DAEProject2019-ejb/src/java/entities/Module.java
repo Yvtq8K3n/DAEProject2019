@@ -5,6 +5,7 @@
  */
 package entities;
 
+import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,7 +19,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name ="Modules")
-public class Module {
+public class Module implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
