@@ -12,13 +12,13 @@
 
     <ui:define name="main">
         <h:form>
-            <h2>Products</h2>
-            <b:dataTable id="Templates" value="#{clientManager.productDTOs}" 
-                var="product" print="true" lang="en"
+            <h2>Configurations</h2>
+            <b:dataTable id="Templates" value="#{clientManager.configurationDTOs}" 
+                var="configuration" print="true" lang="en"
                 excel="true" csv="true" pdf="true" copy="true">
-                <b:dataTableColumn value="#{product.name}" />
-                <b:dataTableColumn value="#{product.description}" />
-                <b:dataTableColumn value="#{product.baseVersion}" />
+                <b:dataTableColumn value="#{configuration.name}" />
+                <b:dataTableColumn value="#{configuration.description}" />
+                <b:dataTableColumn value="#{configuration.baseVersion}" />
                 <b:dataTableColumn label="Actions">
                     <b:commandButton value="Details" class="btn btn-success" 
                         action="/faces/guest/catalog/details?faces-redirect=false">

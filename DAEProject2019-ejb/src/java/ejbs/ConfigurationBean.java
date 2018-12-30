@@ -184,8 +184,11 @@ public class ConfigurationBean extends Bean<Configuration>{
         }
     }
     
+    @GET
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Path("all")
     public Collection<ConfigurationDTO> getAll(){
-        List<Configuration> configurations =
+        Collection<Configuration> configurations =
                em.createNamedQuery("getAllConfigurations").getResultList();
 
         return toDTOs(configurations, ConfigurationDTO.class);

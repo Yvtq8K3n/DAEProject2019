@@ -143,7 +143,7 @@ public class ClientBean extends Bean<Client>{
     
     
     
-    /*public Client getClient(String username){
+    public Client getClient(String username){
         try {
             Client client = em.find(Client.class, username);
             if (client == null) {
@@ -173,5 +173,5 @@ public class ClientBean extends Bean<Client>{
         } catch (EJBException e) {
             System.out.println("ERROR: addProduct in CLIENT_BEAN" + e.getMessage());
         }
-    }*/
+    }
 }
