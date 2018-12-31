@@ -118,27 +118,6 @@ public class ConfigurationBean extends Bean<Configuration>{
     }
     
 
-    @GET 
-    @RolesAllowed("Client")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Path("/clientConfigurations/{username}")
-    public Collection<ConfigurationDTO> getClientConfigurations(@PathParam("username") String username)
-    throws EntityDoesNotExistException{
-       List<Configuration> configurations = new ArrayList<>();
-        try {
-            Client client = em.find(Client.class, username);
-            if (client == null) {
-                throw new EntityDoesNotExistException("User with id: " + username + " does not exist!!!");
-            }
-            configurations = client.getProducts();
-        }catch (EntityDoesNotExistException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new EJBException(e.getMessage());
-        }
-        return toDTOs(configurations, ConfigurationDTO.class);
-    }
-
     @POST
     @RolesAllowed("Administrator")
     @Path("{id}/artifacts")

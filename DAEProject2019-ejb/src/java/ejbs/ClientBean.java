@@ -114,7 +114,7 @@ public class ClientBean extends Bean<Client>{
     
     @GET
     @Path("/{username}/configurations")
-    @RolesAllowed("Administrator")
+    @RolesAllowed({"Administrator","Client"})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response getClientConfigurations(@PathParam("username") String username){
         try{

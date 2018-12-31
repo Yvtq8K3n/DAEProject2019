@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
@@ -20,8 +21,10 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import util.URILookup;
 
@@ -32,6 +35,8 @@ public class ClientManager implements Serializable {
  
     @ManagedProperty(value="#{userManager}")
     private UserManager userManager;
+    
+    private static final Logger logger = Logger.getLogger("web.AdministratorManager");
     
     private ClientDTO clientDTO;
     
@@ -62,13 +67,25 @@ public class ClientManager implements Serializable {
                     .get(ClientDTO.class); 
     }
     
-    public void clientProducts(){
-        configurationDTOs = client.target(URILookup.getBaseAPI())
-                    .path("/configurations/clientConfigurations")
+    public List<ConfigurationDTO> getClientProducts(){
+        try {
+            Invocation.Builder invocationBuilder = client
+                    .target(URILookup.getBaseAPI())
+                    .path("/clients/")
                     .path(clientDTO.getUsername())
-                    .request(MediaType.APPLICATION_XML)
-                    .get(new GenericType<Collection<ConfigurationDTO>>() {
-                    });
+                    .path("/configurations")
+                    .request(MediaType.APPLICATION_XML);
+            
+            Response response = invocationBuilder.get(Response.class);
+
+            List<ConfigurationDTO> configurationsDTO =
+                response.readEntity(new GenericType<List<ConfigurationDTO>>() {}); 
+          
+            return configurationsDTO;
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
     }
 
     public UserManager getUserManager() {
@@ -93,7 +110,7 @@ public class ClientManager implements Serializable {
 
     public void setClientDTO(ClientDTO clientDTO) {
         this.clientDTO = clientDTO;
-        clientProducts();
+        this.configurationDTOs = getClientProducts();
     }
 
     public Collection<ConfigurationDTO> getConfigurationDTOs() {
