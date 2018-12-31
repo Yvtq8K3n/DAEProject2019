@@ -39,6 +39,8 @@ public class ClientManager implements Serializable {
     
     private Collection<ConfigurationDTO> configurationDTOs;
     
+    private ConfigurationDTO currentConfiguration;
+    
     private String user;
     
     public ClientManager(){
@@ -101,7 +103,13 @@ public class ClientManager implements Serializable {
     public void setConfigurationDTOs(Collection<ConfigurationDTO> configurationDTOs) {
         this.configurationDTOs = configurationDTOs;
     }
-    
-    
+
+    public ConfigurationDTO getCurrentConfiguration() {
+        return currentConfiguration;
+    }
+
+    public void setCurrentConfiguration(ConfigurationDTO currentConfiguration) {
+        this.currentConfiguration = currentConfiguration;
+    }
     
 }
