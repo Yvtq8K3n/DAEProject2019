@@ -55,7 +55,7 @@ public class Configuration extends Software implements Serializable {
     @OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
     private List<Artifact> artifacts;
     
-    @OneToMany(cascade=CascadeType.REMOVE)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true)
     private List<Comment> comments;
 
     public Configuration() {
@@ -94,11 +94,15 @@ public class Configuration extends Software implements Serializable {
         artifacts.remove(artifact);
         return artifact;
     }
+    
+    public void addComment(Comment comment) {
+       comments.add(comment);
+    }
+    public Comment removeComment(Comment comment) {
+        comments.remove(comment);
+        return comment;
+    }
 
-    /**
-     *
-     * Getters and Setters
-     */
     
     public String getBaseVersion() {
         return baseVersion;

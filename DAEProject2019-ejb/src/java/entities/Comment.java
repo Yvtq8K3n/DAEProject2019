@@ -36,21 +36,35 @@ public class Comment implements Serializable{
     @ManyToOne
     private Comment parent;
 
-    @OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="parent", cascade = CascadeType.ALL, orphanRemoval=true)
     private List<Comment> children;
     
     @ManyToOne
     @JoinColumn(name="config_id")
     private Configuration configuration;
+    
+    @ManyToOne
+    @JoinColumn(name="author_id")
+    private User author;
 
     public Comment() {
         children = new ArrayList<>();
     }
     
-    public Comment(Comment parent, Configuration configuration, String message) {
+    public Comment(Comment parent, Configuration configuration, String message, User author) {
+        this();
         this.parent = parent;
         this.message = message;
         this.configuration=configuration;
+        this.author = author;
+    }
+    
+    public Comment(Comment parent, List<Comment> children, Configuration configuration, String message, User author) {
+        this.parent = parent;
+        this.children = new ArrayList<>();
+        this.message = message;
+        this.configuration=configuration;
+        this.author = author;
     }
     
     public void setParent(Comment parent){
@@ -96,5 +110,16 @@ public class Comment implements Serializable{
     public void setConfiguration(Configuration configuration) {
         this.configuration = configuration;
     }
-    
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
+    public Comment getParent() {
+        return parent;
+    }
 }

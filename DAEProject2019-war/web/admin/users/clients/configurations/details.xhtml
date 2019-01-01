@@ -5,7 +5,7 @@
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:b="http://bootsfaces.net/ui"
-    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
  <ui:composition template="../../../../templates/skeleton.xhtml">
@@ -16,6 +16,7 @@
     <c:set var="configuration" value="#{administratorManager.configurationDTO}"/>
     <h:form id="formId">
         <h2>Configuration: #{configuration.name}</h2>
+        <b:button value="See Comments" look="warning" p:data-target="#commentsModal" p:data-toggle="modal"/>
 
         <b:inputText label="Owner" disabled="true" value="#{configuration.owner}"/>
         
@@ -46,7 +47,7 @@
         </b:dataTable>
         
         <h3>Artifacts:</h3>
-        <b:button value="Create" look="warning" p:data-target="#amodal" p:data-toggle="modal" size="lg"/>
+        <b:button value="Create" look="success" p:data-target="#artifactsModal" p:data-toggle="modal"/>
        
         <b:dataTable var="rowItem" value="#{administratorManager.configurationArtifacts}" lang="en" 
             responsive="true" info="false" paginated="false" searching="false">
@@ -62,35 +63,32 @@
                        value="#{rowItem.id}" />
                 </b:commandButton>
             </b:dataTableColumn>
-        </b:dataTable>
-
-        <h3>Comments:</h3>
-        <b:dataTable var="rowItem" value="#{administratorManager.configurationModules}" lang="en" 
-            responsive="true" info="false" paginated="false" searching="false">
-            <b:dataTableColumn value="#{rowItem.id}" />
-            <b:dataTableColumn value="#{rowItem.name}" />
-            <b:dataTableColumn value="#{rowItem.version}" />
-                       
-            <b:dataTableColumn label="Actions">
-                <b:commandButton value="Delete" class="btn btn-danger" id="delete" 
-                    rendered="${userManager.someUserAuthenticated and userManager.admin}"
-                    actionListener="#{administratorManager.removeTemplate}">
-                    <f:param name="deletetemplateId" id="deleteTemplateId" 
-                       value="#{rowItem.id}" />
-                </b:commandButton>
-            </b:dataTableColumn>
-        </b:dataTable>
+        </b:dataTable>        
     </h:form>
-     <b:modal id="amodal" title="Modal Example" styleClass="modalPseudoClass">
+    <b:modal id="commentsModal" title="Comments" styleClass="modalPseudoClass">
+        <b:container>
+            <b:row>
+                <ui:include src="recursive.xhtml">
+                    <ui:param name="node" value="#{administratorManager.configurationComments}" />
+                </ui:include>
+            </b:row>
+        </b:container>
+        <f:facet name="footer">   
+            <b:button value="Close" dismiss="modal" />
+        </f:facet>
+    </b:modal>
+    <b:modal id="artifactsModal" title="Creating Artifact" styleClass="modalPseudoClass">
         <h:form enctype="multipart/form-data">
-            <b:growl id="messages" showDetail="true" />
             <h:inputFile value="#{uploadManager.file}" ></h:inputFile>
             <b:commandButton
-                value="Submit" 
+                value="Submit"
                 ajax="false" 
                 actionListener="#{uploadManager.upload}" 
                 action="#{administratorManager.uploadDocument}"/>
-      </h:form>
+        </h:form>
+        <f:facet name="footer">
+            <b:button value="Close" dismiss="modal" />
+        </f:facet>
     </b:modal>
  </ui:define>
  </ui:composition>

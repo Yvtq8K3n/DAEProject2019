@@ -7,6 +7,7 @@ package ejbs;
 
 import dtos.AdministratorDTO;
 import dtos.ClientDTO;
+import dtos.CommentDTO;
 import dtos.ConfigurationDTO;
 import dtos.ModuleDTO;
 import dtos.TemplateDTO;
@@ -108,13 +109,16 @@ public class ConfigBean {
             System.out.println(ex);
         }
         
-        try{
-            //templateBean.addModule();
-            //templateBean.addModule(3L, modules);
+        try{           
+            commentBean.create(new CommentDTO(null, null, null, 1L, "Im Your Granpha!","client1"));//granpha
+            commentBean.create(new CommentDTO(null, 21L, null, 1L, "Im Your True DAD!", "client1"));//dad
+            commentBean.create(new CommentDTO(null, 22L, null, 1L, "Im Child1!","client1"));//child1
+            commentBean.create(new CommentDTO(null, 22L, null, 1L, "Im Child2!","client1"));//child2
+            commentBean.create(new CommentDTO(null, 21L, null, 1L, "I Ain't Your DAD!", "client1"));//dad
         }catch (Exception ex){
             System.out.println(ex);
         }
-
+        
         //productBean.create(new ConfigurationDTO(1L, "PRODUCT1", "Im just a normal product", "v1.10", "client1"));
         //productBean.create(new ConfigurationDTO(2L, "REMIDA", "Website about energy", "v1.40", "client1"));
         //productBean.create(new ConfigurationDTO(3L, "JAVA EE Aplication", "Complex project", "v1.40", "client1"));

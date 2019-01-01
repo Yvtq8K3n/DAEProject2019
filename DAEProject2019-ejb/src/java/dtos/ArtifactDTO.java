@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "Document")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class DocumentDTO implements Serializable {
+public class ArtifactDTO implements Serializable {
     
     private int id;
     
@@ -17,18 +17,18 @@ public class DocumentDTO implements Serializable {
     
     private String mimeType;
 
-    public DocumentDTO() {
+    public ArtifactDTO() {
         
     }
 
-    public DocumentDTO(int id, String filepath, String desiredName, String mimeType) {
+    public ArtifactDTO(int id, String filepath, String desiredName, String mimeType) {
         this.id = id;
         this.filepath = filepath;
         this.desiredName = desiredName;
         this.mimeType = mimeType;
     }
     
-    public DocumentDTO(String filepath, String desiredName, String mimeType) {
+    public ArtifactDTO(String filepath, String desiredName, String mimeType) {
         this(-1, filepath, desiredName, mimeType);
     }
 

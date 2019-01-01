@@ -28,40 +28,32 @@ public class UploadManager {
     public void upload() {
         
         if (file != null) {
-            try {
-                logger.warning("am-entrou0");
-                
+            try { 
                 filename = extractFileName(file);//file.getSubmittedFileName();
-                
-                logger.warning("am-entrou1"+filename);
-               
                 completePathFile = URILookup.getServerDocumentsFolder() +"\\"+ filename;
-                logger.warning("am-entrou2"+completePathFile);
+
                 InputStream in = file.getInputStream();
-                logger.warning("am-entrou3");
                 FileOutputStream out = new FileOutputStream(completePathFile);
 
-                logger.warning("am-entrou4");
 
                 byte[] b = new byte[1024];
                 int readBytes = in.read(b);
-                logger.warning("am-entrou5");
+            
                 while (readBytes != -1) {
                     out.write(b, 0, readBytes);
                     readBytes = in.read(b);
                 }
-                logger.warning("am-entrou6");
+
                 in.close();
                 out.close();
 
-                FacesMessage message = new FacesMessage("File: " + file.getName() + " uploaded successfully!");
+                FacesMessage message = new FacesMessage("File: " + filename + " uploaded successfully!");
                 FacesContext.getCurrentInstance().addMessage(null, message);
 
             } catch (IOException e) {
                 FacesMessage message = new FacesMessage("ERROR :: File: " + file.getName() + " not uploaded!");
                 FacesContext.getCurrentInstance().addMessage(null, message);
             }
-            logger.warning("am-entrou6");
         }
     }
 

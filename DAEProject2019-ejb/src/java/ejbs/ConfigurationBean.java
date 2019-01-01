@@ -6,10 +6,12 @@
 package ejbs;
 
 import dtos.ConfigurationDTO;
-import dtos.DocumentDTO;
+import dtos.ArtifactDTO;
+import dtos.CommentDTO;
 import dtos.ModuleDTO;
 import entities.Artifact;
 import entities.Client;
+import entities.Comment;
 import entities.Module;
 import entities.Configuration;
 import entities.Software;
@@ -119,8 +121,9 @@ public class ConfigurationBean extends Bean<Configuration>{
     @POST
     @RolesAllowed("Administrator")
     @Path("{id}/artifacts")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response addArtifact(@PathParam("id") Long id, DocumentDTO doc){
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_XML)
+    public Response addArtifact(@PathParam("id") Long id, ArtifactDTO artifactDTO){
         try {
             if (id == null)
                 throw new EntityDoesNotExistException("Invalid configuration");
@@ -130,15 +133,15 @@ public class ConfigurationBean extends Bean<Configuration>{
                 throw new EntityDoesNotExistException("Configuration not found.");
 
             Artifact artifact = new Artifact(
-                doc.getFilepath(), 
-                doc.getDesiredName(), 
-                doc.getMimeType()
+                artifactDTO.getFilepath(), 
+                artifactDTO.getDesiredName(), 
+                artifactDTO.getMimeType()
             );
             
             configuration.addArtifact(artifact);
             em.persist(configuration);
             
-        return Response.status(Response.Status.CREATED).entity("Module was successfully created.").build();
+        return Response.status(Response.Status.CREATED).entity("Artifact was successfully created.").build();
         }catch (EntityDoesNotExistException e) {
             return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
         }catch (ConstraintViolationException e){
@@ -171,6 +174,35 @@ public class ConfigurationBean extends Bean<Configuration>{
         }
     }
 
+    @GET
+    @Path("/{id}/comments")
+    @RolesAllowed("Administrator")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response getComments(@PathParam("id") String id){
+        try{
+            if (id == null)
+                throw new EntityDoesNotExistException("Invalid configuration");
+            
+            Configuration configuration = em.find(Configuration.class, Long.valueOf(id));
+            if(configuration == null) 
+                throw new EntityDoesNotExistException("Configuration not found.");
+                
+            System.out.println("Amount of Configuarations:"+configuration.getComments().size());
+ 
+            Collection<CommentDTO> commentsDTO 
+                = CommentBean.convertCommentDTOs(configuration.getComments());  
+            GenericEntity<List<CommentDTO>> entity =
+                new GenericEntity<List<CommentDTO>>(new ArrayList<>(commentsDTO)) {};      
+
+            return Response.status(Response.Status.OK).entity(entity).build();
+        }catch (EntityDoesNotExistException e) {
+            return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
+        }catch (ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
+        }catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
+        } 
+    }    
     
     @GET
     @Path("/{id}/modules")
@@ -204,7 +236,7 @@ public class ConfigurationBean extends Bean<Configuration>{
     @Path("/{id}/artifacts")
     @RolesAllowed("Administrator")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response getClientConfigurations(@PathParam("id") Long id){
+    public Response getArtifacts(@PathParam("id") Long id){
         try{
             if (id == null)
                 throw new EntityDoesNotExistException("Invalid configuration");
@@ -213,10 +245,10 @@ public class ConfigurationBean extends Bean<Configuration>{
             if(configuration == null) 
                 throw new EntityDoesNotExistException("Configuration not found.");
 
-            Collection<DocumentDTO> artifactsDTO
-                    = toDTOs(configuration.getArtifacts(), DocumentDTO.class);
-            GenericEntity<List<DocumentDTO>> entity =
-                new GenericEntity<List<DocumentDTO>>(new ArrayList<>(artifactsDTO)) {};      
+            Collection<ArtifactDTO> artifactsDTO
+                    = toDTOs(configuration.getArtifacts(), ArtifactDTO.class);
+            GenericEntity<List<ArtifactDTO>> entity =
+                new GenericEntity<List<ArtifactDTO>>(new ArrayList<>(artifactsDTO)) {};      
 
             return Response.status(Response.Status.OK).entity(entity).build();
         }catch (EntityDoesNotExistException e) {

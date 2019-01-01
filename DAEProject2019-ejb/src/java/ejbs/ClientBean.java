@@ -141,8 +141,6 @@ public class ClientBean extends Bean<Client>{
         } 
     }
     
-    
-    
     public Client getClient(String username){
         try {
             Client client = em.find(Client.class, username);
