@@ -45,6 +45,7 @@ import javax.ws.rs.core.Response;
  *
  * @author Joao Marquez
  */
+
 @Stateless
 @Path("/configurations")
 @DeclareRoles({"Administrator", "Client"})
@@ -118,6 +119,7 @@ public class ConfigurationBean extends Bean<Configuration>{
         }
     }
     
+
     @POST
     @RolesAllowed("Administrator")
     @Path("{id}/artifacts")
@@ -265,8 +267,7 @@ public class ConfigurationBean extends Bean<Configuration>{
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("all")
     public Collection<ConfigurationDTO> getAll(){
-        Collection<Configuration> configurations =
-               em.createNamedQuery("getAllConfigurations").getResultList();
+        Collection<Configuration> configurations = em.createNamedQuery("getAllConfigurations").getResultList();
 
         return toDTOs(configurations, ConfigurationDTO.class);
     }

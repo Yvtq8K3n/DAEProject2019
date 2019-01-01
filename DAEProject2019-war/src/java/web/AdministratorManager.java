@@ -2,8 +2,7 @@ package web;
 
 import dtos.AdministratorDTO;
 import dtos.ClientDTO;
-import dtos.ArtifactDTO;    
-import dtos.CommentCustomDTO;
+import dtos.ArtifactDTO;
 import dtos.CommentDTO;
 import dtos.ConfigurationDTO;
 import dtos.ModuleDTO;
@@ -279,6 +278,7 @@ public class AdministratorManager implements Serializable {
         }
     }
       
+
     public List<ConfigurationDTO> getAllConfigurations(){
         /*if (allConfigurations == null) {
             allConfigurations = new ArrayList<>();
@@ -317,7 +317,7 @@ public class AdministratorManager implements Serializable {
     public List<ClientDTO> getAllClients(){
         try {
             List<ClientDTO> clients=addHeaderBASIC().target(URILookup.getBaseAPI())
-                    .path("/clients")
+                    .path("/clients/all")
                     .request(MediaType.APPLICATION_XML)
                     .get(new GenericType<List<ClientDTO>>() {});
 
@@ -475,6 +475,7 @@ public class AdministratorManager implements Serializable {
         if (currentConfigurations == null) currentConfigurations = new ArrayList<>();
         currentConfigurations.add(selectedConfiguration);
     }
+
     public void removeConfiguration(ConfigurationDTO selectedConfiguration){
         currentConfigurations.remove(selectedConfiguration);
         allConfigurations.add(selectedConfiguration);

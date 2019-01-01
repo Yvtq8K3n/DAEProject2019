@@ -12,16 +12,17 @@
 
     <ui:define name="main">
         <h:form>
-            <h2>Configurations</h2>
+            <h2>Configuration</h2>
             <b:dataTable id="Templates" value="#{clientManager.configurationDTOs}" 
                 var="configuration" print="true" lang="en"
                 excel="true" csv="true" pdf="true" copy="true">
                 <b:dataTableColumn value="#{configuration.name}" />
                 <b:dataTableColumn value="#{configuration.description}" />
-                <b:dataTableColumn value="#{configuration.baseVersion}" />
+                <b:dataTableColumn value="#{configuration.status}" />
                 <b:dataTableColumn label="Actions">
                     <b:commandButton value="Details" class="btn btn-success" 
-                        action="/faces/guest/catalog/details?faces-redirect=false">
+                        action="/faces/client/details?faces-redirect=false">
+                        <f:setPropertyActionListener target="#{clientManager.currentConfiguration}" value="#{configuration}" />
                     </b:commandButton>
                 </b:dataTableColumn>
                 
