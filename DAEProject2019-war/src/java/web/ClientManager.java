@@ -1,7 +1,9 @@
 package web;
 
+import dtos.ArtifactDTO;
 import dtos.ClientDTO;
 import dtos.ConfigurationDTO;
+import dtos.ModuleDTO;
 import ejbs.ClientBean;
 import ejbs.ConfigurationBean;
 import ejbs.SoftwareBean;
@@ -19,6 +21,7 @@ import javax.inject.Named;
 //import javax.enterprise.context.SessionScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.context.FacesContext;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
@@ -28,7 +31,6 @@ import javax.ws.rs.core.Response;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import util.URILookup;
 
-//@Named(value = "clientManager")
 @ManagedBean(name = "clientManager")
 @SessionScoped
 public class ClientManager implements Serializable {
@@ -40,36 +42,52 @@ public class ClientManager implements Serializable {
     
     private ClientDTO clientDTO;
     
-    private javax.ws.rs.client.Client client;
-    
-    private Collection<ConfigurationDTO> configurationDTOs;
-    
     private ConfigurationDTO currentConfiguration;
     
     private String user;
     
     public ClientManager(){
-        configurationDTOs = new ArrayList<>();
-        client = ClientBuilder.newClient();
     }
+
     @PostConstruct
     public void Init(){
-        HttpAuthenticationFeature feature = HttpAuthenticationFeature.basic(userManager.getUsername(), userManager.getPassword());
-        client.register(feature);
         setClientDTO(getClient(userManager.getUsername()));
     }
+
     
     public ClientDTO getClient(String username){
-        return client.target(URILookup.getBaseAPI())
+        try {
+            Invocation.Builder invocationBuilder = addHeaderBASIC().target(URILookup.getBaseAPI())
                     .path("/clients/cliento")
                     .path(username)
-                    .request(MediaType.APPLICATION_XML)
-                    .get(ClientDTO.class); 
+                    .request(MediaType.APPLICATION_XML);
+        
+            Response response = invocationBuilder.get(Response.class);
+         
+            return response.readEntity(new GenericType<ClientDTO>(){}); 
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
     }
     
-    public List<ConfigurationDTO> getClientProducts(){
+    private javax.ws.rs.client.Client addHeaderBASIC() {
+        javax.ws.rs.client.Client client = ClientBuilder.newClient();
+        FacesContext context = FacesContext.getCurrentInstance();
+        javax.faces.application.Application app = context.getApplication();
+        UserManager userManager = app.evaluateExpressionGet(context, "#{userManager}", UserManager.class);
+        
+        String username = userManager.getUsername();
+        String password = userManager.getPassword();
+        
+        HttpAuthenticationFeature feature = HttpAuthenticationFeature.basic(username, password);
+        client.register(feature);
+        return client;
+    }
+    
+    public List<ConfigurationDTO> getClientConfigurations(){
         try {
-            Invocation.Builder invocationBuilder = client
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
                     .target(URILookup.getBaseAPI())
                     .path("/clients/")
                     .path(clientDTO.getUsername())
@@ -82,6 +100,50 @@ public class ClientManager implements Serializable {
                 response.readEntity(new GenericType<List<ConfigurationDTO>>() {}); 
           
             return configurationsDTO;
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
+    }
+    
+     public List<ModuleDTO> getConfigurationModules(){
+        try {
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                    .target(URILookup.getBaseAPI())
+                    .path("/configurations/")
+                    .path(String.valueOf(currentConfiguration.getId()))
+                    .path("/modules")
+                    .request(MediaType.APPLICATION_XML);
+            
+            Response response = invocationBuilder.get(Response.class);
+
+            List<ModuleDTO> modulesDTO =
+                response.readEntity(new GenericType<List<ModuleDTO>>() {}); 
+          
+            logger.warning("modules:"+modulesDTO.size());
+            return modulesDTO;
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
+    }
+     
+     public List<ArtifactDTO> getConfigurationArtifacts(){
+        try {
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                    .target(URILookup.getBaseAPI())
+                    .path("/configurations/")
+                    .path(String.valueOf(currentConfiguration.getId()))
+                    .path("/artifacts")
+                    .request(MediaType.APPLICATION_XML);
+            
+            Response response = invocationBuilder.get(Response.class);
+
+            List<ArtifactDTO> artifactDTO =
+                response.readEntity(new GenericType<List<ArtifactDTO>>() {}); 
+          
+            logger.warning("artifact:"+artifactDTO.size());
+            return artifactDTO;
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
             return null;
@@ -110,15 +172,6 @@ public class ClientManager implements Serializable {
 
     public void setClientDTO(ClientDTO clientDTO) {
         this.clientDTO = clientDTO;
-        this.configurationDTOs = getClientProducts();
-    }
-
-    public Collection<ConfigurationDTO> getConfigurationDTOs() {
-        return configurationDTOs;
-    }
-
-    public void setConfigurationDTOs(Collection<ConfigurationDTO> configurationDTOs) {
-        this.configurationDTOs = configurationDTOs;
     }
 
     public ConfigurationDTO getCurrentConfiguration() {

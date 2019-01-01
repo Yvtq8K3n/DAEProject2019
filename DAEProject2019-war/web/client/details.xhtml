@@ -33,6 +33,22 @@
                 <b:radiobutton value="#{configuration.status}" disabled="true">
                     <f:selectItems value="#{configuration.allStatus}" />
                 </b:radiobutton>
+                
+                <h3>Modules:</h3>
+                <b:dataTable var="rowItem" value="#{clientManager.configurationModules}" lang="en" 
+                    responsive="true" info="false" paginated="false" searching="false">
+                    <b:dataTableColumn value="#{rowItem.id}" />
+                    <b:dataTableColumn value="#{rowItem.name}" />
+                    <b:dataTableColumn value="#{rowItem.version}" />
+                </b:dataTable>
+                
+                <h3>Artifacts:</h3>
+                <b:dataTable var="rowItem" value="#{clientManager.configurationArtifacts}" lang="en" 
+                    responsive="true" info="false" paginated="false" searching="false">
+                    <b:dataTableColumn value="#{rowItem.desiredName}" />
+                    <b:dataTableColumn value="#{rowItem.filepath}" />
+                    <b:dataTableColumn value="#{rowItem.mimeType}" />
+                </b:dataTable>  
               
             </h:form>
 
