@@ -42,7 +42,7 @@ public class CommentBean extends Bean<Comment>{
     EntityManager em;
    
     @POST
-    @RolesAllowed("Administrator")
+    @RolesAllowed({"Administrator","Client"})
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_XML)
     public Response create(CommentDTO commentDTO) {
