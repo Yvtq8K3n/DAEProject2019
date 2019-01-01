@@ -42,7 +42,7 @@ public class CommentBean extends Bean<Comment>{
     EntityManager em;
    
     @POST
-    @RolesAllowed("Administrator")
+    @RolesAllowed({"Administrator","Client"})
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_XML)
     public Response create(CommentDTO commentDTO) {
@@ -91,7 +91,6 @@ public class CommentBean extends Bean<Comment>{
     static CommentDTO convertDTO(Comment comment){
         comment.getChildren().size();
                 
-        System.out.println("asdasd");
         CommentDTO DTO = new CommentDTO(
             comment.getId(),
             (comment.getParent() != null)?comment.getParent().getId(): null,

@@ -3,6 +3,7 @@ package web;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.logging.Logger;
@@ -15,7 +16,7 @@ import util.URILookup;
 
 @ManagedBean
 @SessionScoped
-public class UploadManager {
+public class UploadManager implements Serializable{
     private static final Logger logger = Logger.getLogger("web.AdministratorManager");
     Part file;
     

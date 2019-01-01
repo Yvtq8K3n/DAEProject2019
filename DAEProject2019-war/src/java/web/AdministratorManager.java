@@ -53,6 +53,7 @@ public class AdministratorManager implements Serializable {
     private @Getter @Setter ClientDTO clientDTO;
     private @Getter @Setter ConfigurationDTO configurationDTO;
     private @Getter @Setter AdministratorDTO newAdministrator;
+    private @Getter @Setter CommentDTO commentDTO;
     private @Getter @Setter List<ConfigurationDTO> configurationsDTO;
     private List<ConfigurationDTO> allConfigurations;
     private List<ConfigurationDTO> currentConfigurations;
@@ -61,15 +62,14 @@ public class AdministratorManager implements Serializable {
     private TemplateBean productCatalogBean;
     @EJB
     private ConfigurationBean configurationBean;
-    
-    @ManagedProperty(value="#{userManager}")
-    private @Getter @Setter UserManager userManager;
-    
+        
     @ManagedProperty(value="#{emailManager}")
     private EmailManager emailManager;
     
     public AdministratorManager() {
         clientDTO = new ClientDTO();
+        commentDTO = new CommentDTO();
+        configurationDTO = new ConfigurationDTO();
         newProductDTO = new TemplateDTO();
         newAdministrator = new AdministratorDTO();
     }
@@ -192,6 +192,61 @@ public class AdministratorManager implements Serializable {
             return null;
         }  
         return "/index.xhtml?faces-redirect=true";
+    }
+    public void createComment(Long configurationId, Long parentId){
+        //Retrieves userManager
+        FacesContext context = FacesContext.getCurrentInstance();
+        javax.faces.application.Application app = context.getApplication();
+        UserManager userManager = app.evaluateExpressionGet(context, "#{userManager}", UserManager.class);
+        
+        //Build Comment
+        if (parentId != null) commentDTO.setParent(parentId);
+        commentDTO.setConfiguration(configurationId);
+        commentDTO.setAuthor(userManager.getUsername());
+        
+        try {
+            Invocation.Builder invocationBuilder = 
+                addHeaderBASIC().target(URILookup.getBaseAPI())
+                    .path("/comments")
+                    .request(MediaType.APPLICATION_XML);
+            
+            Response response = invocationBuilder.post(Entity.xml(commentDTO));
+            commentDTO.reset();
+            
+            String message = response.readEntity(String.class);
+            if (response.getStatus() != HTTP_CREATED){
+                throw new Exception(message);
+            }
+            
+            MessageHandler.successMessage("Comment Created:",message);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
+        }
+    }
+    
+    public void updateConfiguration(){
+        logger.warning("ssdasd"+configurationDTO.getId());
+        logger.info("sadasd");
+        
+        try {
+            Invocation.Builder invocationBuilder = 
+                addHeaderBASIC().target(URILookup.getBaseAPI())
+                    .path("/configurations")
+                    .request(MediaType.APPLICATION_XML);
+            
+            Response response = invocationBuilder.put(Entity.xml(configurationDTO));
+            
+            String message = response.readEntity(String.class);
+            if (response.getStatus() != HTTP_OK){
+                throw new Exception(message);
+            }
+            
+            MessageHandler.successMessage("Configuration Updated:",message);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
+            
+        }
+       
     }
     
     public void removeClient(ActionEvent event){
@@ -404,16 +459,13 @@ public class AdministratorManager implements Serializable {
 
             List<CommentDTO> commentDTO =
                 response.readEntity(new GenericType<List<CommentDTO>>() {}); 
- 
-            logger.warning("comments:"+commentDTO.size());
-            logger.warning("commentsChild:"+commentDTO.get(0).getChild());
+
             return commentDTO;
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
             return null;
         }
     }
-    
     
     public String uploadDocument() {
         try {
@@ -423,23 +475,21 @@ public class AdministratorManager implements Serializable {
         
             ArtifactDTO document = 
                 new ArtifactDTO(uploadManager.getCompletePathFile(), uploadManager.getFilename(), uploadManager.getFile().getContentType());
-             logger.warning("Hi2");
+
             Invocation.Builder invocationBuilder = addHeaderBASIC()
                 .target(URILookup.getBaseAPI())
                 .path("/configurations/")
                 .path(String.valueOf(configurationDTO.getId()))
                 .path("/artifacts")
                 .request(MediaType.APPLICATION_XML);
-            logger.warning("Hi4");
+
             Response response = invocationBuilder.post(Entity.xml(document));     
-            logger.warning("Status:"+response.getStatus());
             
             String message = response.readEntity(String.class);
             if (response.getStatus() != HTTP_CREATED){
                 throw new Exception(message);
             }
-            MessageHandler.successMessage("Client Created:", message);
-            logger.warning("Upload:"+message);
+            MessageHandler.successMessage("Artifact Created:", message);
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
             return null;
@@ -483,5 +533,4 @@ public class AdministratorManager implements Serializable {
     public void setCurrentConfigurations(List<ConfigurationDTO> currentConfigurations) {
         this.currentConfigurations = currentConfigurations;
     }
-
 }

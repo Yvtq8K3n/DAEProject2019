@@ -52,7 +52,6 @@ public class ConfigBean {
       
     @PostConstruct
     public void populateDB() {
-        System.out.println("HEHE");
         try{
             //Create Users
             clientBean.create(new ClientDTO("client1", "secret", "Manuel", "dae.ei.ipleiria@gmail.com", "Av. José Maceda", "918 923 232"));

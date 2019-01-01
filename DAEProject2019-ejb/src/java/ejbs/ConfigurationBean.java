@@ -33,6 +33,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -85,8 +86,40 @@ public class ConfigurationBean extends Bean<Configuration>{
         }catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
         } 
-    }    
+    }
     
+    @PUT
+    @RolesAllowed("Administrator")
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_XML)
+    public Response update(ConfigurationDTO confDTO) {
+        try{
+            System.out.println("I was executed");
+            if (confDTO.getId()== null)
+                throw new EntityDoesNotExistException("Invalid Configuration");
+            
+            Configuration conf = em.find(Configuration.class, confDTO.getId());
+            if(conf == null) 
+                throw new EntityDoesNotExistException("Configuration not found.");
+            
+            conf.setName(confDTO.getName());
+            conf.setDescription(confDTO.getDescription());
+            conf.setBaseVersion(confDTO.getBaseVersion());
+            conf.setContractDate(confDTO.getContractDate());
+            
+            
+            em.persist(conf);
+            System.out.println("WHIT SUCCESS");
+        return Response.status(Response.Status.OK).entity("Configuration was successfully edited.").build();
+        }catch (EntityDoesNotExistException e) {
+            return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
+        }catch (ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
+        }catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
+        } 
+    }
+      
     @DELETE
     @Path("/{id}")
     @RolesAllowed({"Administrator"})
@@ -189,8 +222,6 @@ public class ConfigurationBean extends Bean<Configuration>{
             if(configuration == null) 
                 throw new EntityDoesNotExistException("Configuration not found.");
                 
-            System.out.println("Amount of Configuarations:"+configuration.getComments().size());
- 
             Collection<CommentDTO> commentsDTO 
                 = CommentBean.convertCommentDTOs(configuration.getComments());  
             GenericEntity<List<CommentDTO>> entity =

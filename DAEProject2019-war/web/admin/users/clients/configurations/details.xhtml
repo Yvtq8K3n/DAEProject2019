@@ -14,10 +14,10 @@
  
  <ui:define name="main">
     <c:set var="configuration" value="#{administratorManager.configurationDTO}"/>
-    <h:form id="formId">
-        <h2>Configuration: #{configuration.name}</h2>
-        <b:button value="See Comments" look="warning" p:data-target="#commentsModal" p:data-toggle="modal"/>
-
+    <h2>Configuration: #{configuration.name}</h2>
+    <b:button value="See Comments" look="warning" p:data-target="#commentsModal" p:data-toggle="modal"/>
+    
+    <h:form id="formMain">
         <b:inputText label="Owner" disabled="true" value="#{configuration.owner}"/>
         
         <b:inputText label="Base Version:" value="#{configuration.baseVersion}"/>
@@ -29,13 +29,22 @@
             <f:selectItems value="#{administratorManager.configurationDTO.allStatus}" />
         </b:radiobutton>
         
-        <h3>Modules:</h3>
+        <b:commandButton
+            value="Submit" class="btn btn-primary"
+            action="${administratorManager.updateConfiguration}">
+        </b:commandButton>
+    </h:form>
+        
+    <hr></hr>
+    
+    <h3>Modules:</h3>
+    <h:form id="formModules">
         <b:dataTable var="rowItem" value="#{administratorManager.configurationModules}" lang="en" 
             responsive="true" info="false" paginated="false" searching="false">
             <b:dataTableColumn value="#{rowItem.id}" />
             <b:dataTableColumn value="#{rowItem.name}" />
             <b:dataTableColumn value="#{rowItem.version}" />
-                       
+
             <b:dataTableColumn label="Actions">
                 <b:commandButton value="Delete" class="btn btn-danger" id="delete" 
                     rendered="${userManager.someUserAuthenticated and userManager.admin}"
@@ -45,16 +54,17 @@
                 </b:commandButton>
             </b:dataTableColumn>
         </b:dataTable>
+    </h:form>
         
-        <h3>Artifacts:</h3>
+    <h3>Artifacts:</h3>
+    <h:form id="formArtifacts">
         <b:button value="Create" look="success" p:data-target="#artifactsModal" p:data-toggle="modal"/>
-       
         <b:dataTable var="rowItem" value="#{administratorManager.configurationArtifacts}" lang="en" 
             responsive="true" info="false" paginated="false" searching="false">
             <b:dataTableColumn value="#{rowItem.desiredName}" />
             <b:dataTableColumn value="#{rowItem.filepath}" />
             <b:dataTableColumn value="#{rowItem.mimeType}" />
-                       
+
             <b:dataTableColumn label="Actions">
                 <b:commandButton value="Delete" class="btn btn-danger" id="delete" 
                     rendered="${userManager.someUserAuthenticated and userManager.admin}"
@@ -63,20 +73,37 @@
                        value="#{rowItem.id}" />
                 </b:commandButton>
             </b:dataTableColumn>
-        </b:dataTable>        
+        </b:dataTable>
     </h:form>
-    <b:modal id="commentsModal" title="Comments" styleClass="modalPseudoClass">
-        <b:container>
-            <b:row>
-                <ui:include src="recursive.xhtml">
-                    <ui:param name="node" value="#{administratorManager.configurationComments}" />
-                </ui:include>
-            </b:row>
-        </b:container>
+    
+    <b:modal id="commentsModal" title="" size="modal-lg">
+        <h2>Configuration: #{configuration.name}</h2>
+        <h3>Comments:</h3>
+        <ui:include src="recursive.xhtml">
+            <ui:param name="node" value="#{administratorManager.configurationComments}" />
+        </ui:include>
+
+        <div class="t_mod_box">
+            <a href="#" class="edittopic btn btn-default stat-item" name="send">Reply</a>
+        </div>
+        <div class="t_edit_cont" style="display: none;">
+            <c:set var="reply" value="#{administratorManager.commentDTO}"/>
+            <h:form id="replyPrincipal">
+                <b:inputTextarea label="Comment:" value="#{reply.message}"/>
+
+                <b:commandButton  value="Send" actionListener="#{administratorManager.createComment(configuration.id, null)}"/>
+            </h:form>
+        </div>
+        <script>
+            $(".edittopic").click(function() {
+                $(this).parents(".t_mod_box").next(".t_edit_cont").slideToggle();
+            });
+        </script>
         <f:facet name="footer">   
             <b:button value="Close" dismiss="modal" />
         </f:facet>
     </b:modal>
+
     <b:modal id="artifactsModal" title="Creating Artifact" styleClass="modalPseudoClass">
         <h:form enctype="multipart/form-data">
             <h:inputFile value="#{uploadManager.file}" ></h:inputFile>
@@ -90,6 +117,7 @@
             <b:button value="Close" dismiss="modal" />
         </f:facet>
     </b:modal>
+
  </ui:define>
  </ui:composition>
 </html>
