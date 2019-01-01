@@ -13,7 +13,7 @@
     <ui:define name="main">
         <h:form>
             <h2>Configuration</h2>
-            <b:dataTable id="Templates" value="#{clientManager.configurationDTOs}" 
+            <b:dataTable id="Templates" value="#{clientManager.clientConfigurations}" 
                 var="configuration" print="true" lang="en"
                 excel="true" csv="true" pdf="true" copy="true">
                 <b:dataTableColumn value="#{configuration.name}" />

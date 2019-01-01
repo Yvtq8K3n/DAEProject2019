@@ -211,7 +211,7 @@ public class ConfigurationBean extends Bean<Configuration>{
 
     @GET
     @Path("/{id}/comments")
-    @RolesAllowed("Administrator")
+    @RolesAllowed({"Administrator","Client"})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response getComments(@PathParam("id") String id){
         try{
@@ -239,7 +239,7 @@ public class ConfigurationBean extends Bean<Configuration>{
     
     @GET
     @Path("/{id}/modules")
-    @RolesAllowed("Administrator")
+    @RolesAllowed({"Administrator","Client"})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response getModules(@PathParam("id") String id){
         try{
@@ -267,7 +267,7 @@ public class ConfigurationBean extends Bean<Configuration>{
     
     @GET
     @Path("/{id}/artifacts")
-    @RolesAllowed("Administrator")
+    @RolesAllowed({"Administrator","Client"})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response getArtifacts(@PathParam("id") Long id){
         try{

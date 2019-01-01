@@ -5,7 +5,8 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:b="http://bootsfaces.net/ui"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
     <!--<h:head>
         <title>Facelet Title</title>
         <script name="jquery/jquery.js" library="primefaces"></script>
@@ -22,7 +23,7 @@
             <c:set var="configuration" value="#{clientManager.currentConfiguration}"/>
             <h:form id="formId">
                 <h2>Configuration: #{configuration.name}</h2>
-
+                <b:button value="See Comments" look="warning" p:data-target="#commentsModal" p:data-toggle="modal"/>
                 <b:inputText label="Owner" disabled="true" value="#{configuration.owner}"/>
 
                 <b:inputText label="Base Version:" disabled="true" value="#{configuration.baseVersion}"/>
@@ -33,9 +34,48 @@
                 <b:radiobutton value="#{configuration.status}" disabled="true">
                     <f:selectItems value="#{configuration.allStatus}" />
                 </b:radiobutton>
+                
+                <h3>Modules:</h3>
+                <b:dataTable var="rowItem" value="#{clientManager.configurationModules}" lang="en" 
+                    responsive="true" info="false" paginated="false" searching="false">
+                    <b:dataTableColumn value="#{rowItem.id}" />
+                    <b:dataTableColumn value="#{rowItem.name}" />
+                    <b:dataTableColumn value="#{rowItem.version}" />
+                </b:dataTable>
+                
+                <h3>Artifacts:</h3>
+                <b:dataTable var="rowItem" value="#{clientManager.configurationArtifacts}" lang="en" 
+                    responsive="true" info="false" paginated="false" searching="false">
+                    <b:dataTableColumn value="#{rowItem.desiredName}" />
+                    <b:dataTableColumn value="#{rowItem.filepath}" />
+                    <b:dataTableColumn value="#{rowItem.mimeType}" />
+                </b:dataTable>  
               
             </h:form>
-
+            
+            <b:modal id="commentsModal" title="Comments" styleClass="modalPseudoClass">
+                <b:container>
+                    <h:form>
+                        <c:set var="newComment" value="#{clientManager.newCommentDTO}"/>
+                        <b:inputTextarea label="New comment:" value="#{newComment.message}"/>
+                         <b:commandButton
+                            look="success"
+                            value="New comment" class="btn btn-primary"
+                            action="${clientManager.commentCreate()}">
+                        </b:commandButton>
+                    </h:form>
+                    <b:row>
+                        <ui:include src="recursive.xhtml">
+                            <ui:param name="node" value="#{clientManager.configurationComments}" />
+                        </ui:include>
+                    </b:row>
+                </b:container>
+                <f:facet name="footer">   
+                    <b:button value="Close" dismiss="modal" />
+                </f:facet>
+            </b:modal>
+            
+             
  </ui:define>
     </ui:composition>
 </html>

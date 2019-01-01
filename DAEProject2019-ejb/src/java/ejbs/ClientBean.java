@@ -147,18 +147,28 @@ public class ClientBean extends Bean<Client>{
     @RolesAllowed("Client")
     @Path("cliento/{username}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public ClientDTO getClient(@PathParam("username") String username)
+    public Response getClient(@PathParam("username") String username)
     throws EntityDoesNotExistException{
         try {
+            if (username == null)
+                throw new EntityDoesNotExistException("Invalid Username");
+            
             Client client = em.find(Client.class, username);
-            if (client == null) {
-                throw new EntityDoesNotExistException("User with id: " + username + " does not exist!!!");
-            }
-            return toDTO(client, ClientDTO.class);
-        } catch (EntityDoesNotExistException e) {
-            throw e;
-        } catch (EJBException e) {
-            throw new EJBException("ERROR: CANT FIND ENTETY" + e.getMessage());
+            if(client == null) 
+                throw new EntityDoesNotExistException("Client not found.");
+            
+            ClientDTO clientDTO = toDTO(client, ClientDTO.class);
+            
+            GenericEntity<ClientDTO> entity =
+                new GenericEntity<ClientDTO>(clientDTO) {}; 
+            
+            return Response.status(Response.Status.OK).entity(entity).build();
+        }catch (EntityDoesNotExistException e) {
+            return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
+        }catch (ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
+        }catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
         }
     }
 
