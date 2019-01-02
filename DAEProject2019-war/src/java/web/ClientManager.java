@@ -37,25 +37,20 @@ import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import util.MessageHandler;
 import util.URILookup;
 
-@ManagedBean(name = "clientManager")
+@Named(value = "clientManager")
+@ManagedBean
 @SessionScoped
 public class ClientManager implements Serializable {
-  
-    
     private static final int HTTP_CREATED = Response.Status.CREATED.getStatusCode();
     private static final int HTTP_OK = Response.Status.OK.getStatusCode();
-    private @Getter @Setter UIComponent component;
-    
-    @ManagedProperty(value="#{userManager}")
-    private UserManager userManager;
     
     private static final Logger logger = Logger.getLogger("web.AdministratorManager");
     
+    private @Getter @Setter UIComponent component;
+    
     private ClientDTO clientDTO;
     private @Getter @Setter CommentDTO newCommentDTO;
-    private ConfigurationDTO currentConfiguration;
-    
-    private String user;
+    private @Getter @Setter ConfigurationDTO currentConfiguration;
     
     public ClientManager(){
         clientDTO = new ClientDTO();
@@ -65,6 +60,9 @@ public class ClientManager implements Serializable {
 
     @PostConstruct
     public void Init(){
+        FacesContext context = FacesContext.getCurrentInstance();
+        javax.faces.application.Application app = context.getApplication();
+        UserManager userManager = app.evaluateExpressionGet(context, "#{userManager}", UserManager.class);
         setClientDTO(getClient(userManager.getUsername()));
     }
 
@@ -216,22 +214,6 @@ public class ClientManager implements Serializable {
         }
     }         
 
-    public UserManager getUserManager() {
-        return userManager;
-    }
-
-    public void setUserManager(UserManager userManager) {
-        this.userManager = userManager;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
-    }
-
     public ClientDTO getClientDTO() {
         return clientDTO;
     }
@@ -239,14 +221,4 @@ public class ClientManager implements Serializable {
     public void setClientDTO(ClientDTO clientDTO) {
         this.clientDTO = clientDTO;
     }
-
-    public ConfigurationDTO getCurrentConfiguration() {
-        return currentConfiguration;
-    }
-
-    public void setCurrentConfiguration(ConfigurationDTO currentConfiguration) {
-        this.currentConfiguration = currentConfiguration;
-    }
-    
-    
 }
