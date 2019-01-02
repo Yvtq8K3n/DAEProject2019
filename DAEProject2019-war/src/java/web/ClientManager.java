@@ -52,13 +52,15 @@ public class ClientManager implements Serializable {
     private static final Logger logger = Logger.getLogger("web.AdministratorManager");
     
     private ClientDTO clientDTO;
-    private CommentDTO newCommentDTO;
+    private @Getter @Setter CommentDTO newCommentDTO;
     private ConfigurationDTO currentConfiguration;
     
     private String user;
     
     public ClientManager(){
+        clientDTO = new ClientDTO();
         newCommentDTO = new CommentDTO();
+        currentConfiguration = new ConfigurationDTO();
     }
 
     @PostConstruct
@@ -175,9 +177,7 @@ public class ClientManager implements Serializable {
 
             List<CommentDTO> commentDTO =
                 response.readEntity(new GenericType<List<CommentDTO>>() {}); 
- 
-            logger.warning("comments:"+commentDTO.size());
-            logger.warning("commentsChild:"+commentDTO.get(0).getChild());
+
             return commentDTO;
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
@@ -185,13 +185,20 @@ public class ClientManager implements Serializable {
         }
     }
     
-    public String commentCreate(){
-        this.newCommentDTO.setConfiguration(this.currentConfiguration.getId()); 
-        this.newCommentDTO.setAuthor(this.clientDTO.getUsername());
-        FacesMessage facesMsg;
+    public void createConfigurationComment(Long configurationId, Long parentId){
+        //Retrieves userManager
+        FacesContext context = FacesContext.getCurrentInstance();
+        javax.faces.application.Application app = context.getApplication();
+        UserManager userManager = app.evaluateExpressionGet(context, "#{userManager}", UserManager.class);
+        
+        //Build Comment
+        if (parentId != null) newCommentDTO.setParent(parentId);
+        newCommentDTO.setConfiguration(configurationId);
+        newCommentDTO.setAuthor(userManager.getUsername());
+        
         try {
-            Invocation.Builder invocationBuilder = addHeaderBASIC()
-                    .target(URILookup.getBaseAPI())
+            Invocation.Builder invocationBuilder = 
+                addHeaderBASIC().target(URILookup.getBaseAPI())
                     .path("/comments")
                     .request(MediaType.APPLICATION_XML);
             
@@ -203,13 +210,11 @@ public class ClientManager implements Serializable {
                 throw new Exception(message);
             }
             
-            MessageHandler.successMessage("Comment Created:", message);
+            MessageHandler.successMessage("Comment Created:",message);
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
-            return null;
         }
-        return "/client/details.xhtml?faces-redirect=true";
-    }            
+    }         
 
     public UserManager getUserManager() {
         return userManager;
@@ -242,15 +247,6 @@ public class ClientManager implements Serializable {
     public void setCurrentConfiguration(ConfigurationDTO currentConfiguration) {
         this.currentConfiguration = currentConfiguration;
     }
-
-    public CommentDTO getNewCommentDTO() {
-        return newCommentDTO;
-    }
-
-    public void setNewCommentDTO(CommentDTO newCommentDTO) {
-        this.newCommentDTO = newCommentDTO;
-    }
-    
     
     
 }

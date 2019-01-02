@@ -22,7 +22,8 @@
                 <b:dataTableColumn label="Actions">
                     <b:commandButton value="Details" class="btn btn-success" 
                         action="/faces/client/details?faces-redirect=false">
-                        <f:setPropertyActionListener target="#{clientManager.currentConfiguration}" value="#{configuration}" />
+                        <f:setPropertyActionListener target="#{clientManager.currentConfiguration}" 
+                                                     value="${configuration}" />
                     </b:commandButton>
                 </b:dataTableColumn>
                 
