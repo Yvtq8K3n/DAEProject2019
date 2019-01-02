@@ -51,6 +51,7 @@ public class AdministratorManager implements Serializable {
     private @Getter @Setter UIComponent component;
     private @Getter @Setter TemplateDTO newProductDTO;
     private @Getter @Setter ClientDTO clientDTO;
+    private @Getter @Setter ModuleDTO moduleDTO;
     private @Getter @Setter ConfigurationDTO configurationDTO;
     private @Getter @Setter AdministratorDTO newAdministrator;
     private @Getter @Setter CommentDTO commentDTO;
@@ -72,6 +73,7 @@ public class AdministratorManager implements Serializable {
         configurationDTO = new ConfigurationDTO();
         newProductDTO = new TemplateDTO();
         newAdministrator = new AdministratorDTO();
+        moduleDTO = new ModuleDTO();
     }
         
     @PostConstruct
@@ -193,7 +195,7 @@ public class AdministratorManager implements Serializable {
         }  
         return "/index.xhtml?faces-redirect=true";
     }
-    public void createComment(Long configurationId, Long parentId){
+    public void createConfigurationComment(Long configurationId, Long parentId){
         //Retrieves userManager
         FacesContext context = FacesContext.getCurrentInstance();
         javax.faces.application.Application app = context.getApplication();
@@ -223,6 +225,56 @@ public class AdministratorManager implements Serializable {
             FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
         }
     }
+    public void createConfigurationModule(){
+        try {
+            Invocation.Builder invocationBuilder = 
+                addHeaderBASIC().target(URILookup.getBaseAPI())
+                    .path("/configurations/")
+                    .path(String.valueOf(configurationDTO.getId()))
+                    .path("/modules")
+                    .request(MediaType.APPLICATION_XML);
+            
+            Response response = invocationBuilder.post(Entity.xml(moduleDTO));
+            moduleDTO.reset();
+            
+            String message = response.readEntity(String.class);
+            if (response.getStatus() != HTTP_CREATED){
+                throw new Exception(message);
+            }
+            
+            MessageHandler.successMessage("Module Created:",message);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
+        }
+    }
+    public void createConfigurationArtifact() {
+        try {
+            FacesContext context = FacesContext.getCurrentInstance();
+            javax.faces.application.Application app = context.getApplication();
+            UploadManager uploadManager = app.evaluateExpressionGet(context, "#{uploadManager}", UploadManager.class);
+        
+            ArtifactDTO document = 
+                new ArtifactDTO(uploadManager.getCompletePathFile(), uploadManager.getFilename(), uploadManager.getFile().getContentType());
+
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                .target(URILookup.getBaseAPI())
+                .path("/configurations/")
+                .path(String.valueOf(configurationDTO.getId()))
+                .path("/artifacts")
+                .request(MediaType.APPLICATION_XML);
+
+            Response response = invocationBuilder.post(Entity.xml(document));     
+            
+            String message = response.readEntity(String.class);
+            if (response.getStatus() != HTTP_CREATED){
+                throw new Exception(message);
+            }
+            MessageHandler.successMessage("Artifact Created:", message);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+        }
+    }
+
     
     public void updateConfiguration(){
         logger.warning("ssdasd"+configurationDTO.getId());
@@ -332,8 +384,57 @@ public class AdministratorManager implements Serializable {
             MessageHandler.failMessage("Delete Failed:", e.getMessage());
         }
     }
-      
-
+    public void removeConfigurationModule(ActionEvent event){
+        FacesMessage facesMsg;
+        try {
+            UIParameter param = (UIParameter) event.getComponent().findComponent("deleteConfigurationModuleId");
+            Long id = (Long)param.getValue();
+            
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                    .target(URILookup.getBaseAPI())
+                    .path("/configurations/")
+                    .path(String.valueOf(configurationDTO.getId()))
+                    .path("/modules/")
+                    .path(String.valueOf(id))
+                    .request(MediaType.APPLICATION_XML);
+            Response response = invocationBuilder.delete();
+            
+            String message = response.readEntity(String.class);
+            if (response.getStatus() != HTTP_OK){
+                throw new Exception(message);
+            }
+            
+            MessageHandler.successMessage("Configuration Deleted:", message);
+        } catch (Exception e) {
+            MessageHandler.failMessage("Delete Failed:", e.getMessage());
+        }
+    }
+    public void removeConfigurationArtifact(ActionEvent event){
+        FacesMessage facesMsg;
+        try {
+            UIParameter param = (UIParameter) event.getComponent().findComponent("deleteConfigurationArtifactId");
+            Long id = (Long)param.getValue();
+            
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                    .target(URILookup.getBaseAPI())
+                    .path("/configurations/")
+                    .path(String.valueOf(configurationDTO.getId()))
+                    .path("/artifacts/")
+                    .path(String.valueOf(id))
+                    .request(MediaType.APPLICATION_XML);
+            Response response = invocationBuilder.delete();
+            
+            String message = response.readEntity(String.class);
+            if (response.getStatus() != HTTP_OK){
+                throw new Exception(message);
+            }
+            
+            MessageHandler.successMessage("Configuration Deleted:", message);
+        } catch (Exception e) {
+            MessageHandler.failMessage("Delete Failed:", e.getMessage());
+        }
+    }
+    
     public List<ConfigurationDTO> getAllConfigurations(){
         /*if (allConfigurations == null) {
             allConfigurations = new ArrayList<>();
@@ -467,37 +568,7 @@ public class AdministratorManager implements Serializable {
         }
     }
     
-    public String uploadDocument() {
-        try {
-            FacesContext context = FacesContext.getCurrentInstance();
-            javax.faces.application.Application app = context.getApplication();
-            UploadManager uploadManager = app.evaluateExpressionGet(context, "#{uploadManager}", UploadManager.class);
-        
-            ArtifactDTO document = 
-                new ArtifactDTO(uploadManager.getCompletePathFile(), uploadManager.getFilename(), uploadManager.getFile().getContentType());
-
-            Invocation.Builder invocationBuilder = addHeaderBASIC()
-                .target(URILookup.getBaseAPI())
-                .path("/configurations/")
-                .path(String.valueOf(configurationDTO.getId()))
-                .path("/artifacts")
-                .request(MediaType.APPLICATION_XML);
-
-            Response response = invocationBuilder.post(Entity.xml(document));     
-            
-            String message = response.readEntity(String.class);
-            if (response.getStatus() != HTTP_CREATED){
-                throw new Exception(message);
-            }
-            MessageHandler.successMessage("Artifact Created:", message);
-        } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
-            return null;
-        }
-
-        return null;
-    }
-
+    
     public void emailExample(){
         /*
         EmailDTO email = emailManager.removeProposta(admin, currentProposta, recipients);

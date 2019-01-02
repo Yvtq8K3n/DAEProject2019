@@ -48,7 +48,7 @@ public class Comment implements Serializable{
     private User author;
 
     public Comment() {
-        children = new ArrayList<>();
+        this.children = new ArrayList<>();
     }
     
     public Comment(Comment parent, Configuration configuration, String message, User author) {
@@ -57,15 +57,7 @@ public class Comment implements Serializable{
         this.message = message;
         this.configuration=configuration;
         this.author = author;
-    }
-    
-    public Comment(Comment parent, List<Comment> children, Configuration configuration, String message, User author) {
-        this.parent = parent;
-        this.children = new ArrayList<>();
-        this.message = message;
-        this.configuration=configuration;
-        this.author = author;
-    }
+    }  
     
     public void setParent(Comment parent){
         this.parent = parent;

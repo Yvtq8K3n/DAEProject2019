@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ArtifactDTO implements Serializable {
     
-    private int id;
+    private Long id;
     
     private String filepath;
 
@@ -21,7 +21,7 @@ public class ArtifactDTO implements Serializable {
         
     }
 
-    public ArtifactDTO(int id, String filepath, String desiredName, String mimeType) {
+    public ArtifactDTO(Long id, String filepath, String desiredName, String mimeType) {
         this.id = id;
         this.filepath = filepath;
         this.desiredName = desiredName;
@@ -29,14 +29,14 @@ public class ArtifactDTO implements Serializable {
     }
     
     public ArtifactDTO(String filepath, String desiredName, String mimeType) {
-        this(-1, filepath, desiredName, mimeType);
+        this(-1L, filepath, desiredName, mimeType);
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
     

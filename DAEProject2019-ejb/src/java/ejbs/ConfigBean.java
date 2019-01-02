@@ -45,9 +45,6 @@ public class ConfigBean {
     private SoftwareBean productBean;
     
     @EJB
-    private ModuleBean moduleBean;
-    
-    @EJB
     private CommentBean commentBean;
       
     @PostConstruct
@@ -76,25 +73,18 @@ public class ConfigBean {
 
         try{
             //Create module for Configuration:Office 2017
-            moduleBean.create(new ModuleDTO(null,"Word 2017", "21.40"));
-            moduleBean.create(new ModuleDTO(null,"PowerPoint 2017", "32.1"));
-            moduleBean.create(new ModuleDTO(null,"Excel 2017", "11.30"));
-            configurationBean.addModule(1L, 9L);
-            configurationBean.addModule(1L, 10L);
-            configurationBean.addModule(1L, 11L);
+            configurationBean.createModule(1L,new ModuleDTO(null,"Word 2017", "21.40"));
+            configurationBean.createModule(1L, new ModuleDTO(null,"PowerPoint 2017", "32.1"));
+            configurationBean.createModule(1L, new ModuleDTO(null,"Excel 2017", "11.30"));
             
             //Create module for Configuration:Pokemon
-            moduleBean.create(new ModuleDTO(null,"Charizard", "21.40"));
-            moduleBean.create(new ModuleDTO(null,"Pikachu", "32.1"));
-            moduleBean.create(new ModuleDTO(null,"Onix", "21.40"));
-            moduleBean.create(new ModuleDTO(null,"Salamance", "32.1"));
-            configurationBean.addModule(2L, 12L);
-            configurationBean.addModule(2L, 13L);
-            configurationBean.addModule(2L, 14L);
-            configurationBean.addModule(2L, 15L);
+            configurationBean.createModule(2L, new ModuleDTO(null,"Charizard", "21.40"));
+            configurationBean.createModule(2L, new ModuleDTO(null,"Pikachu", "32.1"));
+            configurationBean.createModule(2L, new ModuleDTO(null,"Onix", "21.40"));
+            configurationBean.createModule(2L, new ModuleDTO(null,"Salamance", "32.1"));
             
             //Create module for Template:Office 2017
-            moduleBean.create(new ModuleDTO(null,"Word 2017", "21.40"));
+            /*moduleBean.create(new ModuleDTO(null,"Word 2017", "21.40"));
             moduleBean.create(new ModuleDTO(null,"PowerPoint 2017", "32.1"));
             moduleBean.create(new ModuleDTO(null,"Excel 2017", "11.30"));
             moduleBean.create(new ModuleDTO(null,"OneNote 2017", "32.22"));
@@ -103,17 +93,17 @@ public class ConfigBean {
             templateBean.addModule(5L, 17L);
             templateBean.addModule(5L, 18L);
             templateBean.addModule(5L, 19L);
-            templateBean.addModule(5L, 20L);
+            templateBean.addModule(5L, 20L);*/
         }catch (Exception ex){
             System.out.println(ex);
         }
         
         try{           
             commentBean.create(new CommentDTO(null, null, null, 1L, "Im Your Granpha!","client1"));//granpha
-            commentBean.create(new CommentDTO(null, 21L, null, 1L, "Im Your True DAD!", "administrator1"));//dad
-            commentBean.create(new CommentDTO(null, 22L, null, 1L, "Im Child1!","client1"));//child1
-            commentBean.create(new CommentDTO(null, 22L, null, 1L, "Im Child2!","client1"));//child2
-            commentBean.create(new CommentDTO(null, 21L, null, 1L, "I Ain't Your DAD!", "client1"));//dad
+            commentBean.create(new CommentDTO(null, 16L, null, 1L, "Im Your True DAD!", "administrator1"));//dad
+            commentBean.create(new CommentDTO(null, 17L, null, 1L, "Im Child1!","client1"));//child1
+            commentBean.create(new CommentDTO(null, 17L, null, 1L, "Im Child2!","client1"));//child2
+            commentBean.create(new CommentDTO(null, 16L, null, 1L, "I Ain't Your DAD!", "client1"));//dad
         }catch (Exception ex){
             System.out.println(ex);
         }

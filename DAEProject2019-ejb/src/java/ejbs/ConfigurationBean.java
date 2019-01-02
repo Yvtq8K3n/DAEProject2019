@@ -125,15 +125,14 @@ public class ConfigurationBean extends Bean<Configuration>{
     @RolesAllowed({"Administrator"})
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_XML)
-    public Response remove(@PathParam("id") String id) 
+    public Response remove(@PathParam("id") Long id) 
         throws EntityDoesNotExistException, MyConstraintViolationException{
         try{
             if (id == null) 
                 throw new EntityDoesNotExistException("Invalid Configuration");
-            Configuration configuration = em.find(Configuration.class, Long.valueOf(id));
+            Configuration configuration = em.find(Configuration.class, id);
             if(configuration == null) 
                 throw new EntityDoesNotExistException("Configuration not found.");
-            System.out.println("ola");
             
             Client client = configuration.getOwner();
             if (client == null) 
@@ -150,121 +149,10 @@ public class ConfigurationBean extends Bean<Configuration>{
         }catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
         }
-    }
+    }   
     
-
-    @POST
-    @RolesAllowed("Administrator")
-    @Path("{id}/artifacts")
-    @Consumes(MediaType.APPLICATION_XML)
-    @Produces(MediaType.APPLICATION_XML)
-    public Response addArtifact(@PathParam("id") Long id, ArtifactDTO artifactDTO){
-        try {
-            if (id == null)
-                throw new EntityDoesNotExistException("Invalid configuration");
-            
-            Configuration configuration = em.find(Configuration.class, id);
-            if(configuration == null) 
-                throw new EntityDoesNotExistException("Configuration not found.");
-
-            Artifact artifact = new Artifact(
-                artifactDTO.getFilepath(), 
-                artifactDTO.getDesiredName(), 
-                artifactDTO.getMimeType()
-            );
-            
-            configuration.addArtifact(artifact);
-            em.persist(configuration);
-            
-        return Response.status(Response.Status.CREATED).entity("Artifact was successfully created.").build();
-        }catch (EntityDoesNotExistException e) {
-            return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
-        }catch (ConstraintViolationException e){
-            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
-        }catch (Exception e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
-        }
-    }
     
-    public void addModule(Long configurationId, Long moduleId){
-        try {
-            Configuration configuration = em.find(Configuration.class, configurationId);
-            if (configuration == null) {
-                System.out.println("ERRO NO METODO ADD_MODULE DE CONFIG_BEAN - NÃO ENCONTROU CONFIGURATION");
-            }else{
-                System.out.println("ENCONTROU CONFIGURATION " + configuration.getDescription());
-            }
-            Module module = em.find(Module.class, moduleId);
-            if (module == null) {
-                System.out.println("ERRO NO METODO ADD_MODULE DE CONFIG_BEAN - NÃO ENCONTROU MODULE");   
-            }else{
-                System.out.println("ENCONTROU MODULE " + module.getName());
-            }     
-            
-            configuration.addModule(module);
-            em.merge(configuration);
-            
-        } catch (Exception e) {
-            System.out.println("ERRO NO METODO ADD_MODULE DE CONFIG_BEAN " + e.getMessage());
-        }
-    }
-
-    @GET
-    @Path("/{id}/comments")
-    @RolesAllowed({"Administrator","Client"})
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response getComments(@PathParam("id") String id){
-        try{
-            if (id == null)
-                throw new EntityDoesNotExistException("Invalid configuration");
-            
-            Configuration configuration = em.find(Configuration.class, Long.valueOf(id));
-            if(configuration == null) 
-                throw new EntityDoesNotExistException("Configuration not found.");
-                
-            Collection<CommentDTO> commentsDTO 
-                = CommentBean.convertCommentDTOs(configuration.getComments());  
-            GenericEntity<List<CommentDTO>> entity =
-                new GenericEntity<List<CommentDTO>>(new ArrayList<>(commentsDTO)) {};      
-
-            return Response.status(Response.Status.OK).entity(entity).build();
-        }catch (EntityDoesNotExistException e) {
-            return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
-        }catch (ConstraintViolationException e){
-            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
-        }catch (Exception e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
-        } 
-    }    
-    
-    @GET
-    @Path("/{id}/modules")
-    @RolesAllowed({"Administrator","Client"})
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response getModules(@PathParam("id") String id){
-        try{
-            if (id == null)
-                throw new EntityDoesNotExistException("Invalid configuration");
-            
-            Configuration configuration = em.find(Configuration.class, Long.valueOf(id));
-            if(configuration == null) 
-                throw new EntityDoesNotExistException("Configuration not found.");
-
-            Collection<ModuleDTO> modulesDTO
-                    = toDTOs(configuration.getModules(), ModuleDTO.class);
-            GenericEntity<List<ModuleDTO>> entity =
-                new GenericEntity<List<ModuleDTO>>(new ArrayList<>(modulesDTO)) {};      
-
-            return Response.status(Response.Status.OK).entity(entity).build();
-        }catch (EntityDoesNotExistException e) {
-            return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
-        }catch (ConstraintViolationException e){
-            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
-        }catch (Exception e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
-        } 
-    }
-    
+    //Artifacts
     @GET
     @Path("/{id}/artifacts")
     @RolesAllowed({"Administrator","Client"})
@@ -292,7 +180,190 @@ public class ConfigurationBean extends Bean<Configuration>{
             return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
         } 
     }
+    @POST
+    @Path("{id}/artifacts")
+    @RolesAllowed("Administrator")
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_XML)
+    public Response createArtifact(@PathParam("id") Long id, ArtifactDTO artifactDTO){
+        try {
+            if (id == null)
+                throw new EntityDoesNotExistException("Invalid configuration");
+            
+            Configuration configuration = em.find(Configuration.class, id);
+            if(configuration == null) 
+                throw new EntityDoesNotExistException("Configuration not found.");
 
+            Artifact artifact = new Artifact(
+                artifactDTO.getFilepath(), 
+                artifactDTO.getDesiredName(), 
+                artifactDTO.getMimeType()
+            );
+            
+            configuration.addArtifact(artifact);
+            em.persist(configuration);
+            
+        return Response.status(Response.Status.CREATED).entity("Artifact was successfully created.").build();
+        }catch (EntityDoesNotExistException e) {
+            return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
+        }catch (ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
+        }catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
+        }
+    }
+    @DELETE
+    @Path("/{confId}/artifacts/{id}")
+    @RolesAllowed("Administrator")
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_XML)
+    public Response removeArtifact(@PathParam("confId") Long confId, @PathParam("id") Long id){
+        try{
+            if (confId == null)
+                throw new EntityDoesNotExistException("Invalid configuration");
+            Configuration configuration = em.find(Configuration.class, confId);
+            if(configuration == null) 
+                throw new EntityDoesNotExistException("Configuration not found.");
+            
+            if (id == null) 
+                throw new EntityDoesNotExistException("Invalid Artifact");
+            Artifact artifact = em.find(Artifact.class, id);
+            if (artifact == null) {
+                throw new EntityDoesNotExistException("A artifact with that id doesnt exists.");
+            }
+            
+            configuration.removeArtifact(artifact);
+            em.persist(configuration);
+            em.remove(artifact);
+            
+            return Response.status(Response.Status.OK).entity("Artifact was successfully deleted.").build();
+        }catch (EntityDoesNotExistException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        }catch (ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
+        }catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
+        }
+    }
+    
+    //Modules
+    @GET
+    @Path("/{id}/modules")
+    @RolesAllowed({"Administrator","Client"})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response getModules(@PathParam("id") String id){
+        try{
+            if (id == null)
+                throw new EntityDoesNotExistException("Invalid configuration");
+            
+            Configuration configuration = em.find(Configuration.class, Long.valueOf(id));
+            if(configuration == null) 
+                throw new EntityDoesNotExistException("Configuration not found.");
+
+            Collection<ModuleDTO> modulesDTO
+                    = toDTOs(configuration.getModules(), ModuleDTO.class);
+            GenericEntity<List<ModuleDTO>> entity =
+                new GenericEntity<List<ModuleDTO>>(new ArrayList<>(modulesDTO)) {};      
+
+            return Response.status(Response.Status.OK).entity(entity).build();
+        }catch (EntityDoesNotExistException e) {
+            return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
+        }catch (ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
+        }catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
+        } 
+    }
+    @POST
+    @Path("{confId}/modules")
+    @RolesAllowed("Administrator")
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_XML)
+    public Response createModule(@PathParam("confId") Long confId, ModuleDTO moduleDTO){
+        try{
+            if (confId == null)
+                throw new EntityDoesNotExistException("Invalid configuration");
+            
+            Configuration configuration = em.find(Configuration.class, confId);
+            if(configuration == null) 
+                throw new EntityDoesNotExistException("Configuration not found.");
+    
+            configuration.addModule(new Module(
+                moduleDTO.getName(), 
+                moduleDTO.getVersion()
+            ));
+            
+            em.persist(configuration);   
+            return Response.status(Response.Status.CREATED).entity("Module was successfully created.").build();
+        }catch (ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
+        }catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
+        }
+    }
+    @DELETE
+    @Path("/{confId}/modules/{id}")
+    @RolesAllowed("Administrator")
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_XML)
+    public Response removeModule(@PathParam("confId") Long confId, @PathParam("id") Long id){
+        try{
+            if (confId == null)
+                throw new EntityDoesNotExistException("Invalid configuration");
+            Configuration configuration = em.find(Configuration.class, confId);
+            if(configuration == null) 
+                throw new EntityDoesNotExistException("Configuration not found.");
+            
+            if (id == null) 
+                throw new EntityDoesNotExistException("Invalid Module");
+            Module module = em.find(Module.class, id);
+            if (module == null) {
+                throw new EntityDoesNotExistException("A module with that id doesnt exists.");
+            }
+            
+            configuration.removeModule(module);
+            em.persist(configuration);
+            em.remove(module);
+            
+            return Response.status(Response.Status.OK).entity("Module was successfully deleted.").build();
+        }catch (EntityDoesNotExistException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        }catch (ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
+        }catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
+        }
+    }
+    
+
+    //Comments
+    @GET
+    @Path("/{id}/comments")
+    @RolesAllowed({"Administrator","Client"})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response getComments(@PathParam("id") String id){
+        try{
+            if (id == null)
+                throw new EntityDoesNotExistException("Invalid configuration");
+            
+            Configuration configuration = em.find(Configuration.class, Long.valueOf(id));
+            if(configuration == null) 
+                throw new EntityDoesNotExistException("Configuration not found.");
+                
+            Collection<CommentDTO> commentsDTO 
+                = CommentBean.convertCommentDTOs(configuration.getComments());  
+            GenericEntity<List<CommentDTO>> entity =
+                new GenericEntity<List<CommentDTO>>(new ArrayList<>(commentsDTO)) {};      
+
+            return Response.status(Response.Status.OK).entity(entity).build();
+        }catch (EntityDoesNotExistException e) {
+            return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
+        }catch (ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
+        }catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
+        } 
+    }    
     
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})

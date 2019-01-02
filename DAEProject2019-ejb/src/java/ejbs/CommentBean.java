@@ -70,12 +70,14 @@ public class CommentBean extends Bean<Comment>{
                 em.persist(configuration);
             }else{
                 Comment parent = em.find(Comment.class, commentDTO.getParent());
+                
                 parent.addChildren(new Comment(
-                   parent,
-                   configuration,
-                   commentDTO.getMessage(),
-                   author
-                ));
+                       null,
+                       configuration,
+                       commentDTO.getMessage(),
+                       author
+                    ));
+                System.out.println("sucscesas");
                 em.persist(parent);      
             }  
         return Response.status(Response.Status.CREATED).entity("Comment was successfully created.").build();

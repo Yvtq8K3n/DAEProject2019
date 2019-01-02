@@ -39,6 +39,7 @@
     
     <h3>Modules:</h3>
     <h:form id="formModules">
+        <b:button value="Create" look="success" p:data-target="#modulesModal" p:data-toggle="modal"/>
         <b:dataTable var="rowItem" value="#{administratorManager.configurationModules}" lang="en" 
             responsive="true" info="false" paginated="false" searching="false">
             <b:dataTableColumn value="#{rowItem.id}" />
@@ -47,9 +48,8 @@
 
             <b:dataTableColumn label="Actions">
                 <b:commandButton value="Delete" class="btn btn-danger" id="delete" 
-                    rendered="${userManager.someUserAuthenticated and userManager.admin}"
-                    actionListener="#{administratorManager.removeTemplate}">
-                    <f:param name="deletetemplateId" id="deleteTemplateId" 
+                     actionListener="#{administratorManager.removeConfigurationModule}">
+                    <f:param name="deleteConfigurationModuleId" id="deleteConfigurationModuleId" 
                        value="#{rowItem.id}" />
                 </b:commandButton>
             </b:dataTableColumn>
@@ -68,13 +68,27 @@
             <b:dataTableColumn label="Actions">
                 <b:commandButton value="Delete" class="btn btn-danger" id="delete" 
                     rendered="${userManager.someUserAuthenticated and userManager.admin}"
-                    actionListener="#{administratorManager.removeTemplate}">
-                    <f:param name="deletetemplateId" id="deleteTemplateId" 
+                    actionListener="#{administratorManager.removeConfigurationArtifact}">
+                    <f:param name="deleteConfigurationArtifactId" id="deleteConfigurationArtifactId" 
                        value="#{rowItem.id}" />
                 </b:commandButton>
             </b:dataTableColumn>
         </b:dataTable>
     </h:form>
+    
+    <b:modal id="modulesModal" title="Creating Modal" styleClass="modalPseudoClass">
+        <h:form>
+            <c:set var="module" value="#{administratorManager.moduleDTO}"/>
+            <b:inputText label="Name" value="#{module.name}"/>
+            <b:inputText label="Version" value="#{module.version}"/>
+            <b:commandButton
+                value="Create" class="btn btn-primary"
+                action="${administratorManager.createConfigurationModule}"/>
+        </h:form>
+        <f:facet name="footer">
+            <b:button value="Close" dismiss="modal" />
+        </f:facet>
+    </b:modal>
     
     <b:modal id="commentsModal" title="" size="modal-lg">
         <h2>Configuration: #{configuration.name}</h2>
@@ -89,9 +103,11 @@
         <div class="t_edit_cont" style="display: none;">
             <c:set var="reply" value="#{administratorManager.commentDTO}"/>
             <h:form id="replyPrincipal">
-                <b:inputTextarea label="Comment:" value="#{reply.message}"/>
+                <b:inputTextarea label="Comment:" 
+                    value="#{reply.message}"/>
 
-                <b:commandButton  value="Send" actionListener="#{administratorManager.createComment(configuration.id, null)}"/>
+                <b:commandButton value="Send" 
+                    actionListener="#{administratorManager.createConfigurationComment(configuration.id, null)}"/>
             </h:form>
         </div>
         <script>
@@ -111,13 +127,12 @@
                 value="Submit"
                 ajax="false" 
                 actionListener="#{uploadManager.upload}" 
-                action="#{administratorManager.uploadDocument}"/>
+                action="#{administratorManager.createConfigurationArtifact}"/>
         </h:form>
         <f:facet name="footer">
             <b:button value="Close" dismiss="modal" />
         </f:facet>
     </b:modal>
-
  </ui:define>
  </ui:composition>
 </html>

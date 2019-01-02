@@ -39,9 +39,6 @@ public class Configuration extends Software implements Serializable {
     
     @NotNull(message = "Configuration must have base Contract Data")
     private String contractDate;
-
-    @OneToMany(cascade=CascadeType.REMOVE)
-    private List<Module> modules;
     
     @ElementCollection(targetClass=String.class)
     private List<String> cloudServices;
@@ -51,6 +48,9 @@ public class Configuration extends Software implements Serializable {
     
     @ElementCollection(targetClass=String.class)
     protected List<String> params;
+    
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true)
+    private List<Module> modules;
     
     @OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
     private List<Artifact> artifacts;
