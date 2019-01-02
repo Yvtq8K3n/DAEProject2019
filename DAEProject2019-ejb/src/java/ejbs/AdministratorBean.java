@@ -26,6 +26,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -89,6 +90,35 @@ public class AdministratorBean extends Bean<Administrator>{
             return Response.status(Response.Status.OK).entity("User was successfully deleted.").build();
         }catch (EntityDoesNotExistException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        }catch (ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
+        }catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
+        }
+    }
+    
+    @GET
+    @RolesAllowed("Administrator")
+    @Path("administrator/{username}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response getClient(@PathParam("username") String username)
+    throws EntityDoesNotExistException{
+        try {
+            if (username == null)
+                throw new EntityDoesNotExistException("Invalid Username");
+            
+            Administrator administrator = em.find(Administrator.class, username);
+            if(administrator == null) 
+                throw new EntityDoesNotExistException("Administrator not found.");
+            
+            AdministratorDTO administratorDTO = toDTO(administrator, AdministratorDTO.class);
+            
+            GenericEntity<AdministratorDTO> entity =
+                new GenericEntity<AdministratorDTO>(administratorDTO) {}; 
+            
+            return Response.status(Response.Status.OK).entity(entity).build();
+        }catch (EntityDoesNotExistException e) {
+            return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
         }catch (ConstraintViolationException e){
             return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
         }catch (Exception e) {

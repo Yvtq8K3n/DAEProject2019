@@ -14,15 +14,17 @@ import dtos.AdministratorDTO;
 import dtos.EmailDTO;
 import ejbs.EmailBean;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.mail.MessagingException;
 
 
-@ManagedBean
+@ManagedBean(name="emailManager")
 @SessionScoped
 public class EmailManager implements Serializable{
     
@@ -41,7 +43,23 @@ public class EmailManager implements Serializable{
         EmailDTO email = new EmailDTO(admin.getEmail(), "Remoção da Proposta "+proposta.getTitulo(), msg, recipients);
         
         return email;   
-    }   */     
+    }   */  
+    
+    
+
+    @Asynchronous
+    public EmailDTO sendSimpleEmail(String admin){
+
+        List<String> recipients = new ArrayList<>();
+        recipients.add("oleksandrsopilkov@gmail.com");
+        recipients.add("oleksandrsopilkov@gmail.com");
+        recipients.add("oleksandrsopilkov@gmail.com");
+        recipients.add("oleksandrsopilkov@gmail.com");
+        String msg = "<strong>A proposta:</strong> " + admin;
+        EmailDTO email = new EmailDTO(admin,"secret","Remoção da Proposta", msg, recipients);
+        
+        return email;   
+    } 
     
     
     /* 

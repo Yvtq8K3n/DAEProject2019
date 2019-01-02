@@ -5,6 +5,7 @@ import dtos.ClientDTO;
 import dtos.ArtifactDTO;
 import dtos.CommentDTO;
 import dtos.ConfigurationDTO;
+import dtos.EmailDTO;
 import dtos.ModuleDTO;
 import dtos.TemplateDTO;
 import dtos.UserDTO;
@@ -54,6 +55,7 @@ public class AdministratorManager implements Serializable {
     private @Getter @Setter ModuleDTO moduleDTO;
     private @Getter @Setter ConfigurationDTO configurationDTO;
     private @Getter @Setter AdministratorDTO newAdministrator;
+    private @Getter @Setter AdministratorDTO logedAdministrator;
     private @Getter @Setter CommentDTO commentDTO;
     private @Getter @Setter List<ConfigurationDTO> configurationsDTO;
     private List<ConfigurationDTO> allConfigurations;
@@ -64,8 +66,8 @@ public class AdministratorManager implements Serializable {
     @EJB
     private ConfigurationBean configurationBean;
         
-    @ManagedProperty(value="#{emailManager}")
-    private EmailManager emailManager;
+    /*@ManagedProperty(value="#{emailManager}")
+    private EmailManager emailManager;*/
     
     public AdministratorManager() {
         clientDTO = new ClientDTO();
@@ -78,8 +80,27 @@ public class AdministratorManager implements Serializable {
         
     @PostConstruct
     public void Init(){
-        
+        FacesContext context = FacesContext.getCurrentInstance();
+        javax.faces.application.Application app = context.getApplication();
+        UserManager userManager = app.evaluateExpressionGet(context, "#{userManager}", UserManager.class);
+        setLogedAdministrator(getLogedUser(userManager.getUsername()));
     };
+    
+    public AdministratorDTO getLogedUser(String username){
+        try {
+            Invocation.Builder invocationBuilder = addHeaderBASIC().target(URILookup.getBaseAPI())
+                    .path("/administrators/administrator")
+                    .path(username)
+                    .request(MediaType.APPLICATION_XML);
+        
+            Response response = invocationBuilder.get(Response.class);
+         
+            return response.readEntity(new GenericType<AdministratorDTO>(){});
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
+    }
     
     private Client addHeaderBASIC() {
         Client client = ClientBuilder.newClient();
@@ -292,6 +313,8 @@ public class AdministratorManager implements Serializable {
             if (response.getStatus() != HTTP_OK){
                 throw new Exception(message);
             }
+            
+            sendMail();
             
             MessageHandler.successMessage("Configuration Updated:",message);
         } catch (Exception e) {
@@ -578,16 +601,40 @@ public class AdministratorManager implements Serializable {
                     .path("/email")
                     .request(MediaType.APPLICATION_XML);
         Response response = invocationBuilder.post(Entity.xml(email));
-        */  
+        */
     }
-
+    
+    public void sendMail(){
+        try {
+            FacesContext context = FacesContext.getCurrentInstance();
+            javax.faces.application.Application app = context.getApplication();
+            EmailManager emailManager = app.evaluateExpressionGet(context, "#{emailManager}", EmailManager.class);
+            
+            EmailDTO email = emailManager.sendSimpleEmail(logedAdministrator.getEmail());
+            System.out.println(logedAdministrator.getEmail());
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                        .target(URILookup.getBaseAPI())
+                        .path("/email/send")
+                        .request(MediaType.APPLICATION_XML);
+            Response response = invocationBuilder.post(Entity.xml(email));   
+            
+            String message = response.readEntity(String.class);
+            if (response.getStatus() != HTTP_CREATED){
+                throw new Exception(message);
+            }
+            MessageHandler.successMessage("Artifact Created:", message);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+        } 
+    }
+/*
     public EmailManager getEmailManager() {
         return emailManager;
     }
     public void setEmailManager(EmailManager emailManager) {
         this.emailManager = emailManager;
     }    
-
+*/
     public List<ConfigurationDTO> getCurrentConfigurations(){
         return currentConfigurations;
     }
