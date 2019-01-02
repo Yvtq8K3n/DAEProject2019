@@ -47,6 +47,10 @@ public class AdministratorManager implements Serializable {
     private static final int HTTP_CREATED = Response.Status.CREATED.getStatusCode();
     private static final int HTTP_OK = Response.Status.OK.getStatusCode();
     
+    private static final String UPDATE = "update";
+    private static final String REMOVE = "remove";
+    private static final String CREATE = "create";
+    
     private static final Logger logger = Logger.getLogger("web.AdministratorManager");
     
     private @Getter @Setter UIComponent component;
@@ -314,7 +318,7 @@ public class AdministratorManager implements Serializable {
                 throw new Exception(message);
             }
             
-            sendMail();
+            sendMail(UPDATE);
             
             MessageHandler.successMessage("Configuration Updated:",message);
         } catch (Exception e) {
@@ -604,13 +608,17 @@ public class AdministratorManager implements Serializable {
         */
     }
     
-    public void sendMail(){
+    public void sendMail(String type){
         try {
             FacesContext context = FacesContext.getCurrentInstance();
             javax.faces.application.Application app = context.getApplication();
             EmailManager emailManager = app.evaluateExpressionGet(context, "#{emailManager}", EmailManager.class);
+            EmailDTO email = new EmailDTO();
+            switch (type){
+                case UPDATE: email = emailManager.sendEmailUpdate(logedAdministrator, configurationDTO);
+                break;
+            }
             
-            EmailDTO email = emailManager.sendSimpleEmail(logedAdministrator.getEmail());
             System.out.println(logedAdministrator.getEmail());
             Invocation.Builder invocationBuilder = addHeaderBASIC()
                         .target(URILookup.getBaseAPI())

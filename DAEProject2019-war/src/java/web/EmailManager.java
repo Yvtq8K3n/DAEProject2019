@@ -11,6 +11,7 @@ package web;
  * @author Yvtq8
  */
 import dtos.AdministratorDTO;
+import dtos.ConfigurationDTO;
 import dtos.EmailDTO;
 import ejbs.EmailBean;
 import java.io.Serializable;
@@ -48,16 +49,13 @@ public class EmailManager implements Serializable{
     
 
     @Asynchronous
-    public EmailDTO sendSimpleEmail(String admin){
+    public EmailDTO sendEmailUpdate(AdministratorDTO admin, ConfigurationDTO conf){
 
         List<String> recipients = new ArrayList<>();
         recipients.add("oleksandrsopilkov@gmail.com");
-        recipients.add("oleksandrsopilkov@gmail.com");
-        recipients.add("oleksandrsopilkov@gmail.com");
-        recipients.add("oleksandrsopilkov@gmail.com");
         String msg = "<strong>A proposta:</strong> " + admin;
-        EmailDTO email = new EmailDTO(admin,"secret","Remoção da Proposta", msg, recipients);
-        
+        EmailDTO email = new EmailDTO(admin.getEmail(),"secret","A configuração " + conf.getName() + " foi atualizada", msg, recipients);
+       
         return email;   
     } 
     
