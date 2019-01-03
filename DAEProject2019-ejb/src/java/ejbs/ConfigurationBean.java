@@ -154,15 +154,15 @@ public class ConfigurationBean extends Bean<Configuration>{
     
     //Artifacts
     @GET
-    @Path("/{id}/artifacts")
+    @Path("/{confId}/artifacts")
     @RolesAllowed({"Administrator","Client"})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response getArtifacts(@PathParam("id") Long id){
+    public Response getArtifacts(@PathParam("confId") Long confId){
         try{
-            if (id == null)
+            if (confId == null)
                 throw new EntityDoesNotExistException("Invalid configuration");
             
-             Configuration configuration = em.find(Configuration.class, id);
+             Configuration configuration = em.find(Configuration.class, confId);
             if(configuration == null) 
                 throw new EntityDoesNotExistException("Configuration not found.");
 
@@ -181,16 +181,16 @@ public class ConfigurationBean extends Bean<Configuration>{
         } 
     }
     @POST
-    @Path("{id}/artifacts")
+    @Path("{confId}/artifacts")
     @RolesAllowed("Administrator")
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_XML)
-    public Response createArtifact(@PathParam("id") Long id, ArtifactDTO artifactDTO){
+    public Response createArtifact(@PathParam("confId") Long confId, ArtifactDTO artifactDTO){
         try {
-            if (id == null)
+            if (confId == null)
                 throw new EntityDoesNotExistException("Invalid configuration");
             
-            Configuration configuration = em.find(Configuration.class, id);
+            Configuration configuration = em.find(Configuration.class, confId);
             if(configuration == null) 
                 throw new EntityDoesNotExistException("Configuration not found.");
 
@@ -248,15 +248,15 @@ public class ConfigurationBean extends Bean<Configuration>{
     
     //Modules
     @GET
-    @Path("/{id}/modules")
+    @Path("/{confId}/modules")
     @RolesAllowed({"Administrator","Client"})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response getModules(@PathParam("id") String id){
+    public Response getModules(@PathParam("confId") Long confId){
         try{
-            if (id == null)
+            if (confId == null)
                 throw new EntityDoesNotExistException("Invalid configuration");
             
-            Configuration configuration = em.find(Configuration.class, Long.valueOf(id));
+            Configuration configuration = em.find(Configuration.class, confId);
             if(configuration == null) 
                 throw new EntityDoesNotExistException("Configuration not found.");
 

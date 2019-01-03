@@ -3,11 +3,13 @@ package entities;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -15,25 +17,13 @@ import javax.persistence.Table;
 @NamedQuery(name = "getAllTemplates", query = "SELECT t FROM Template t")
 public class Template extends Software implements Serializable {    
     
-    @ManyToMany
-    @JoinTable(
-        joinColumns=@JoinColumn(referencedColumnName="ID"),
-        inverseJoinColumns=@JoinColumn(name="CONF_ID", referencedColumnName="ID")
-    )
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true)
     private List<Module> modules;
             
-    @ManyToMany
-    @JoinTable(
-        joinColumns=@JoinColumn(referencedColumnName="ID"),
-        inverseJoinColumns=@JoinColumn(name="CONF_ID", referencedColumnName="ID")
-    )
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true)
     private List<Artifact> artifacts;
     
-    @ManyToMany
-    @JoinTable(
-        joinColumns=@JoinColumn(referencedColumnName="ID"),
-        inverseJoinColumns=@JoinColumn(name="CONF_ID", referencedColumnName="ID")
-    )
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true)
     private List<SupportMaterial> supportMaterials;
     
     public Template() {
@@ -56,10 +46,35 @@ public class Template extends Software implements Serializable {
         modules.remove(module);
         return module;
     }
+    
+    public void addArtifact(Artifact artifact) {
+       artifacts.add(artifact);
+    }
+    public Artifact removeArtifact(Artifact artifact) {
+        artifacts.remove(artifact);
+        return artifact;
+    }
+    
     public List<Module> getModule() {
         return modules;
     }
     public void setModule(List<Module> modules) {
         this.modules = modules;
+    }
+
+    public List<Module> getModules() {
+        return modules;
+    }
+
+    public void setModules(List<Module> modules) {
+        this.modules = modules;
+    }
+
+    public List<Artifact> getArtifacts() {
+        return artifacts;
+    }
+
+    public void setArtifacts(List<Artifact> artifacts) {
+        this.artifacts = artifacts;
     }
 }

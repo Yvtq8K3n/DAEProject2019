@@ -10,7 +10,7 @@
     
     <b:row>
         <b:column span="6" id="totalDisplayed" style="text-align:center" >
-            <p>Showing #{guestManager.allProductCatalog.size()} entries </p>
+            <p>Showing #{guestManager.allTemplatesCatalog.size()} entries </p>
         </b:column>
         <b:column span="6" class="form-group">
             <h:panelGrid columns="2" style="text-align: right">
@@ -25,7 +25,7 @@
     </b:row>
     <b:row>
         <h:panelGroup id="formCatalog" layout="block">
-            <ui:repeat value="#{guestManager.allProductCatalog}" var="template">
+            <ui:repeat value="#{guestManager.allTemplatesCatalog}" var="template">
                 <b:column span="4">
                     <b:thumbnail>
                             <b:image name="The Product" value="/resources/product.png" alt="The Product"/>
@@ -34,9 +34,9 @@
                                 <p> #{template.description}</p>
                                 <p>
                                 <b:commandLink value="Details" class="btn btn-success" 
-                                    action="/faces/guest/catalog/details?faces-redirect=false">
+                                    action="/faces/admin/catalog/details.xhtml?faces-redirect=true">
                                     <f:setPropertyActionListener value="${template}"
-                                        target="#{guestManager.selectedProduct}" />
+                                       target="#{administratorManager.templateDTO}" />
                                 </b:commandLink>
                                 <b:commandButton value="Delete" class="btn btn-danger" id="delete"
                                     rendered="${userManager.someUserAuthenticated and userManager.admin}"

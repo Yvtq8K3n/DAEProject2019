@@ -1,6 +1,7 @@
 package web;
 
 import dtos.ConfigurationDTO;
+import dtos.TemplateDTO;
 import ejbs.TemplateBean;
 import entities.Configuration;
 import java.io.Serializable;
@@ -13,20 +14,29 @@ import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.component.UIComponent;
+import javax.inject.Named;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import util.MessageHandler;
+import util.URILookup;
 
 /**
  *
  * @author Joao Marquez
  */
+@Named(value = "guestManager")
 @ManagedBean
 @SessionScoped
 public class GuestManager implements Serializable {
-        
+    private static final int HTTP_CREATED = Response.Status.CREATED.getStatusCode();
+    private static final int HTTP_OK = Response.Status.OK.getStatusCode();    
+    
     private static final Logger logger = Logger.getLogger("web.GuestManager");
     private UIComponent component;
-    private Client client;
     
     private ConfigurationDTO selectedProduct;
  
@@ -44,7 +54,6 @@ public class GuestManager implements Serializable {
     
     @PostConstruct
     public void Init(){
-        client = ClientBuilder.newClient();
     };
     
    
@@ -74,20 +83,43 @@ public class GuestManager implements Serializable {
     ////////////////////////////////////////////////////////////////////////////
     //The following code is for the Filter in Catalog View /////////////////////
     ////////////////////////////////////////////////////////////////////////////
-    public List<ConfigurationDTO> getAllProductCatalog(){
-        templates = new ArrayList<>();
+    public List<TemplateDTO> getAllTemplates(){
+        try {
+            Invocation.Builder invocationBuilder = ClientBuilder.newClient()
+                    .target(URILookup.getBaseAPI())
+                    .path("/templates")
+                    .request(MediaType.APPLICATION_XML);
+            
+            Response response = invocationBuilder.get(Response.class);
+            if (response.getStatus() != HTTP_OK){
+                String message = response.readEntity(String.class);
+                throw new Exception(message);
+            }
+            
+            List<TemplateDTO> templatesDTO =
+                response.readEntity(new GenericType<List<TemplateDTO>>() {}); 
+            
+            return templatesDTO;
+        } catch (Exception e) {
+            MessageHandler.failMessage("Unexpected error!", e.getMessage());
+            return null;
+        }
+    }
+    
+    public List<TemplateDTO> getAllTemplatesCatalog(){
+        List<TemplateDTO> allTemplateDTO = getAllTemplates();
         
+        //Apply Filter
         if (searchTemplate != null && !searchTemplate.isEmpty()){
-            logger.warning("DAM");
-            templates = productCatalogBean.getAll().stream()
+            List<TemplateDTO> filterTemplates = allTemplateDTO.stream()
                 .filter(p ->
                     p.getName().toUpperCase().contains(searchTemplate.toUpperCase())
                     || p.getDescription().toUpperCase().contains(searchTemplate.toUpperCase())
                 ).collect(Collectors.toList());
-                logger.warning("total"+templates.size());
-        }else templates.addAll(productCatalogBean.getAll());
+            return filterTemplates;
+        }
         
-        return templates;
+        return allTemplateDTO;
     }
    
         
@@ -101,7 +133,6 @@ public class GuestManager implements Serializable {
     }
     
     void reset() {
-        logger.warning("I WAS CALLED");
         //templates  = getAllProductCatalog();
     }
 }

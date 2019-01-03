@@ -11,10 +11,6 @@ import dtos.CommentDTO;
 import dtos.ConfigurationDTO;
 import dtos.ModuleDTO;
 import dtos.TemplateDTO;
-import entities.Comment;
-import entities.Configuration;
-import java.util.ArrayList;
-import java.util.Arrays;
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RunAs;
 import javax.ejb.EJB;
@@ -84,16 +80,11 @@ public class ConfigBean {
             configurationBean.createModule(2L, new ModuleDTO(null,"Salamance", "32.1"));
             
             //Create module for Template:Office 2017
-            /*moduleBean.create(new ModuleDTO(null,"Word 2017", "21.40"));
-            moduleBean.create(new ModuleDTO(null,"PowerPoint 2017", "32.1"));
-            moduleBean.create(new ModuleDTO(null,"Excel 2017", "11.30"));
-            moduleBean.create(new ModuleDTO(null,"OneNote 2017", "32.22"));
-            moduleBean.create(new ModuleDTO(null,"Publisher 2017", "45.34"));
-            templateBean.addModule(5L, 16L);
-            templateBean.addModule(5L, 17L);
-            templateBean.addModule(5L, 18L);
-            templateBean.addModule(5L, 19L);
-            templateBean.addModule(5L, 20L);*/
+            templateBean.createModule(5L, new ModuleDTO(null,"Word 2017", "21.40"));
+            templateBean.createModule(5L, new ModuleDTO(null,"PowerPoint 2017", "32.1"));
+            templateBean.createModule(5L, new ModuleDTO(null,"Excel 2017", "11.30"));
+            templateBean.createModule(5L, new ModuleDTO(null,"OneNote 2017", "32.22"));
+            templateBean.createModule(5L, new ModuleDTO(null,"Publisher 2017", "45.34"));
         }catch (Exception ex){
             System.out.println(ex);
         }

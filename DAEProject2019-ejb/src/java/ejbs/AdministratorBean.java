@@ -13,6 +13,7 @@ import exceptions.MyConstraintViolationException;
 import exceptions.Utils;
 import java.util.Collection;
 import java.util.List;
+import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
@@ -36,6 +37,7 @@ import javax.ws.rs.core.Response;
  */
 @Stateless
 @Path("/administrators")
+@DeclareRoles({"Administrator", "Client"})
 public class AdministratorBean extends Bean<Administrator>{
 
     @PersistenceContext(name="dae_project")//Peristance context usa o nome da bd do persistance.xml
@@ -97,6 +99,7 @@ public class AdministratorBean extends Bean<Administrator>{
     }
     
     @GET
+    @RolesAllowed("Administrator")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Collection<AdministratorDTO> getAll(){
         List<Administrator> administrators =

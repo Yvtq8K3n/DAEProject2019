@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Olek
  */
-@XmlRootElement(name = "Product")
+@XmlRootElement(name = "Template")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TemplateDTO implements Serializable{
     private Long id;
@@ -59,6 +59,4 @@ public class TemplateDTO implements Serializable{
     public void setDescription(String description) {
         this.description = description;
     }
-    
-    
 }

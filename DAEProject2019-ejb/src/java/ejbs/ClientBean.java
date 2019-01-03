@@ -40,8 +40,8 @@ import javax.ws.rs.core.GenericEntity;
  * @author Joao Marquez
  */
 @Stateless
+@DeclareRoles({"Administrator","Client"})
 @Path("/clients")
-@DeclareRoles({"Administrator", "Client"})
 public class ClientBean extends Bean<Client>{
 
     @PersistenceContext(name="dae_project")//Peristance context usa o nome da bd do persistance.xml
@@ -99,17 +99,6 @@ public class ClientBean extends Bean<Client>{
         }catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
         }
-    }
-    
-    @GET
-    @RolesAllowed("Administrator")
-    @Path("all")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Collection<ClientDTO> getAll(){
-        List<Client> clients =
-            em.createNamedQuery("getAllClients").getResultList();
-
-        return toDTOs(clients, ClientDTO.class);
     }
     
     @GET
@@ -172,6 +161,28 @@ public class ClientBean extends Bean<Client>{
         }
     }
 
+    @GET
+    @RolesAllowed("Administrator")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response getAll(){
+        try{
+            List<Client> clients = 
+                    em.createNamedQuery("getAllClients").getResultList();
+            
+            Collection<ClientDTO> clientsDTO
+                    = toDTOs(clients, ClientDTO.class);
+            
+            GenericEntity<List<ClientDTO>> entity =
+                new GenericEntity<List<ClientDTO>>(new ArrayList<>(clientsDTO)) {};     
+
+            return Response.status(Response.Status.OK).entity(entity).build();
+        }catch (ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
+        }catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
+        } 
+    }
+    
     public void addProduct(String username, Long productId) {
         try {
             Client client = em.find(Client.class, username);

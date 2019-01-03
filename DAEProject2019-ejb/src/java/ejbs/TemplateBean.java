@@ -5,8 +5,12 @@
  */
 package ejbs;
 
+import dtos.ArtifactDTO;
 import dtos.ConfigurationDTO;
+import dtos.ModuleDTO;
 import dtos.TemplateDTO;
+import entities.Artifact;
+import entities.Configuration;
 import entities.Module;
 import entities.Template;
 import exceptions.EntityDoesNotExistException;
@@ -14,9 +18,10 @@ import exceptions.EntityExistsException;
 import exceptions.MyConstraintViolationException;
 import exceptions.Utils;
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
@@ -24,10 +29,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -36,7 +45,7 @@ import javax.ws.rs.core.Response;
  * @author Joao Marquez
  */
 @Stateless
-@Path("/catalog")
+@Path("/templates")
 public class TemplateBean extends Bean<Template>{
 
     @PersistenceContext(name="dae_project")//Peristance context usa o nome da bd do persistance.xml
@@ -56,7 +65,7 @@ public class TemplateBean extends Bean<Template>{
             );
             
             em.persist(cat);   
-            return Response.status(Response.Status.CREATED).entity("Template was successfully created.").build();
+            return Response.status(Response.Status.CREATED).entity(String.valueOf(cat.getId())).build();
         }catch (ConstraintViolationException e){
             return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
         }catch (Exception e) {
@@ -64,36 +73,33 @@ public class TemplateBean extends Bean<Template>{
         }  
     }
     
-    @POST
-    @Path("/{id}")
+    @PUT
     @RolesAllowed("Administrator")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_XML)
-    public Response addModule(@PathParam("id") Long id, Long idModule) 
-            throws EntityDoesNotExistException, MyConstraintViolationException, IOException{
+    public Response update(TemplateDTO templateDTO) {
         try{
-            if (id == null) throw new EntityDoesNotExistException("Template doesn't exists.");
-            Template template = em.find(Template.class, id);
-            if (template == null) {
-                throw new EntityDoesNotExistException("Template doesn't exists.");
-            }
+            if (templateDTO.getId()== null)
+                throw new EntityDoesNotExistException("Invalid template");
             
-            if(idModule == null) throw new EntityDoesNotExistException("Module was not found");
-            Module module = em.find(Module.class, idModule);
-            if (template == null) throw new EntityDoesNotExistException("Module was not found");
+            Template template = em.find(Template.class, templateDTO.getId());
+            if(template == null) 
+                throw new EntityDoesNotExistException("Template not found.");
             
+            template.setName(templateDTO.getName());
+            template.setDescription(templateDTO.getDescription());
+      
             em.persist(template);
-            
-            return Response.status(Response.Status.CREATED).entity("Configurations were successfully associated whit the Template.").build();
+        return Response.status(Response.Status.OK).entity("Configuration was successfully edited.").build();
         }catch (EntityDoesNotExistException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+            return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
         }catch (ConstraintViolationException e){
             return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
         }catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
-        }
+        } 
     }
-       
+    
     public void remove(Long id) 
             throws EntityDoesNotExistException, MyConstraintViolationException{
         try{
@@ -112,6 +118,190 @@ public class TemplateBean extends Bean<Template>{
             throw new EJBException(e.getMessage());
         }
     }
+    
+    //Artifacts
+    @GET
+    @Path("/{templateId}/artifacts")
+    @RolesAllowed({"Administrator","Client"})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response getArtifacts(@PathParam("templateId") Long templateId){
+        try{
+            if (templateId == null)
+                throw new EntityDoesNotExistException("Invalid template");
+            
+            Template template = em.find(Template.class, templateId);
+            if(template == null) 
+                throw new EntityDoesNotExistException("Template not found.");
+
+            Collection<ArtifactDTO> artifactsDTO
+                    = toDTOs(template.getArtifacts(), ArtifactDTO.class);
+            GenericEntity<List<ArtifactDTO>> entity =
+                new GenericEntity<List<ArtifactDTO>>(new ArrayList<>(artifactsDTO)) {};      
+
+            return Response.status(Response.Status.OK).entity(entity).build();
+        }catch (EntityDoesNotExistException e) {
+            return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
+        }catch (ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
+        }catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
+        } 
+    }
+    @POST
+    @Path("{templateId}/artifacts")
+    @RolesAllowed("Administrator")
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_XML)
+    public Response createArtifact(@PathParam("templateId") Long templateId, ArtifactDTO artifactDTO){
+        try {
+            if (templateId == null)
+                throw new EntityDoesNotExistException("Invalid template");
+            
+            Template template = em.find(Template.class, templateId);
+            if(template == null) 
+                throw new EntityDoesNotExistException("Template not found.");
+
+            Artifact artifact = new Artifact(
+                artifactDTO.getFilepath(), 
+                artifactDTO.getDesiredName(), 
+                artifactDTO.getMimeType()
+            );
+            
+            template.addArtifact(artifact);
+            em.persist(template);
+            
+        return Response.status(Response.Status.CREATED).entity("Artifact was successfully created.").build();
+        }catch (EntityDoesNotExistException e) {
+            return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
+        }catch (ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
+        }catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
+        }
+    }
+    @DELETE
+    @Path("/{templateId}/artifacts/{id}")
+    @RolesAllowed("Administrator")
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_XML)
+    public Response removeArtifact(@PathParam("templateId") Long templateId, @PathParam("id") Long id){
+        try{
+            if (templateId == null)
+                throw new EntityDoesNotExistException("Invalid Template");
+            Template template = em.find(Template.class, templateId);
+            if(template == null) 
+                throw new EntityDoesNotExistException("Template not found.");
+            
+            if (id == null) 
+                throw new EntityDoesNotExistException("Invalid Artifact");
+            Artifact artifact = em.find(Artifact.class, id);
+            if (artifact == null) {
+                throw new EntityDoesNotExistException("A artifact with that id doesnt exists.");
+            }
+            
+            template.removeArtifact(artifact);
+            em.persist(template);
+            em.remove(artifact);
+            
+            return Response.status(Response.Status.OK).entity("Artifact was successfully deleted.").build();
+        }catch (EntityDoesNotExistException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        }catch (ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
+        }catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
+        }
+    }
+    
+    //Modules
+    @GET
+    @Path("/{templateId}/modules")
+    @RolesAllowed({"Administrator","Client"})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response getModules(@PathParam("templateId") Long templateId){
+        try{
+            if (templateId == null)
+                throw new EntityDoesNotExistException("Invalid template");
+            
+            Template template = em.find(Template.class, templateId);
+            if(template == null) 
+                throw new EntityDoesNotExistException("Template not found.");
+
+            Collection<ModuleDTO> modulesDTO
+                    = toDTOs(template.getModules(), ModuleDTO.class);
+            GenericEntity<List<ModuleDTO>> entity =
+                new GenericEntity<List<ModuleDTO>>(new ArrayList<>(modulesDTO)) {};      
+
+            return Response.status(Response.Status.OK).entity(entity).build();
+        }catch (EntityDoesNotExistException e) {
+            return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
+        }catch (ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
+        }catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
+        } 
+    }
+    @POST
+    @Path("{templateId}/modules")
+    @RolesAllowed("Administrator")
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_XML)
+    public Response createModule(@PathParam("confId") Long templateId, ModuleDTO moduleDTO){
+        try{
+            if (templateId == null)
+                throw new EntityDoesNotExistException("Invalid template");
+            
+            Template template = em.find(Template.class, templateId);
+            if(template == null) 
+                throw new EntityDoesNotExistException("Template not found.");
+    
+            template.addModule(new Module(
+                moduleDTO.getName(), 
+                moduleDTO.getVersion()
+            ));
+            
+            em.persist(template);   
+            return Response.status(Response.Status.CREATED).entity("Module was successfully created.").build();
+        }catch (ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
+        }catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
+        }
+    }
+    @DELETE
+    @Path("/{templateId}/modules/{id}")
+    @RolesAllowed("Administrator")
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_XML)
+    public Response removeModule(@PathParam("confId") Long templateId, @PathParam("id") Long id){
+        try{
+            if (templateId == null)
+                throw new EntityDoesNotExistException("Invalid template");
+            Template template = em.find(Template.class, templateId);
+            if(template == null) 
+                throw new EntityDoesNotExistException("Template not found.");
+            
+            if (id == null) 
+                throw new EntityDoesNotExistException("Invalid Module");
+            Module module = em.find(Module.class, id);
+            if (module == null) {
+                throw new EntityDoesNotExistException("A module with that id doesnt exists.");
+            }
+            
+            template.removeModule(module);
+            em.persist(template);
+            em.remove(module);
+            
+            return Response.status(Response.Status.OK).entity("Module was successfully deleted.").build();
+        }catch (EntityDoesNotExistException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        }catch (ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
+        }catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
+        }
+    }
+    
         
     /*public List<Configuration> getConfigurations(Long id){
         Template productCatalog = em.find(Template.class, id);
@@ -123,11 +313,27 @@ public class TemplateBean extends Bean<Template>{
     }*/
     
     
+    @GET
+    @PermitAll
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response getAll(){
+        try{
+            List<Template> templates = 
+                    em.createNamedQuery("getAllTemplates").getResultList();
+            
+            Collection<TemplateDTO> templatesDTO
+                    = toDTOs(templates, TemplateDTO.class);
+            
+            GenericEntity<List<TemplateDTO>> entity =
+                new GenericEntity<List<TemplateDTO>>(new ArrayList<>(templatesDTO)) {};     
+
+            return Response.status(Response.Status.OK).entity(entity).build();
+        }catch (ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
+        }catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
+        } 
+    }    
     
-    public Collection<ConfigurationDTO> getAll(){
-        List<Template> templates = 
-            em.createNamedQuery("getAllTemplates").getResultList();
-        
-        return toDTOs(templates, ConfigurationDTO.class);
-    }
+   
 }

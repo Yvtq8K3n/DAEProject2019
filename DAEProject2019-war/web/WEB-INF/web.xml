@@ -36,22 +36,7 @@
     <welcome-file-list>
         <welcome-file>faces/index.xhtml</welcome-file>
     </welcome-file-list>
-    <security-constraint>
-        <display-name>ServicesForAll</display-name>
-        <web-resource-collection>
-            <web-resource-name>API</web-resource-name>
-            <url-pattern>/webapi/*</url-pattern>
-            <url-pattern>/webapi/administrator/*</url-pattern>
-            <url-pattern>/webapi/client/*</url-pattern>
-            <url-pattern>/webapi/catalog/*</url-pattern>
-            <url-pattern>/webapi/users/*</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <description/>
-            <role-name>Administrator</role-name>
-            <role-name>Client</role-name>
-        </auth-constraint>
-    </security-constraint>
+    
     <error-page>
         <error-code>403</error-code>
         <location>/faces/error.xhtml</location>

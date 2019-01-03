@@ -13,7 +13,7 @@
  <ui:define name="main">
     <h:form id="formId">    
         <h2>Creating Template</h2>
-        <c:set var="template" value="#{administratorManager.newProductDTO}"/>
+        <c:set var="template" value="#{administratorManager.templateDTO}"/>
         <b:messages styleClass="msgs" redisplay="true" for="@parent" recursive="true"/>
         <b:row>
             <b:column span="6">
@@ -21,45 +21,10 @@
                 <b:inputTextarea required="true" label="Description" value="#{template.description}"/>
             </b:column>
         </b:row>
-        <b:row>
-            <b:column span="8">
-                <h2>Configurations</h2>
-                <h:outputText value="All Configurations:"/>
-                <b:dataTable id="allConfigurations" var="rowItem" value="#{administratorManager.allConfigurations}" 
-                             paginated="true" searching="true" lang="true" ajax="true">
-                    <b:dataTableColumn value="#{rowItem.id}" />
-                    <b:dataTableColumn value="#{rowItem.description}" />
-                    <b:dataTableColumn value="#{rowItem.description}" />
-                    <b:dataTableColumn label="Actions">
-                        <h:commandLink value="Add" class="btn btn-success">        
-                            <f:ajax event="click" listener="#{administratorManager.addConfiguration(rowItem)}" 
-                                render="formId:allConfigurations formId:currentConfigurations "/>
-                        </h:commandLink>
-                    </b:dataTableColumn>
-                </b:dataTable>
-         
-                <h:outputText value="Current Configurations:"/>
-                <b:dataTable id="currentConfigurations" var="rowItem" value="#{administratorManager.currentConfigurations}" 
-                    paginated="true" searching="true" lang="true">
-                    <b:dataTableColumn value="#{rowItem.id}" />
-                    <b:dataTableColumn value="#{rowItem.description}" />
-                    <b:dataTableColumn value="#{rowItem.description}" />
-                    <b:dataTableColumn label="Actions">
-                        <h:commandLink value="Remove" class="btn btn-danger">
-                            <f:ajax event="click" listener="#{administratorManager.removeConfiguration(rowItem)}" 
-                                render="formId:allConfigurations formId:currentConfigurations "/>
-                        </h:commandLink>
-                    </b:dataTableColumn>
-                </b:dataTable>
-               
-               
-                <hr></hr>
-                <b:commandButton
-                    value="Create" class="btn btn-primary"
-                    binding="#{administratorManager.component}"
-                    action="${administratorManager.createProductCatalog()}" />
-            </b:column>
-        </b:row>
+        <b:commandButton
+            value="Create" class="btn btn-primary"
+            binding="#{administratorManager.component}"
+            action="${administratorManager.createTemplate}" />
     </h:form>  
  </ui:define>
  </ui:composition>

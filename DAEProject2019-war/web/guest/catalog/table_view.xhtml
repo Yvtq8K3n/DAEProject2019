@@ -8,7 +8,7 @@
     xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
     xmlns:f="http://java.sun.com/jsf/core">
 
-    <b:dataTable id="Templates" value="#{guestManager.allProductCatalog}" 
+    <b:dataTable id="Templates" value="#{guestManager.allTemplates}" 
         var="rowItem" print="true" lang="en"
         excel="true" csv="true" pdf="true" copy="true">
         <b:dataTableColumn value="#{rowItem.name}" />

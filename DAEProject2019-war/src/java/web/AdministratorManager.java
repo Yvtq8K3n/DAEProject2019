@@ -8,10 +8,8 @@ import dtos.ConfigurationDTO;
 import dtos.ModuleDTO;
 import dtos.TemplateDTO;
 import dtos.UserDTO;
-import ejbs.ConfigurationBean;
 import ejbs.TemplateBean;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
@@ -52,23 +50,21 @@ public class AdministratorManager implements Serializable {
     private @Getter @Setter TemplateDTO newProductDTO;
     private @Getter @Setter ClientDTO clientDTO;
     private @Getter @Setter ModuleDTO moduleDTO;
+    private @Getter @Setter TemplateDTO templateDTO;
     private @Getter @Setter ConfigurationDTO configurationDTO;
     private @Getter @Setter AdministratorDTO newAdministrator;
     private @Getter @Setter CommentDTO commentDTO;
     private @Getter @Setter List<ConfigurationDTO> configurationsDTO;
-    private List<ConfigurationDTO> allConfigurations;
-    private List<ConfigurationDTO> currentConfigurations;
-    
+
     @EJB
     private TemplateBean productCatalogBean;
-    @EJB
-    private ConfigurationBean configurationBean;
         
     @ManagedProperty(value="#{emailManager}")
     private EmailManager emailManager;
     
     public AdministratorManager() {
         clientDTO = new ClientDTO();
+        templateDTO = new TemplateDTO();
         commentDTO = new CommentDTO();
         configurationDTO = new ConfigurationDTO();
         newProductDTO = new TemplateDTO();
@@ -140,61 +136,33 @@ public class AdministratorManager implements Serializable {
         }
         return "/admin/users/administrators/view.xhtml?faces-redirect=true";
     }
-    public String createProductCatalog(){
-        if (currentConfigurations==null 
-                || currentConfigurations.isEmpty()) {
-            FacesExceptionHandler.handleException(new Exception(), "A template must have configurations", component, logger);
-            return null;
-        }
+   
+    public void createConfiguration(){
         
-        //Create ProductCatalog
+    }
+    public String createTemplate(){
         try {
-            logger.info(newProductDTO.getName());
-            logger.info(newProductDTO.getDescription());
             Invocation.Builder invocationBuilder = 
                 addHeaderBASIC().target(URILookup.getBaseAPI())
-                    .path("/catalog")
+                    .path("/templates")
                     .request(MediaType.APPLICATION_XML);
-        
-            Response response = invocationBuilder.post(Entity.xml(newProductDTO));
             
-            logger.info("Template Created:"+response.getStatus());
+            Response response = invocationBuilder.post(Entity.xml(templateDTO));
+            
             String message = response.readEntity(String.class);
             if (response.getStatus() != HTTP_CREATED){
                 throw new Exception(message);
             }
-            MessageHandler.successMessage("Template Created:", message);
+            
+            templateDTO.setId(Long.valueOf(message));
+            MessageHandler.successMessage("Template Created:","Template was successfully created");
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
             return null;
-        }  
-        
-        //Associate Configurations to ProductCatalog
-        try{
-            Invocation.Builder invocationBuilder = 
-                addHeaderBASIC().target(URILookup.getBaseAPI())
-                    .path("/catalog/"+newProductDTO.getId())
-                    .request(MediaType.APPLICATION_JSON);
-            Response response = invocationBuilder.post(Entity.json(currentConfigurations.iterator()));
-           
-            logger.info("Configurations Associated:"+response.getStatus());
-            String message = response.readEntity(String.class);
-            if (response.getStatus() != HTTP_CREATED){
-                throw new Exception(message);
-            }
-            
-            MessageHandler.successMessage("Configurations Associated:",message);
-            
-            //productCatalogBean.create(newProductDTO, currentConfigurations);
-            newProductDTO.reset();
-            allConfigurations = null;
-            currentConfigurations = null;
-        } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "An unexpected error has occurred while creating a Template", component, logger);
-            return null;
-        }  
-        return "/index.xhtml?faces-redirect=true";
+        }
+        return "/admin/catalog/details.xhtml?faces-redirect=true";
     }
+    
     public void createConfigurationComment(Long configurationId, Long parentId){
         //Retrieves userManager
         FacesContext context = FacesContext.getCurrentInstance();
@@ -274,8 +242,79 @@ public class AdministratorManager implements Serializable {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
         }
     }
+   
+    public void createTemplateModule(){
+        try {
+            Invocation.Builder invocationBuilder = 
+                addHeaderBASIC().target(URILookup.getBaseAPI())
+                    .path("/templates/")
+                    .path(String.valueOf(templateDTO.getId()))
+                    .path("/modules")
+                    .request(MediaType.APPLICATION_XML);
+            
+            Response response = invocationBuilder.post(Entity.xml(moduleDTO));
+            moduleDTO.reset();
+            
+            String message = response.readEntity(String.class);
+            if (response.getStatus() != HTTP_CREATED){
+                throw new Exception(message);
+            }
+            
+            MessageHandler.successMessage("Module Created:",message);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
+        }
+    }
+    public void createTemplateArtifact() {
+        try {
+            FacesContext context = FacesContext.getCurrentInstance();
+            javax.faces.application.Application app = context.getApplication();
+            UploadManager uploadManager = app.evaluateExpressionGet(context, "#{uploadManager}", UploadManager.class);
+        
+            ArtifactDTO document = 
+                new ArtifactDTO(uploadManager.getCompletePathFile(), uploadManager.getFilename(), uploadManager.getFile().getContentType());
 
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                .target(URILookup.getBaseAPI())
+                .path("/templates/")
+                .path(String.valueOf(templateDTO.getId()))
+                .path("/artifacts")
+                .request(MediaType.APPLICATION_XML);
+
+            Response response = invocationBuilder.post(Entity.xml(document));     
+            
+            String message = response.readEntity(String.class);
+            if (response.getStatus() != HTTP_CREATED){
+                throw new Exception(message);
+            }
+            MessageHandler.successMessage("Artifact Created:", message);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+        }
+    }
     
+    public void updateTemplate(){
+        templateDTO.getDescription();
+        try {
+            Invocation.Builder invocationBuilder = 
+                addHeaderBASIC().target(URILookup.getBaseAPI())
+                    .path("/templates")
+                    .request(MediaType.APPLICATION_XML);
+            
+            Response response = invocationBuilder.put(Entity.xml(templateDTO));
+            
+            String message = response.readEntity(String.class);
+            if (response.getStatus() != HTTP_OK){
+                throw new Exception(message);
+            }
+            
+            MessageHandler.successMessage("Template Updated:",message);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
+            
+        }
+       
+    }
     public void updateConfiguration(){
         logger.warning("ssdasd"+configurationDTO.getId());
         logger.info("sadasd");
@@ -343,6 +382,7 @@ public class AdministratorManager implements Serializable {
             MessageHandler.failMessage("Delete Failed:", e.getMessage());
         }
     }
+    
     public void removeTemplate(ActionEvent event){
         FacesMessage facesMsg;
         try {
@@ -361,6 +401,57 @@ public class AdministratorManager implements Serializable {
         }
         FacesContext.getCurrentInstance().addMessage(null, facesMsg);
     }
+    public void removeTemplateModule(ActionEvent event){
+        FacesMessage facesMsg;
+        try {
+            UIParameter param = (UIParameter) event.getComponent().findComponent("deleteTemplateModuleId");
+            Long id = (Long)param.getValue();
+            
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                    .target(URILookup.getBaseAPI())
+                    .path("/templates/")
+                    .path(String.valueOf(templateDTO.getId()))
+                    .path("/modules/")
+                    .path(String.valueOf(id))
+                    .request(MediaType.APPLICATION_XML);
+            Response response = invocationBuilder.delete();
+            
+            String message = response.readEntity(String.class);
+            if (response.getStatus() != HTTP_OK){
+                throw new Exception(message);
+            }
+            
+            MessageHandler.successMessage("Module Deleted:", message);
+        } catch (Exception e) {
+            MessageHandler.failMessage("Delete Failed:", e.getMessage());
+        }
+    }
+    public void removeTemplateArtifact(ActionEvent event){
+        FacesMessage facesMsg;
+        try {
+            UIParameter param = (UIParameter) event.getComponent().findComponent("deleteTemplateArtifactId");
+            Long id = (Long)param.getValue();
+            
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                    .target(URILookup.getBaseAPI())
+                    .path("/templates/")
+                    .path(String.valueOf(configurationDTO.getId()))
+                    .path("/artifacts/")
+                    .path(String.valueOf(id))
+                    .request(MediaType.APPLICATION_XML);
+            Response response = invocationBuilder.delete();
+            
+            String message = response.readEntity(String.class);
+            if (response.getStatus() != HTTP_OK){
+                throw new Exception(message);
+            }
+            
+            MessageHandler.successMessage("Artifact Deleted:", message);
+        } catch (Exception e) {
+            MessageHandler.failMessage("Delete Failed:", e.getMessage());
+        }
+    }
+    
     public void removeConfiguration(ActionEvent event){
         FacesMessage facesMsg;
         try {
@@ -404,7 +495,7 @@ public class AdministratorManager implements Serializable {
                 throw new Exception(message);
             }
             
-            MessageHandler.successMessage("Configuration Deleted:", message);
+            MessageHandler.successMessage("Module Deleted:", message);
         } catch (Exception e) {
             MessageHandler.failMessage("Delete Failed:", e.getMessage());
         }
@@ -429,19 +520,12 @@ public class AdministratorManager implements Serializable {
                 throw new Exception(message);
             }
             
-            MessageHandler.successMessage("Configuration Deleted:", message);
+            MessageHandler.successMessage("Artifact Deleted:", message);
         } catch (Exception e) {
             MessageHandler.failMessage("Delete Failed:", e.getMessage());
         }
     }
-    
-    public List<ConfigurationDTO> getAllConfigurations(){
-        /*if (allConfigurations == null) {
-            allConfigurations = new ArrayList<>();
-            allConfigurations.addAll(configurationBean.getAll());
-        }*/
-        return allConfigurations;
-    }
+        
     public List<UserDTO> getAllUsers(){
         try {
             List<UserDTO> users=addHeaderBASIC()
@@ -472,18 +556,45 @@ public class AdministratorManager implements Serializable {
     }
     public List<ClientDTO> getAllClients(){
         try {
-            List<ClientDTO> clients=addHeaderBASIC().target(URILookup.getBaseAPI())
-                    .path("/clients/all")
-                    .request(MediaType.APPLICATION_XML)
-                    .get(new GenericType<List<ClientDTO>>() {});
-
-            return clients;
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                    .target(URILookup.getBaseAPI())
+                    .path("/clients")
+                    .request(MediaType.APPLICATION_XML);
+            
+            Response response = invocationBuilder.get(Response.class);
+            if (response.getStatus() != HTTP_OK){
+                String message = response.readEntity(String.class);
+                throw new Exception(message);
+            }
+           
+            List<ClientDTO> clientsDTO =
+                response.readEntity(new GenericType<List<ClientDTO>>() {}); 
+            
+            return clientsDTO;
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            MessageHandler.failMessage("Unexpected error!", e.getMessage());
             return null;
         }
     }
+    public List<TemplateDTO> getAllTemplates(){
+        try {
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                    .target(URILookup.getBaseAPI())
+                    .path("/templates")
+                    .request(MediaType.APPLICATION_XML);
+            
+            Response response = invocationBuilder.get(Response.class);
 
+            List<TemplateDTO> templateDTO =
+                response.readEntity(new GenericType<List<TemplateDTO>>() {}); 
+          
+            return templateDTO;
+        } catch (Exception e) {
+            MessageHandler.failMessage("Unexpected error!", e.getMessage());      
+            return null;
+        }
+    }
+    
     public List<ConfigurationDTO> getClientConfigurations(){
         try {
             Invocation.Builder invocationBuilder = addHeaderBASIC()
@@ -494,13 +605,17 @@ public class AdministratorManager implements Serializable {
                     .request(MediaType.APPLICATION_XML);
             
             Response response = invocationBuilder.get(Response.class);
-
+            if (response.getStatus() != HTTP_OK){
+                String message = response.readEntity(String.class);
+                throw new Exception(message);
+            }
+            
             List<ConfigurationDTO> configurationsDTO =
                 response.readEntity(new GenericType<List<ConfigurationDTO>>() {}); 
           
             return configurationsDTO;
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            MessageHandler.failMessage("Unexpected error!", e.getMessage()); 
             return null;
         }
     }
@@ -514,18 +629,20 @@ public class AdministratorManager implements Serializable {
                     .request(MediaType.APPLICATION_XML);
             
             Response response = invocationBuilder.get(Response.class);
+            if (response.getStatus() != HTTP_OK){
+                String message = response.readEntity(String.class);
+                throw new Exception(message);
+            }
 
             List<ModuleDTO> modulesDTO =
                 response.readEntity(new GenericType<List<ModuleDTO>>() {}); 
-          
-            logger.warning("modules:"+modulesDTO.size());
+
             return modulesDTO;
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            MessageHandler.failMessage("Unexpected error!", e.getMessage());      
             return null;
         }
     }
-    
     public List<ArtifactDTO> getConfigurationArtifacts(){
         try {
             Invocation.Builder invocationBuilder = addHeaderBASIC()
@@ -536,14 +653,17 @@ public class AdministratorManager implements Serializable {
                     .request(MediaType.APPLICATION_XML);
             
             Response response = invocationBuilder.get(Response.class);
+            if (response.getStatus() != HTTP_OK){
+                String message = response.readEntity(String.class);
+                throw new Exception(message);
+            }
 
             List<ArtifactDTO> artifactDTO =
                 response.readEntity(new GenericType<List<ArtifactDTO>>() {}); 
           
-            logger.warning("artifact:"+artifactDTO.size());
             return artifactDTO;
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            MessageHandler.failMessage("Unexpected error!", e.getMessage());       
             return null;
         }
     }
@@ -557,17 +677,70 @@ public class AdministratorManager implements Serializable {
                     .request(MediaType.APPLICATION_XML);
             
             Response response = invocationBuilder.get(Response.class);
+            if (response.getStatus() != HTTP_OK){
+                String message = response.readEntity(String.class);
+                throw new Exception(message);
+            }
 
             List<CommentDTO> commentDTO =
                 response.readEntity(new GenericType<List<CommentDTO>>() {}); 
 
             return commentDTO;
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            MessageHandler.failMessage("Unexpected error!", e.getMessage());
             return null;
         }
     }
     
+    public List<ModuleDTO> getTemplateModules(){
+        try {
+
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                    .target(URILookup.getBaseAPI())
+                    .path("/templates/")
+                    .path(String.valueOf(templateDTO.getId()))
+                    .path("/modules")
+                    .request(MediaType.APPLICATION_XML);
+            
+            Response response = invocationBuilder.get(Response.class);
+            if (response.getStatus() != HTTP_OK){
+                String message = response.readEntity(String.class);
+                throw new Exception(message);
+            }
+
+            List<ModuleDTO> modulesDTO =
+                response.readEntity(new GenericType<List<ModuleDTO>>() {}); 
+
+            return modulesDTO;
+        } catch (Exception e) {
+            MessageHandler.failMessage("Unexpected error!", e.getMessage());
+            return null;
+        }
+    }
+    public List<ArtifactDTO> getTemplateArtifacts(){
+        try {
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                    .target(URILookup.getBaseAPI())
+                    .path("/templates/")
+                    .path(String.valueOf(templateDTO.getId()))
+                    .path("/artifacts")
+                    .request(MediaType.APPLICATION_XML);
+            
+            Response response = invocationBuilder.get(Response.class);
+            if (response.getStatus() != HTTP_OK){
+                String message = response.readEntity(String.class);
+                throw new Exception(message);
+            }
+
+            List<ArtifactDTO> artifactDTO =
+                response.readEntity(new GenericType<List<ArtifactDTO>>() {}); 
+
+            return artifactDTO;
+        } catch (Exception e) {
+            MessageHandler.failMessage("Unexpected error!", e.getMessage());
+            return null;
+        }
+    }
     
     public void emailExample(){
         /*
@@ -587,21 +760,4 @@ public class AdministratorManager implements Serializable {
     public void setEmailManager(EmailManager emailManager) {
         this.emailManager = emailManager;
     }    
-
-    public List<ConfigurationDTO> getCurrentConfigurations(){
-        return currentConfigurations;
-    }
-    public void addConfiguration(ConfigurationDTO selectedConfiguration){
-        allConfigurations.remove(selectedConfiguration);
-        if (currentConfigurations == null) currentConfigurations = new ArrayList<>();
-        currentConfigurations.add(selectedConfiguration);
-    }
-
-    public void removeConfiguration(ConfigurationDTO selectedConfiguration){
-        currentConfigurations.remove(selectedConfiguration);
-        allConfigurations.add(selectedConfiguration);
-    }
-    public void setCurrentConfigurations(List<ConfigurationDTO> currentConfigurations) {
-        this.currentConfigurations = currentConfigurations;
-    }
 }
