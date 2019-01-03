@@ -14,6 +14,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "Configuration")
@@ -40,7 +41,7 @@ public class Configuration extends Software implements Serializable {
     private Status status;
     
     @NotNull(message = "Configuration must have base Contract Data")
-    private String contractDate;
+    private LocalDate contractDate;
     
     @ElementCollection(targetClass=String.class)
     private List<String> cloudServices;
@@ -75,7 +76,7 @@ public class Configuration extends Software implements Serializable {
         this.parameters = new ArrayList<>();
     }
 
-    public Configuration(String name, String description, Status status, String baseVersion, Client client, String contractDate) {
+    public Configuration(String name, String description, Status status, String baseVersion, Client client, LocalDate contractDate) {
         this();
         this.name = name;
         this.description = description;
@@ -142,10 +143,10 @@ public class Configuration extends Software implements Serializable {
         this.status = status;
     }
 
-    public String getContractDate() {
+    public LocalDate getContractDate() {
         return contractDate;
     }
-    public void setContractDate(String contractDate) {
+    public void setContractDate(LocalDate contractDate) {
         this.contractDate = contractDate;
     }
 
