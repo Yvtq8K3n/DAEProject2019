@@ -5,7 +5,6 @@
  */
 package web;
 
-
 import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;

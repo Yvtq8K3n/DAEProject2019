@@ -5,22 +5,11 @@ import dtos.ClientDTO;
 import dtos.CommentDTO;
 import dtos.ConfigurationDTO;
 import dtos.ModuleDTO;
-import ejbs.ClientBean;
-import ejbs.ConfigurationBean;
-import ejbs.SoftwareBean;
-import entities.Client;
-import entities.Configuration;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.application.FacesMessage;
-import javax.inject.Named;
-//import javax.enterprise.context.SessionScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.component.UIComponent;
@@ -72,7 +61,7 @@ public class ClientManager implements Serializable {
     public ClientDTO getClient(String username){
         try {
             Invocation.Builder invocationBuilder = addHeaderBASIC().target(URILookup.getBaseAPI())
-                    .path("/clients/cliento")
+                    .path("/clients/")
                     .path(username)
                     .request(MediaType.APPLICATION_XML);
         

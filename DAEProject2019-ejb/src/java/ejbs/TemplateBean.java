@@ -6,18 +6,15 @@
 package ejbs;
 
 import dtos.ArtifactDTO;
-import dtos.ConfigurationDTO;
 import dtos.ModuleDTO;
 import dtos.TemplateDTO;
 import entities.Artifact;
-import entities.Configuration;
 import entities.Module;
 import entities.Template;
 import exceptions.EntityDoesNotExistException;
 import exceptions.EntityExistsException;
 import exceptions.MyConstraintViolationException;
 import exceptions.Utils;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -100,24 +97,30 @@ public class TemplateBean extends Bean<Template>{
         } 
     }
     
-    public void remove(Long id) 
-            throws EntityDoesNotExistException, MyConstraintViolationException{
+    @DELETE
+    @Path("/{id}")
+    @RolesAllowed({"Administrator"})
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_XML)
+    public Response remove(@PathParam("id") Long id) 
+        throws EntityDoesNotExistException, MyConstraintViolationException{
         try{
+            if (id == null) 
+                throw new EntityDoesNotExistException("Invalid Template");
             Template template = em.find(Template.class, id);
-
-            if (template == null) {
-                throw new EntityDoesNotExistException("A template with that id doesnt exists.");
-            }
-              
-            em.remove(template);
+            if(template == null) 
+                throw new EntityDoesNotExistException("Template not found.");
+            
+            em.remove(template); 
+           return Response.status(Response.Status.OK).entity("Configuration was successfully deleted.").build();
         }catch (EntityDoesNotExistException e) {
-            throw e;
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }catch (ConstraintViolationException e){
-            throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
         }catch (Exception e) {
-            throw new EJBException(e.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
         }
-    }
+    }   
     
     //Artifacts
     @GET

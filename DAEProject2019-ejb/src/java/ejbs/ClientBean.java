@@ -134,7 +134,7 @@ public class ClientBean extends Bean<Client>{
 
     @GET
     @RolesAllowed("Client")
-    @Path("cliento/{username}")
+    @Path("/{username}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response getClient(@PathParam("username") String username)
     throws EntityDoesNotExistException{

@@ -8,12 +8,10 @@ import dtos.ConfigurationDTO;
 import dtos.ModuleDTO;
 import dtos.TemplateDTO;
 import dtos.UserDTO;
-import ejbs.TemplateBean;
 import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -56,9 +54,6 @@ public class AdministratorManager implements Serializable {
     private @Getter @Setter CommentDTO commentDTO;
     private @Getter @Setter List<ConfigurationDTO> configurationsDTO;
 
-    @EJB
-    private TemplateBean productCatalogBean;
-        
     @ManagedProperty(value="#{emailManager}")
     private EmailManager emailManager;
     
@@ -383,23 +378,29 @@ public class AdministratorManager implements Serializable {
         }
     }
     
+    //STILL NOT DONE
     public void removeTemplate(ActionEvent event){
         FacesMessage facesMsg;
         try {
             UIParameter param = (UIParameter) event.getComponent().findComponent("deleteTemplateId");
             Long id = (Long)param.getValue();
-            productCatalogBean.remove(id);
+                        
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                    .target(URILookup.getBaseAPI())
+                    .path("/templates")
+                    .path(String.valueOf(templateDTO.getId()))
+                    .request(MediaType.APPLICATION_XML);
+            Response response = invocationBuilder.delete();
             
-            logger.warning("ID:"+id);
+            String message = response.readEntity(String.class);
+            if (response.getStatus() != HTTP_OK){
+                throw new Exception(message);
+            }
             
-            facesMsg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Template Deleted:", "A template was successfully deleted");
-            
-            //guestManager.reset();//Forces update of list
+            MessageHandler.successMessage("Template Deleted:", message);
         } catch (Exception e) {
-            logger.warning("Problem removing a template in method removeTemplate.");
-            facesMsg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Delete Failed:", "Problem removing a template in method removeTemplate");
+            MessageHandler.failMessage("Delete Failed:", e.getMessage());
         }
-        FacesContext.getCurrentInstance().addMessage(null, facesMsg);
     }
     public void removeTemplateModule(ActionEvent event){
         FacesMessage facesMsg;

@@ -10,17 +10,9 @@ package web;
  *
  * @author Yvtq8
  */
-import dtos.AdministratorDTO;
-import dtos.EmailDTO;
-import ejbs.EmailBean;
 import java.io.Serializable;
-import java.util.LinkedList;
-import java.util.List;
-import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.mail.MessagingException;
-
 
 @ManagedBean
 @SessionScoped
