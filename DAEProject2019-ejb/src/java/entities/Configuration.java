@@ -14,6 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "Configuration")
@@ -36,7 +37,8 @@ public class Configuration extends Software implements Serializable {
     @Enumerated(EnumType.STRING)
     private @Getter @Setter Status status;
     private @Getter @Setter String baseVersion;
-    private @Getter @Setter String contractDate;
+    //private @Getter @Setter String contractDate;
+    private @Getter @Setter LocalDate contractDate;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true)
     private @Getter @Setter List<Module> modules;
@@ -57,7 +59,7 @@ public class Configuration extends Software implements Serializable {
         this.parameters = new ArrayList<>();
     }
 
-    public Configuration(String name, String description, Status status, String baseVersion, Client client, String contractDate) {
+    public Configuration(String name, String description, Status status, String baseVersion, Client client, LocalDate contractDate) {
         this();
         this.name = name;
         this.description = description;
