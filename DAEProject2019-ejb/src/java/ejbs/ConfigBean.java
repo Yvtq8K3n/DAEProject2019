@@ -50,7 +50,7 @@ public class ConfigBean {
             adminstratorBean.create(new AdministratorDTO("administrator2", "secret", "João Marques", "dae.ei.ipleiria@gmail.com", "Vendedor"));
             
             //Create Configurations
-            configurationBean.create(new ConfigurationDTO(null,"Office 2017","Service for life", "V1.5.0", "client1",ConfigurationDTO.Status.ACTIVE,"16/12/2018"));
+            configurationBean.create(new ConfigurationDTO(null,"Office 2017","Service for life", "V1.5.0", "client1",ConfigurationDTO.Status.SUSPEND,"16/12/2018"));
             configurationBean.create(new ConfigurationDTO(null,"Karsperkey","Securing your information", "V1.7.8", "client1",ConfigurationDTO.Status.ACTIVE,"15/12/2012"));
             configurationBean.create(new ConfigurationDTO(null,"CMTV","The wost tv news ever created!", "V1.5.0", "client1",ConfigurationDTO.Status.ACTIVE,"16/12/2041"));
             configurationBean.create(new ConfigurationDTO(null,"Pokemon","Hey! Someone got catche them all, lets hope is not you", "V1.7.8", "client1",ConfigurationDTO.Status.ACTIVE,"16/3/2139"));

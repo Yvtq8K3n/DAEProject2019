@@ -338,7 +338,7 @@ public class AdministratorManager implements Serializable {
     public void updateConfiguration(){
         logger.warning("ssdasd"+configurationDTO.getId());
         logger.info("sadasd");
-        
+        System.out.println("Configuration Status: " + configurationDTO.getStatus());
         try {
             Invocation.Builder invocationBuilder = 
                 addHeaderBASIC().target(URILookup.getBaseAPI())

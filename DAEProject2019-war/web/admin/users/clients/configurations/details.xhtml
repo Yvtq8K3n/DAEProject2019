@@ -17,7 +17,7 @@
     <h2>Configuration: #{configuration.name}</h2>
     <b:button value="See Comments" look="warning" p:data-target="#commentsModal" p:data-toggle="modal"/>
     
-    <h:form id="formMain">
+    <b:form id="formMain">
         <b:inputTextarea label="Description" 
             value="#{configuration.description}"/>
         
@@ -36,7 +36,7 @@
             value="Submit" class="btn btn-primary"
             action="${administratorManager.updateConfiguration}">
         </b:commandButton>
-    </h:form>
+    </b:form>
         
     <hr></hr>
     

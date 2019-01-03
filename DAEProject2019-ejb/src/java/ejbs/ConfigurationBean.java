@@ -73,6 +73,7 @@ public class ConfigurationBean extends Bean<Configuration>{
             Configuration conf = new Configuration(
                     confDTO.getName(), 
                     confDTO.getDescription(),
+                    Configuration.Status.valueOf(confDTO.getStatus().toString()),
                     confDTO.getBaseVersion(), 
                     client, 
                     confDTO.getContractDate()
@@ -106,6 +107,7 @@ public class ConfigurationBean extends Bean<Configuration>{
             
             conf.setName(confDTO.getName());
             conf.setDescription(confDTO.getDescription());
+            conf.setStatus(Configuration.Status.valueOf(confDTO.getStatus().toString()));
             conf.setBaseVersion(confDTO.getBaseVersion());
             conf.setContractDate(confDTO.getContractDate());
             

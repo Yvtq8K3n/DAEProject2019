@@ -73,11 +73,11 @@ public class Configuration extends Software implements Serializable {
         this.parameters = new ArrayList<>();
     }
 
-    public Configuration(String name, String description, String baseVersion, Client client, String contractDate) {
+    public Configuration(String name, String description, Status status, String baseVersion, Client client, String contractDate) {
         this();
         this.name = name;
         this.description = description;
-        this.status = Status.ACTIVE;
+        this.status = status;
         this.baseVersion = baseVersion;
         this.owner = client;
         this.contractDate = contractDate;
