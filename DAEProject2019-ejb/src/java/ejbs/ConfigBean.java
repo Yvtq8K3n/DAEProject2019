@@ -53,7 +53,7 @@ public class ConfigBean {
             //Create Users
             clientBean.create(new ClientDTO("client1", "secret", "Manuel", "oleksandrsopilkov@gmail.com", "Av. José Maceda", "918 923 232"));
             clientBean.create(new ClientDTO("client2", "secret", "Teresa", "dae.ei.ipleiria@gmail.com", "Av. Alberto Alves", "+00351 256 0033 12"));
-            adminstratorBean.create(new AdministratorDTO("administrator1", "secret", "Manuel", "dae.ei.ipleiria@gmail.com", "Director"));
+            adminstratorBean.create(new AdministratorDTO("administrator1", "secret", "Manuel", "dae.ei.ipleiria.2019@gmail.com", "Director"));
             adminstratorBean.create(new AdministratorDTO("administrator2", "secret", "João Marques", "dae.ei.ipleiria@gmail.com", "Vendedor"));
             
             //Create Configurations

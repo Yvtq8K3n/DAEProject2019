@@ -12,6 +12,7 @@ package web;
  */
 import dtos.AdministratorDTO;
 import dtos.ConfigurationDTO;
+import dtos.ClientDTO;
 import dtos.EmailDTO;
 import ejbs.EmailBean;
 import java.io.Serializable;
@@ -29,54 +30,47 @@ import javax.mail.MessagingException;
 @SessionScoped
 public class EmailManager implements Serializable{
     
-    //Never used Asynchronoys but should work like this
-    ///////////////////////////////////////////////////////////////
-    //This are just examples
-    ///////////////////////////////////////////////////////////////
-    /* 
-    @Asynchronous
-    public EmailDTO removeProposta(AdministratorDTO admin, 
-           PropostaDTO proposta, List<String> recipients) throws MessagingException{
-        String msg = "<strong>A proposta:</strong> "+proposta.getTitulo()
-                    +".<br><br><strong>Com descricao:</strong> "+ proposta.getResumo()+"."
-                    +".<br><br><strong>Foi removida por:</strong> "+ admin.getName()+".";
-        
-        EmailDTO email = new EmailDTO(admin.getEmail(), "Remoção da Proposta "+proposta.getTitulo(), msg, recipients);
-        
-        return email;   
-    }   */  
-    
-    
 
-    @Asynchronous
-    public EmailDTO sendEmailUpdate(AdministratorDTO admin, ConfigurationDTO conf){
-
-        List<String> recipients = new ArrayList<>();
-        recipients.add("oleksandrsopilkov@gmail.com");
-        String msg = "<strong>A proposta:</strong> " + admin;
-        EmailDTO email = new EmailDTO(admin.getEmail(),"secret","A configuração " + conf.getName() + " foi atualizada", msg, recipients);
-       
+    public EmailDTO sendEmailUpdate(AdministratorDTO admin, ConfigurationDTO conf, ClientDTO clientDTO){
+        String recipient = clientDTO.getEmail();
+        String msg = "Configuration " + conf.getName() + " was updated";
+        EmailDTO email = new EmailDTO(admin.getEmail(),null,"DAE Project", msg, recipient);
         return email;   
     } 
     
+    public EmailDTO sendEmailRemove(AdministratorDTO admin, ConfigurationDTO conf, ClientDTO clientDTO){
+        String recipient = clientDTO.getEmail();
+        String msg = "Configuration " + conf.getName() + " was removed";
+        EmailDTO email = new EmailDTO(admin.getEmail(),null,"DAE Project", msg, recipient);
+        return email;   
+    } 
     
-    /* 
-    @Asynchronous
-    public EmailDTO updateProva(AdministratorDTO admin,
-            PropostaDTO proposta, List<String> alterations, List<String> recipients) throws MessagingException{
-        String msg = "<strong>A prova:</strong> "+proposta.getTitulo()
-                    +".<br><br><strong>Com descricao:</strong> "+ proposta.getResumo()+"."
-                    +".<br><br><strong>Foi atualizada por:</strong> "+ admin.getName()+".";
-                            
-                    if (alterations!=null){
-                        msg+="<br><br><strong>Com as seguintes alteracoes:</strong>";
-                        for(String alteration: alterations){
-                            msg+="<br>"+alteration;
-                        }
-                    } 
-        
-        EmailDTO email = new EmailDTO(admin.getEmail(), "Alteração da Prova "+proposta.getTitulo(), msg, recipients);
-        
-        return email;
-    } */
+    public EmailDTO sendEmailModuleCreate(AdministratorDTO admin, ConfigurationDTO conf, ClientDTO clientDTO, String module){
+        String recipient = clientDTO.getEmail();
+        String msg = "New module " + module + " has been insered in configuration " + conf.getName();
+        EmailDTO email = new EmailDTO(admin.getEmail(),null,"DAE Project", msg, recipient);
+        return email;   
+    } 
+    
+    public EmailDTO sendEmailModuleRemove(AdministratorDTO admin, ConfigurationDTO conf, ClientDTO clientDTO){
+        String recipient = clientDTO.getEmail();
+        String msg = "Module has been removed from configuration " + conf.getName();
+        EmailDTO email = new EmailDTO(admin.getEmail(),null,"DAE Project", msg, recipient);
+        return email;   
+    } 
+    
+    public EmailDTO sendEmailArtifactCreate(AdministratorDTO admin, ConfigurationDTO conf, ClientDTO clientDTO, String artifact){
+        String recipient = clientDTO.getEmail();
+        String msg = "New artifact " + artifact + " has been insered in configuration " + conf.getName();
+        EmailDTO email = new EmailDTO(admin.getEmail(),null,"DAE Project", msg, recipient);
+        return email;   
+    } 
+    
+    public EmailDTO sendEmailArtifactRemove(AdministratorDTO admin, ConfigurationDTO conf, ClientDTO clientDTO){
+        String recipient = clientDTO.getEmail();
+        String msg = "Artifact has been removed from configuration " + conf.getName();
+        EmailDTO email = new EmailDTO(admin.getEmail(),null,"DAE Project", msg, recipient);
+        return email;   
+    } 
+    
 }
