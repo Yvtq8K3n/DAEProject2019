@@ -24,7 +24,9 @@ import javax.validation.constraints.NotNull;
 public class Configuration extends Software implements Serializable {    
     
     public enum Status {
-        ACTIVE,INACTIVE,SUSPEND
+        ACTIVE,
+        INACTIVE,
+        SUSPEND;
     }
     
     @NotNull(message = "Product must have a version")

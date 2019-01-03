@@ -115,8 +115,7 @@ public class ClientBean extends Bean<Client>{
                 throw new EntityDoesNotExistException("Client not found.");
 
             Collection<ConfigurationDTO> configurationDTO
-                    = toDTOs(client.getProducts(), ConfigurationDTO.class);
-            configurationDTO.forEach((c) -> { c.setOwner(username);});
+                    = ConfigurationBean.convertDTOs(client.getConfigurations());
             
             GenericEntity<List<ConfigurationDTO>> entity =
                 new GenericEntity<List<ConfigurationDTO>>(new ArrayList<>(configurationDTO)) {};      
@@ -181,24 +180,5 @@ public class ClientBean extends Bean<Client>{
         }catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
         } 
-    }
-    
-    public void addProduct(String username, Long productId) {
-        try {
-            Client client = em.find(Client.class, username);
-            if (client == null) {
-                System.out.println("ERROR: can't find client in addProduct of clientBean");
-            }
-            Configuration product = em.find(Configuration.class, productId);
-            if (product == null) {
-                System.out.println("ERROR: can't find product in addProduct of clientBean");
-            }
-            
-            client.addProduct(product);
-            em.merge(client);
-            
-        } catch (EJBException e) {
-            System.out.println("ERROR: addProduct in CLIENT_BEAN" + e.getMessage());
-        }
     }
 }

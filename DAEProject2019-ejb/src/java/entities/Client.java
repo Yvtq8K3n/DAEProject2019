@@ -24,27 +24,27 @@ public class Client extends User implements Serializable {
     private String contact;
     
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval=true)
-    private List<Configuration> products;
+    private List<Configuration> configurations;
         
     
     public Client() {
-       products = new ArrayList<>();
+       configurations = new ArrayList<>();
     }
 
     public Client(String username, String password, String name, String email, String address, String contact) {
         super(username, password, GROUP.Client, name, email);
         this.address = address;
         this.contact = contact;
-        products = new ArrayList<>();
+        configurations = new ArrayList<>();
         
     }
     
     public void addProduct(Configuration product){
-        products.add(product);
+        configurations.add(product);
     }
     
     public void removeProduct(Configuration product){
-        products.remove(product);
+        configurations.remove(product);
     }
 
     public String getAddress() {
@@ -63,12 +63,12 @@ public class Client extends User implements Serializable {
         this.contact = contact;
     }
 
-    public List<Configuration> getProducts() {
-        return products;
+    public List<Configuration> getConfigurations() {
+        return configurations;
     }
 
-    public void setProducts(List<Configuration> products) {
-        this.products = products;
+    public void setConfigurations(List<Configuration> products) {
+        this.configurations = products;
     }
     
     

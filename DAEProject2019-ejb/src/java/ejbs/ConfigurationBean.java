@@ -368,12 +368,45 @@ public class ConfigurationBean extends Bean<Configuration>{
     }    
     
     @GET
+    @RolesAllowed("Administrator")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Path("all")
-    public Collection<ConfigurationDTO> getAll(){
-        Collection<Configuration> configurations = em.createNamedQuery("getAllConfigurations").getResultList();
+    public Response getAll(){
+        try{
+            List<Configuration> configurations = 
+                    em.createNamedQuery("getAllConfigurations").getResultList();
+            
+            Collection<ConfigurationDTO> configurationsDTO
+                    = ConfigurationBean.convertDTOs(configurations);
 
-        return toDTOs(configurations, ConfigurationDTO.class);
+            GenericEntity<List<ConfigurationDTO>> entity =
+                new GenericEntity<List<ConfigurationDTO>>(new ArrayList<>(configurationsDTO)) {};     
+
+            return Response.status(Response.Status.OK).entity(entity).build();
+        }catch (ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
+        }catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
+        } 
     }
-
+    
+    static ConfigurationDTO convertDTO(Configuration configuration){
+        ConfigurationDTO DTO = new ConfigurationDTO(
+            configuration.getId(),
+            configuration.getName(),
+            configuration.getDescription(),
+            configuration.getBaseVersion(),
+            (configuration.getOwner()!= null)?configuration.getOwner().getUsername(): null,
+            ConfigurationDTO.Status.valueOf(configuration.getStatus().name()),
+            configuration.getContractDate()
+        );   
+        return DTO;
+    }
+    
+    static List<ConfigurationDTO> convertDTOs(List<Configuration> configurations){
+        List<ConfigurationDTO> configurationsDTO = new ArrayList<>();
+        configurations.forEach((configuration) -> {
+            configurationsDTO.add(convertDTO(configuration));
+        });
+        return configurationsDTO;
+    }
 }

@@ -152,8 +152,28 @@ public class AdministratorManager implements Serializable {
         return "/admin/users/administrators/view.xhtml?faces-redirect=true";
     }
    
-    public void createConfiguration(){
-        
+    public String createConfiguration(){
+        configurationDTO.setOwner(clientDTO.getUsername());
+        try {
+            Invocation.Builder invocationBuilder = 
+                addHeaderBASIC().target(URILookup.getBaseAPI())
+                    .path("/configurations")
+                    .request(MediaType.APPLICATION_XML);
+            
+            Response response = invocationBuilder.post(Entity.xml(configurationDTO));
+            
+            String message = response.readEntity(String.class);
+            if (response.getStatus() != HTTP_CREATED){
+                throw new Exception(message);
+            }
+            
+            templateDTO.setId(Long.valueOf(message));
+            MessageHandler.successMessage("Configuration Created:","Configuration was successfully created");
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
+            return null;
+        }
+        return "/admin/users/clients/configurations/details.xhtml?faces-redirect=true";
     }
     public String createTemplate(){
         try {
@@ -620,6 +640,28 @@ public class AdministratorManager implements Serializable {
             return templateDTO;
         } catch (Exception e) {
             MessageHandler.failMessage("Unexpected error!", e.getMessage());      
+            return null;
+        }
+    }
+    public List<ConfigurationDTO> getAllConfigurations(){
+        try {
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                    .target(URILookup.getBaseAPI())
+                    .path("/configurations")
+                    .request(MediaType.APPLICATION_XML);
+            
+            Response response = invocationBuilder.get(Response.class);
+            if (response.getStatus() != HTTP_OK){
+                String message = response.readEntity(String.class);
+                throw new Exception(message);
+            }
+           
+            List<ConfigurationDTO> configurationDTO =
+                response.readEntity(new GenericType<List<ConfigurationDTO>>() {}); 
+            
+            return configurationDTO;
+        } catch (Exception e) {
+            MessageHandler.failMessage("Unexpected error!", e.getMessage());
             return null;
         }
     }

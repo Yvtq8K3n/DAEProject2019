@@ -22,7 +22,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ConfigurationDTO extends TemplateDTO implements Serializable{
     
     public enum Status {
-        ACTIVE,INACTIVE,SUSPEND
+        ACTIVE,
+        INACTIVE,
+        SUSPEND;
     }
     
     private String baseVersion;
