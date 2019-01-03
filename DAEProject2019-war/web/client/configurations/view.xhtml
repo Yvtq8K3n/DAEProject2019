@@ -1,29 +1,30 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:b="http://bootsfaces.net/ui">
     
-    <ui:composition template="../templates/skeleton.xhtml">
+    <ui:composition template="../../templates/skeleton.xhtml">
      
     <ui:define name="title"> Catalog </ui:define> 
 
     <ui:define name="main">
         <h:form>
             <h2>Configuration</h2>
-            <b:dataTable id="Templates" value="#{clientManager.clientConfigurations}" 
-                var="configuration" print="true" lang="en"
+            <b:dataTable var="configuration" value="#{clientManager.clientConfigurations}" 
+                print="true" lang="en" responsive="true" info="false"
                 excel="true" csv="true" pdf="true" copy="true">
                 <b:dataTableColumn value="#{configuration.name}" />
                 <b:dataTableColumn value="#{configuration.description}" />
                 <b:dataTableColumn value="#{configuration.status}" />
                 <b:dataTableColumn label="Actions">
                     <b:commandButton value="Details" class="btn btn-success" 
-                        action="/faces/client/details?faces-redirect=false">
-                        <f:setPropertyActionListener target="#{clientManager.currentConfiguration}" 
-                                                     value="${configuration}" />
+                        action="/faces/client/configurations/details?faces-redirect=true">
+                        <f:setPropertyActionListener value="${configuration}"
+                                                     target="#{clientManager.currentConfiguration}" />
                     </b:commandButton>
                 </b:dataTableColumn>
                 

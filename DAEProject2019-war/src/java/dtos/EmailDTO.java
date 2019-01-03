@@ -14,17 +14,17 @@ public class EmailDTO  implements Serializable{
     private String password;
     private String subject;
     private String body;
-    private List<String> recipients;
+    private String recipient;
 
     public EmailDTO() {
     }
 
-    public EmailDTO(String userEmail, String password, String subject, String body, List<String> recipients) {
+    public EmailDTO(String userEmail, String password, String subject, String body, String recipient) {
         this.userEmail = userEmail;
         this.password = password;
         this.subject = subject;
         this.body = body;
-        this.recipients = recipients;
+        this.recipient = recipient;
     }
 
     public String getUserEmail() {
@@ -59,11 +59,11 @@ public class EmailDTO  implements Serializable{
         this.body = body;
     }
 
-    public List<String> getRecipients() {
-        return recipients;
+    public String getRecipient() {
+        return recipient;
     }
 
-    public void setRecipients(List<String> recipients) {
-        this.recipients = recipients;
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
     }
 }

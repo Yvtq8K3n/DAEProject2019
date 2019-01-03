@@ -1,5 +1,6 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
@@ -7,14 +8,14 @@
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
       xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
-    <ui:composition template="../templates/skeleton.xhtml">
+    <ui:composition template="../../templates/skeleton.xhtml">
      
         <ui:define name="title"> Details </ui:define> 
         
         <ui:define name="main">
             <c:set var="configuration" value="#{clientManager.currentConfiguration}"/>
-            <b:button value="See Comments" look="warning" p:data-target="#commentsModal" p:data-toggle="modal"/>
             <h2>Configuration: #{configuration.name}</h2>
+            <b:button value="See Comments" look="warning" p:data-target="#commentsModal" p:data-toggle="modal"/>
             
             <h:form id="formMain">
                 <b:inputText label="Owner" disabled="true" value="#{configuration.owner}"/>
@@ -67,6 +68,7 @@
 
                         <b:commandButton value="Send" 
                                          actionListener="#{clientManager.createConfigurationComment(configuration.id, null)}"/>
+                        
                     </h:form>
                 </div>
                 <script>

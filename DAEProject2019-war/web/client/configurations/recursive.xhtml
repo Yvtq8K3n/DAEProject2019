@@ -39,7 +39,7 @@
                                         <h:form id="replySecundary#{comment.id}">
                                             <b:inputTextarea label="Comment:" value="#{reply.message}"/>
 
-                                            <b:commandButton  value="Send" actionListener="#{clientManager.createComment(configuration.id, comment.id)}"/>
+                                            <b:commandButton  value="Send" actionListener="#{clientManager.createConfigurationComment(configuration.id, comment.id)}"/>
                                         </h:form>
                                     </div>
                                 </div>

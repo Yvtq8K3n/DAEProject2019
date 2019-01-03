@@ -5,6 +5,7 @@ import dtos.ClientDTO;
 import dtos.ArtifactDTO;
 import dtos.CommentDTO;
 import dtos.ConfigurationDTO;
+import dtos.EmailDTO;
 import dtos.ModuleDTO;
 import dtos.TemplateDTO;
 import dtos.UserDTO;
@@ -42,6 +43,7 @@ public class AdministratorManager implements Serializable {
     private static final int HTTP_CREATED = Response.Status.CREATED.getStatusCode();
     private static final int HTTP_OK = Response.Status.OK.getStatusCode();
     
+    
     private static final Logger logger = Logger.getLogger("web.AdministratorManager");
     
     private @Getter @Setter UIComponent component;
@@ -56,7 +58,7 @@ public class AdministratorManager implements Serializable {
 
     @ManagedProperty(value="#{emailManager}")
     private EmailManager emailManager;
-    
+
     public AdministratorManager() {
         clientDTO = new ClientDTO();
         templateDTO = new TemplateDTO();
@@ -71,6 +73,22 @@ public class AdministratorManager implements Serializable {
     public void Init(){
         
     };
+    
+    public AdministratorDTO getLoggedUser(String username){
+        try {
+            Invocation.Builder invocationBuilder = addHeaderBASIC().target(URILookup.getBaseAPI())
+                    .path("/administrators/administrator")
+                    .path(username)
+                    .request(MediaType.APPLICATION_XML);
+        
+            Response response = invocationBuilder.get(Response.class);
+         
+            return response.readEntity(new GenericType<AdministratorDTO>(){});
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
+    }
     
     private Client addHeaderBASIC() {
         Client client = ClientBuilder.newClient();
@@ -198,7 +216,7 @@ public class AdministratorManager implements Serializable {
                     .request(MediaType.APPLICATION_XML);
             
             Response response = invocationBuilder.post(Entity.xml(moduleDTO));
-            moduleDTO.reset();
+            
             
             String message = response.readEntity(String.class);
             if (response.getStatus() != HTTP_CREATED){
@@ -206,6 +224,8 @@ public class AdministratorManager implements Serializable {
             }
             
             MessageHandler.successMessage("Module Created:",message);
+            sendMailCreateModule(moduleDTO.getName());
+            moduleDTO.reset();
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
         }
@@ -233,6 +253,7 @@ public class AdministratorManager implements Serializable {
                 throw new Exception(message);
             }
             MessageHandler.successMessage("Artifact Created:", message);
+            sendMailCreateArtifact(document.getDesiredName());
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
         }
@@ -326,8 +347,8 @@ public class AdministratorManager implements Serializable {
             if (response.getStatus() != HTTP_OK){
                 throw new Exception(message);
             }
-            
             MessageHandler.successMessage("Configuration Updated:",message);
+            sendMailUpdate();
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
             
@@ -475,6 +496,8 @@ public class AdministratorManager implements Serializable {
         } catch (Exception e) {
             MessageHandler.failMessage("Delete Failed:", e.getMessage());
         }
+        
+        sendMailRemove();
     }
     public void removeConfigurationModule(ActionEvent event){
         FacesMessage facesMsg;
@@ -497,6 +520,7 @@ public class AdministratorManager implements Serializable {
             }
             
             MessageHandler.successMessage("Module Deleted:", message);
+            sendMailRemoveModule();
         } catch (Exception e) {
             MessageHandler.failMessage("Delete Failed:", e.getMessage());
         }
@@ -522,6 +546,7 @@ public class AdministratorManager implements Serializable {
             }
             
             MessageHandler.successMessage("Artifact Deleted:", message);
+            sendMailRemoveArtifact();
         } catch (Exception e) {
             MessageHandler.failMessage("Delete Failed:", e.getMessage());
         }
@@ -752,13 +777,156 @@ public class AdministratorManager implements Serializable {
                     .path("/email")
                     .request(MediaType.APPLICATION_XML);
         Response response = invocationBuilder.post(Entity.xml(email));
-        */  
+        */
     }
-
-    public EmailManager getEmailManager() {
-        return emailManager;
+    
+    public void sendMailUpdate(){
+        try {
+            FacesContext context = FacesContext.getCurrentInstance();
+            javax.faces.application.Application app = context.getApplication();
+            UserManager userManager = app.evaluateExpressionGet(context, "#{userManager}", UserManager.class);
+            AdministratorDTO administratorDTO = getLoggedUser(userManager.getUsername());
+            EmailManager emailManager = app.evaluateExpressionGet(context, "#{emailManager}", EmailManager.class);
+            EmailDTO email = email = emailManager.sendEmailUpdate(administratorDTO, configurationDTO, clientDTO); 
+            
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                        .target(URILookup.getBaseAPI())
+                        .path("/email/send")
+                        .request(MediaType.APPLICATION_XML);
+            Response response = invocationBuilder.post(Entity.xml(email));   
+            
+            String message = response.readEntity(String.class);
+            if (response.getStatus() != HTTP_OK){
+                throw new Exception(message);
+            }
+            MessageHandler.successMessage("Message sent: ", message);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+        } 
     }
-    public void setEmailManager(EmailManager emailManager) {
-        this.emailManager = emailManager;
-    }    
+    
+    public void sendMailRemove(){
+        try {
+            FacesContext context = FacesContext.getCurrentInstance();
+            javax.faces.application.Application app = context.getApplication();
+            UserManager userManager = app.evaluateExpressionGet(context, "#{userManager}", UserManager.class);
+            AdministratorDTO administratorDTO = getLoggedUser(userManager.getUsername());
+            EmailManager emailManager = app.evaluateExpressionGet(context, "#{emailManager}", EmailManager.class);
+            EmailDTO email = email = emailManager.sendEmailRemove(administratorDTO, configurationDTO, clientDTO); 
+            
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                        .target(URILookup.getBaseAPI())
+                        .path("/email/send")
+                        .request(MediaType.APPLICATION_XML);
+            Response response = invocationBuilder.post(Entity.xml(email));   
+            
+            String message = response.readEntity(String.class);
+            if (response.getStatus() != HTTP_OK){
+                throw new Exception(message);
+            }
+            MessageHandler.successMessage("Message sent: ", message);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+        } 
+    }
+    
+    public void sendMailCreateModule(String moduleName){
+        try {
+            FacesContext context = FacesContext.getCurrentInstance();
+            javax.faces.application.Application app = context.getApplication();
+            UserManager userManager = app.evaluateExpressionGet(context, "#{userManager}", UserManager.class);
+            AdministratorDTO administratorDTO = getLoggedUser(userManager.getUsername());
+            EmailManager emailManager = app.evaluateExpressionGet(context, "#{emailManager}", EmailManager.class);
+            EmailDTO email = email = emailManager.sendEmailModuleCreate(administratorDTO, configurationDTO, clientDTO, moduleName); 
+            
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                        .target(URILookup.getBaseAPI())
+                        .path("/email/send")
+                        .request(MediaType.APPLICATION_XML);
+            Response response = invocationBuilder.post(Entity.xml(email));   
+            
+            String message = response.readEntity(String.class);
+            if (response.getStatus() != HTTP_OK){
+                throw new Exception(message);
+            }
+            MessageHandler.successMessage("Message sent: ", message);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+        } 
+    }
+    
+    public void sendMailRemoveModule(){
+        try {
+            FacesContext context = FacesContext.getCurrentInstance();
+            javax.faces.application.Application app = context.getApplication();
+            UserManager userManager = app.evaluateExpressionGet(context, "#{userManager}", UserManager.class);
+            AdministratorDTO administratorDTO = getLoggedUser(userManager.getUsername());
+            EmailManager emailManager = app.evaluateExpressionGet(context, "#{emailManager}", EmailManager.class);
+            EmailDTO email = email = emailManager.sendEmailModuleRemove(administratorDTO, configurationDTO, clientDTO); 
+            
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                        .target(URILookup.getBaseAPI())
+                        .path("/email/send")
+                        .request(MediaType.APPLICATION_XML);
+            Response response = invocationBuilder.post(Entity.xml(email));   
+            
+            String message = response.readEntity(String.class);
+            if (response.getStatus() != HTTP_OK){
+                throw new Exception(message);
+            }
+            MessageHandler.successMessage("Message sent: ", message);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+        } 
+    }
+    
+    public void sendMailCreateArtifact(String artifactName){
+        try {
+            FacesContext context = FacesContext.getCurrentInstance();
+            javax.faces.application.Application app = context.getApplication();
+            UserManager userManager = app.evaluateExpressionGet(context, "#{userManager}", UserManager.class);
+            AdministratorDTO administratorDTO = getLoggedUser(userManager.getUsername());
+            EmailManager emailManager = app.evaluateExpressionGet(context, "#{emailManager}", EmailManager.class);
+            EmailDTO email = email = emailManager.sendEmailArtifactCreate(administratorDTO, configurationDTO, clientDTO, artifactName); 
+            
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                        .target(URILookup.getBaseAPI())
+                        .path("/email/send")
+                        .request(MediaType.APPLICATION_XML);
+            Response response = invocationBuilder.post(Entity.xml(email));   
+            
+            String message = response.readEntity(String.class);
+            if (response.getStatus() != HTTP_OK){
+                throw new Exception(message);
+            }
+            MessageHandler.successMessage("Message sent: ", message);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+        } 
+    }
+    
+    public void sendMailRemoveArtifact(){
+        try {
+            FacesContext context = FacesContext.getCurrentInstance();
+            javax.faces.application.Application app = context.getApplication();
+            UserManager userManager = app.evaluateExpressionGet(context, "#{userManager}", UserManager.class);
+            AdministratorDTO administratorDTO = getLoggedUser(userManager.getUsername());
+            EmailManager emailManager = app.evaluateExpressionGet(context, "#{emailManager}", EmailManager.class);
+            EmailDTO email = email = emailManager.sendEmailArtifactRemove(administratorDTO, configurationDTO, clientDTO); 
+            
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                        .target(URILookup.getBaseAPI())
+                        .path("/email/send")
+                        .request(MediaType.APPLICATION_XML);
+            Response response = invocationBuilder.post(Entity.xml(email));   
+            
+            String message = response.readEntity(String.class);
+            if (response.getStatus() != HTTP_OK){
+                throw new Exception(message);
+            }
+            MessageHandler.successMessage("Message sent: ", message);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+        } 
+    }
 }
