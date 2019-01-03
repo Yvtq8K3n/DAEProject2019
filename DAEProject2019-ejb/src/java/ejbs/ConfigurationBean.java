@@ -81,7 +81,7 @@ public class ConfigurationBean extends Bean<Configuration>{
             client.addProduct(conf);
             
             em.persist(client);
-        return Response.status(Response.Status.CREATED).entity("Configuration was successfully created.").build();
+        return Response.status(Response.Status.CREATED).entity(String.valueOf(conf.getId())).build();
         }catch (EntityDoesNotExistException e) {
             return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
         }catch (ConstraintViolationException e){
@@ -398,7 +398,7 @@ public class ConfigurationBean extends Bean<Configuration>{
             configuration.getDescription(),
             configuration.getBaseVersion(),
             (configuration.getOwner()!= null)?configuration.getOwner().getUsername(): null,
-            ConfigurationDTO.Status.valueOf(configuration.getStatus().name()),
+            ConfigurationDTO.Status.valueOf(configuration.getStatus().toString()),
             configuration.getContractDate()
         );   
         return DTO;

@@ -46,8 +46,6 @@
             <web-resource-name>Guest WEBAPI</web-resource-name>
             <description/>
             <url-pattern>/webapi/templates/*</url-pattern>
-            <url-pattern>/webapi/templates/{id}/modules/*</url-pattern>
-            <url-pattern>/webapi/templates/{id}/artifacts/*</url-pattern>
                 <http-method>GET</http-method>
         </web-resource-collection>
     </security-constraint>

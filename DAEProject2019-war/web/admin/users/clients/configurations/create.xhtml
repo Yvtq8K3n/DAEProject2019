@@ -52,6 +52,7 @@
                 <b:dataTableColumn value="#{rowItem.description}" />
                 <b:dataTableColumn label="Actions">
                     <b:commandButton value="Base On" class="btn btn-success"
+                        actionListener="#{administratorManager.createConfigurationWhitTemplate(rowItem)}"
                         action="/faces/guest/catalog/details?faces-redirect=false">
                     </b:commandButton>
                 </b:dataTableColumn>

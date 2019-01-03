@@ -162,12 +162,13 @@ public class AdministratorManager implements Serializable {
             
             Response response = invocationBuilder.post(Entity.xml(configurationDTO));
             
-            String message = response.readEntity(String.class);
             if (response.getStatus() != HTTP_CREATED){
+                String message = response.readEntity(String.class);
                 throw new Exception(message);
             }
+            String confId = response.readEntity(String.class);
             
-            templateDTO.setId(Long.valueOf(message));
+            configurationDTO.setId(Long.valueOf(confId));
             MessageHandler.successMessage("Configuration Created:","Configuration was successfully created");
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
@@ -175,6 +176,30 @@ public class AdministratorManager implements Serializable {
         }
         return "/admin/users/clients/configurations/details.xhtml?faces-redirect=true";
     }
+    public String createConfigurationWhitTemplate(TemplateDTO templateDTO){
+        try {
+            Invocation.Builder invocationBuilder = 
+                addHeaderBASIC().target(URILookup.getBaseAPI())
+                    .path("/configurations")
+                    .request(MediaType.APPLICATION_XML);
+            
+            Response response = invocationBuilder.post(Entity.xml(configurationDTO));
+            
+            if (response.getStatus() != HTTP_CREATED){
+                String message = response.readEntity(String.class);
+                throw new Exception(message);
+            }
+            String confId = response.readEntity(String.class);
+            
+            configurationDTO.setId(Long.valueOf(confId));
+            MessageHandler.successMessage("Configuration Created:","Configuration was successfully created");
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
+            return null;
+        }
+        return "/admin/users/clients/configurations/details.xhtml?faces-redirect=true";
+    }
+    
     public String createTemplate(){
         try {
             Invocation.Builder invocationBuilder = 
