@@ -791,7 +791,7 @@ public class AdministratorManager implements Serializable {
             
             Invocation.Builder invocationBuilder = addHeaderBASIC()
                         .target(URILookup.getBaseAPI())
-                        .path("/email/send")
+                        .path("/email")
                         .request(MediaType.APPLICATION_XML);
             Response response = invocationBuilder.post(Entity.xml(email));   
             
@@ -816,7 +816,7 @@ public class AdministratorManager implements Serializable {
             
             Invocation.Builder invocationBuilder = addHeaderBASIC()
                         .target(URILookup.getBaseAPI())
-                        .path("/email/send")
+                        .path("/email")
                         .request(MediaType.APPLICATION_XML);
             Response response = invocationBuilder.post(Entity.xml(email));   
             
@@ -841,7 +841,7 @@ public class AdministratorManager implements Serializable {
             
             Invocation.Builder invocationBuilder = addHeaderBASIC()
                         .target(URILookup.getBaseAPI())
-                        .path("/email/send")
+                        .path("/email")
                         .request(MediaType.APPLICATION_XML);
             Response response = invocationBuilder.post(Entity.xml(email));   
             
@@ -866,7 +866,7 @@ public class AdministratorManager implements Serializable {
             
             Invocation.Builder invocationBuilder = addHeaderBASIC()
                         .target(URILookup.getBaseAPI())
-                        .path("/email/send")
+                        .path("/email")
                         .request(MediaType.APPLICATION_XML);
             Response response = invocationBuilder.post(Entity.xml(email));   
             
@@ -891,7 +891,7 @@ public class AdministratorManager implements Serializable {
             
             Invocation.Builder invocationBuilder = addHeaderBASIC()
                         .target(URILookup.getBaseAPI())
-                        .path("/email/send")
+                        .path("/email")
                         .request(MediaType.APPLICATION_XML);
             Response response = invocationBuilder.post(Entity.xml(email));   
             
@@ -916,7 +916,7 @@ public class AdministratorManager implements Serializable {
             
             Invocation.Builder invocationBuilder = addHeaderBASIC()
                         .target(URILookup.getBaseAPI())
-                        .path("/email/send")
+                        .path("/email")
                         .request(MediaType.APPLICATION_XML);
             Response response = invocationBuilder.post(Entity.xml(email));   
             

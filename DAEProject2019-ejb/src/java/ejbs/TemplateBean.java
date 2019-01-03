@@ -305,17 +305,6 @@ public class TemplateBean extends Bean<Template>{
         }
     }
     
-        
-    /*public List<Configuration> getConfigurations(Long id){
-        Template productCatalog = em.find(Template.class, id);
-        if (productCatalog == null) System.out.println("ERROR");//Temporary
-        
-        List<Configuration> configurations = productCatalog.getConfigurations();
-        if (configurations == null) System.out.println("ERROR");//Temporary
-        return productCatalog.getConfigurations();
-    }*/
-    
-    
     @GET
     @PermitAll
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})

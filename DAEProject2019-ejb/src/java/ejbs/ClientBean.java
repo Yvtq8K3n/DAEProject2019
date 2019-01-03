@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -32,7 +33,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.core.GenericEntity;
 
 /**

@@ -38,8 +38,7 @@ public class EmailBean {
     */
     
     @POST
-    @Path("/send")
-    @PermitAll
+    @RolesAllowed("Administrator")
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_XML)
     public Response send(EmailDTO email) throws AddressException, MessagingException 

@@ -41,11 +41,7 @@ public class GuestManager implements Serializable {
  
     private List<ConfigurationDTO> templates;
     private String searchTemplate;   
-    
-    //Gonna disappear after rest    
-    @EJB
-    private TemplateBean productCatalogBean;
-    
+        
     public void GuestManager(){
         
     }

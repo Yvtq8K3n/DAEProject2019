@@ -36,11 +36,54 @@
     <welcome-file-list>
         <welcome-file>faces/index.xhtml</welcome-file>
     </welcome-file-list>
-    
     <error-page>
         <error-code>403</error-code>
         <location>/faces/error.xhtml</location>
     </error-page>
+    
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Guest WEBAPI</web-resource-name>
+            <description/>
+            <url-pattern>/webapi/templates/*</url-pattern>
+                <http-method>GET</http-method>
+        </web-resource-collection>
+    </security-constraint>
+    
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Client WEBAPI</web-resource-name>
+            <description/>
+            <url-pattern>/webapi/clients/*</url-pattern>
+            <url-pattern>/webapi/comments/*</url-pattern>
+            <url-pattern>/webapi/configurations/*</url-pattern>
+            <url-pattern>/webapi/templates/*</url-pattern>
+                <http-method>GET</http-method>
+                <http-method>POST</http-method>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>Client</role-name>
+        </auth-constraint>
+    </security-constraint>
+    
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Admin WEBAPI</web-resource-name>
+            <description/>
+            <url-pattern>/webapi/administrators/*</url-pattern>
+            <url-pattern>/webapi/clients/*</url-pattern>
+            <url-pattern>/webapi/comments/*</url-pattern>
+            <url-pattern>/webapi/configurations/*</url-pattern>
+            <url-pattern>/webapi/email/*</url-pattern>
+            <url-pattern>/webapi/templates/*</url-pattern>
+            <url-pattern>/webapi/users/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>Administrator</role-name>
+        </auth-constraint>
+    </security-constraint>
+    
+    
     <security-constraint>
         <display-name>AdministratorPages</display-name>
         <web-resource-collection>
@@ -66,7 +109,7 @@
             <url-pattern>/clients</url-pattern>
         </web-resource-collection>
         <auth-constraint>
-            <description>ooooooo</description>
+            <description/>
             <role-name>Client</role-name>
         </auth-constraint>
     </security-constraint>

@@ -37,9 +37,6 @@ public class ConfigBean {
     @EJB//Dà uma instancida do EJB ConfigurationBean
     private ConfigurationBean configurationBean;
     
-    @EJB//Dà uma istancida do EJB ProductBean
-    private SoftwareBean productBean;
-    
     @EJB
     private CommentBean commentBean;
       
