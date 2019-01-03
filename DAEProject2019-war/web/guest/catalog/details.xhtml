@@ -30,14 +30,6 @@
             <b:dataTableColumn value="#{rowItem.id}" />
             <b:dataTableColumn value="#{rowItem.name}" />
             <b:dataTableColumn value="#{rowItem.version}" />
-
-            <b:dataTableColumn label="Actions">
-                <b:commandButton value="Delete" class="btn btn-danger" id="delete" 
-                     actionListener="#{administratorManager.removeTemplateModule}">
-                    <f:param name="deleteTemplateModuleId" id="deleteTemplateModuleId" 
-                       value="#{rowItem.id}" />
-                </b:commandButton>
-            </b:dataTableColumn>
         </b:dataTable>
     </h:form>
     <h3>Artifacts:</h3>
@@ -47,15 +39,6 @@
             <b:dataTableColumn value="#{rowItem.desiredName}" />
             <b:dataTableColumn value="#{rowItem.filepath}" />
             <b:dataTableColumn value="#{rowItem.mimeType}" />
-
-            <b:dataTableColumn label="Actions">
-                <b:commandButton value="Delete" class="btn btn-danger" id="delete" 
-                    rendered="${userManager.someUserAuthenticated and userManager.admin}"
-                    actionListener="#{administratorManager.removeTemplateArtifact}">
-                    <f:param name="deleteTemplateArtifactId" id="deleteTemplateArtifactId" 
-                       value="#{rowItem.id}" />
-                </b:commandButton>
-            </b:dataTableColumn>
         </b:dataTable>
     </h:form>
  </ui:define>

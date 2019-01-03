@@ -112,7 +112,7 @@ public class TemplateBean extends Bean<Template>{
                 throw new EntityDoesNotExistException("Template not found.");
             
             em.remove(template); 
-           return Response.status(Response.Status.OK).entity("Configuration was successfully deleted.").build();
+           return Response.status(Response.Status.OK).entity("Template was successfully deleted.").build();
         }catch (EntityDoesNotExistException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }catch (ConstraintViolationException e){

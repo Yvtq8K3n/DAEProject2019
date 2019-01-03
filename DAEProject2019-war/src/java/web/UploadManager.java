@@ -7,11 +7,10 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.logging.Logger;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
 import javax.servlet.http.Part;
+import util.MessageHandler;
 import util.URILookup;
 
 @ManagedBean
@@ -48,12 +47,9 @@ public class UploadManager implements Serializable{
                 in.close();
                 out.close();
 
-                FacesMessage message = new FacesMessage("File: " + filename + " uploaded successfully!");
-                FacesContext.getCurrentInstance().addMessage(null, message);
-
+                MessageHandler.successMessage("File Uploaded:", "File: " + filename + " uploaded successfully!");
             } catch (IOException e) {
-                FacesMessage message = new FacesMessage("ERROR :: File: " + file.getName() + " not uploaded!");
-                FacesContext.getCurrentInstance().addMessage(null, message);
+                MessageHandler.failMessage("Uploaded Failed:", "File: " + filename + " not uploaded!");
             }
         }
     }
@@ -82,16 +78,13 @@ public class UploadManager implements Serializable{
         this.filename = filename;
     }
     public String getPath() throws UnsupportedEncodingException {
-
-    String path = this.getClass().getClassLoader().getResource("").getPath();
-    String fullPath = URLDecoder.decode(path, "UTF-8");
-    String pathArr[] = fullPath.split("/WEB-INF/classes/");
-    System.out.println(fullPath);
-    System.out.println(pathArr[0]);
-    fullPath = pathArr[0];
-
-    return fullPath;
-
+        String path = this.getClass().getClassLoader().getResource("").getPath();
+        String fullPath = URLDecoder.decode(path, "UTF-8");
+        String pathArr[] = fullPath.split("/WEB-INF/classes/");
+        System.out.println(fullPath);
+        System.out.println(pathArr[0]);
+        fullPath = pathArr[0];
+        return fullPath;
     }
     
     private String extractFileName(Part part) {

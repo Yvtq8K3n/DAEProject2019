@@ -30,7 +30,7 @@
                     <b:thumbnail>
                             <b:image name="The Product" value="/resources/product.png" alt="The Product"/>
                             <f:facet name="caption">
-                                <h3>#{template.name}</h3>
+                                <p><strong>#{template.name}</strong></p>
                                 <p> #{template.description}</p>
                                 <p>
                                 <c:if test="#{userManager.someUserAuthenticated and userManager.admin}">
@@ -50,7 +50,7 @@
                                     <b:commandLink value="Details" class="btn btn-success" 
                                     action="/faces/guest/catalog/details?faces-redirect=false">
                                     <f:setPropertyActionListener value="${template}"
-                                       target="#{administratorManager.templateDTO}" />
+                                       target="#{guestManager.templateDTO}" />
                                 </b:commandLink>
                                     </c:otherwise>
                                  </p>

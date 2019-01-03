@@ -453,7 +453,6 @@ public class AdministratorManager implements Serializable {
         }
     }
     public void removeTemplateArtifact(ActionEvent event){
-        FacesMessage facesMsg;
         try {
             UIParameter param = (UIParameter) event.getComponent().findComponent("deleteTemplateArtifactId");
             Long id = (Long)param.getValue();
@@ -461,8 +460,8 @@ public class AdministratorManager implements Serializable {
             Invocation.Builder invocationBuilder = addHeaderBASIC()
                     .target(URILookup.getBaseAPI())
                     .path("/templates/")
-                    .path(String.valueOf(configurationDTO.getId()))
-                    .path("/artifacts/")
+                    .path(String.valueOf(templateDTO.getId()))
+                    .path("/artifacts")
                     .path(String.valueOf(id))
                     .request(MediaType.APPLICATION_XML);
             Response response = invocationBuilder.delete();
@@ -783,7 +782,6 @@ public class AdministratorManager implements Serializable {
         Response response = invocationBuilder.post(Entity.xml(email));
         */
     }
-    
     public void sendMailUpdate(){
         try {
             FacesContext context = FacesContext.getCurrentInstance();
@@ -808,7 +806,6 @@ public class AdministratorManager implements Serializable {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
         } 
     }
-    
     public void sendMailRemove(){
         try {
             FacesContext context = FacesContext.getCurrentInstance();
@@ -833,7 +830,6 @@ public class AdministratorManager implements Serializable {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
         } 
     }
-    
     public void sendMailCreateModule(String moduleName){
         try {
             FacesContext context = FacesContext.getCurrentInstance();
@@ -858,7 +854,6 @@ public class AdministratorManager implements Serializable {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
         } 
     }
-    
     public void sendMailRemoveModule(){
         try {
             FacesContext context = FacesContext.getCurrentInstance();
@@ -883,7 +878,6 @@ public class AdministratorManager implements Serializable {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
         } 
     }
-    
     public void sendMailCreateArtifact(String artifactName){
         try {
             FacesContext context = FacesContext.getCurrentInstance();
@@ -908,7 +902,6 @@ public class AdministratorManager implements Serializable {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
         } 
     }
-    
     public void sendMailRemoveArtifact(){
         try {
             FacesContext context = FacesContext.getCurrentInstance();
