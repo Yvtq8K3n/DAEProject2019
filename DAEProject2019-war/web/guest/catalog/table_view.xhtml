@@ -14,10 +14,17 @@
         <b:dataTableColumn value="#{rowItem.name}" />
         <b:dataTableColumn value="#{rowItem.description}" />
         <b:dataTableColumn label="Actions">
-            <b:commandButton value="Details" class="btn btn-success" 
+            <b:commandButton value="Details" class="btn btn-success"
+                rendered="#{!userManager.someUserAuthenticated or !userManager.admin}"
                 action="/faces/guest/catalog/details?faces-redirect=false">
                 <f:setPropertyActionListener value="${rowItem}"
-                    target="#{guestManager.selectedProduct}" />
+                    target="#{guestManager.templateDTO}" />
+            </b:commandButton>
+            <b:commandButton value="Details" class="btn btn-success"
+                rendered="#{userManager.someUserAuthenticated and userManager.admin}"
+                action="/faces/admin/catalog/details.xhtml?faces-redirect=true">
+                <f:setPropertyActionListener value="${rowItem}"
+                    target="#{administratorManager.templateDTO}" />
             </b:commandButton>
             <b:commandButton value="Delete" class="btn btn-danger" id="delete" 
                 rendered="${userManager.someUserAuthenticated and userManager.admin}"

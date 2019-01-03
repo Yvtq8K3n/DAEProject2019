@@ -86,12 +86,13 @@ public class ConfigBean {
             System.out.println(ex);
         }
         
-        try{           
+        try{
+            Long dad = 21L;
             commentBean.create(new CommentDTO(null, null, null, 1L, "Im Your Granpha!","client1"));//granpha
-            commentBean.create(new CommentDTO(null, 16L, null, 1L, "Im Your True DAD!", "administrator1"));//dad
-            commentBean.create(new CommentDTO(null, 17L, null, 1L, "Im Child1!","client1"));//child1
-            commentBean.create(new CommentDTO(null, 17L, null, 1L, "Im Child2!","client1"));//child2
-            commentBean.create(new CommentDTO(null, 16L, null, 1L, "I Ain't Your DAD!", "client1"));//dad
+            commentBean.create(new CommentDTO(null, dad, null, 1L, "Im Your True DAD!", "administrator1"));//dad
+            commentBean.create(new CommentDTO(null, dad+1, null, 1L, "Im Child1!","client1"));//child1
+            commentBean.create(new CommentDTO(null, dad+1, null, 1L, "Im Child2!","client1"));//child2
+            commentBean.create(new CommentDTO(null, dad, null, 1L, "I Ain't Your DAD!", "client1"));//dad
         }catch (Exception ex){
             System.out.println(ex);
         }

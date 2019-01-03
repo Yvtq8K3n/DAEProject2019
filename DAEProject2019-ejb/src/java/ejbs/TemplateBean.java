@@ -125,7 +125,7 @@ public class TemplateBean extends Bean<Template>{
     //Artifacts
     @GET
     @Path("/{templateId}/artifacts")
-    @RolesAllowed({"Administrator","Client"})
+    @PermitAll
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response getArtifacts(@PathParam("templateId") Long templateId){
         try{
@@ -219,7 +219,7 @@ public class TemplateBean extends Bean<Template>{
     //Modules
     @GET
     @Path("/{templateId}/modules")
-    @RolesAllowed({"Administrator","Client"})
+    @PermitAll
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response getModules(@PathParam("templateId") Long templateId){
         try{
@@ -249,7 +249,7 @@ public class TemplateBean extends Bean<Template>{
     @RolesAllowed("Administrator")
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_XML)
-    public Response createModule(@PathParam("confId") Long templateId, ModuleDTO moduleDTO){
+    public Response createModule(@PathParam("templateId") Long templateId, ModuleDTO moduleDTO){
         try{
             if (templateId == null)
                 throw new EntityDoesNotExistException("Invalid template");

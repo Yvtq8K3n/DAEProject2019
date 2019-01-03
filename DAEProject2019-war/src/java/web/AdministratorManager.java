@@ -9,10 +9,12 @@ import dtos.EmailDTO;
 import dtos.ModuleDTO;
 import dtos.TemplateDTO;
 import dtos.UserDTO;
+import ejbs.TemplateBean;
 import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -259,15 +261,17 @@ public class AdministratorManager implements Serializable {
         }
     }
    
+    @EJB
+    private TemplateBean templateBean;
     public void createTemplateModule(){
-        try {
+        try {         
             Invocation.Builder invocationBuilder = 
                 addHeaderBASIC().target(URILookup.getBaseAPI())
                     .path("/templates/")
                     .path(String.valueOf(templateDTO.getId()))
                     .path("/modules")
                     .request(MediaType.APPLICATION_XML);
-            
+
             Response response = invocationBuilder.post(Entity.xml(moduleDTO));
             moduleDTO.reset();
             

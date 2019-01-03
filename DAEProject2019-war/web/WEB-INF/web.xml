@@ -46,8 +46,8 @@
             <web-resource-name>Guest WEBAPI</web-resource-name>
             <description/>
             <url-pattern>/webapi/templates/*</url-pattern>
-            <url-pattern>/webapi/templates/modules/*</url-pattern>
-            <url-pattern>/webapi/templates/artifacts/*</url-pattern>
+            <url-pattern>/webapi/templates/{id}/modules/*</url-pattern>
+            <url-pattern>/webapi/templates/{id}/artifacts/*</url-pattern>
                 <http-method>GET</http-method>
         </web-resource-collection>
     </security-constraint>
@@ -59,12 +59,7 @@
             <url-pattern>/webapi/clients/*</url-pattern>
             <url-pattern>/webapi/comments/*</url-pattern>
             <url-pattern>/webapi/configurations/*</url-pattern>
-            <url-pattern>/webapi/configurations/modules/*</url-pattern>
-            <url-pattern>/webapi/configurations/artifacts/*</url-pattern>
-            <url-pattern>/webapi/configurations/comments/*</url-pattern>
             <url-pattern>/webapi/templates/*</url-pattern>
-            <url-pattern>/webapi/templates/modules/*</url-pattern>
-            <url-pattern>/webapi/templates/artifacts/*</url-pattern>
                 <http-method>GET</http-method>
                 <http-method>POST</http-method>
         </web-resource-collection>
@@ -77,13 +72,13 @@
         <web-resource-collection>
             <web-resource-name>Admin WEBAPI</web-resource-name>
             <description/>
+            <url-pattern>/webapi/users/*</url-pattern>
             <url-pattern>/webapi/administrators/*</url-pattern>
             <url-pattern>/webapi/clients/*</url-pattern>
             <url-pattern>/webapi/comments/*</url-pattern>
-            <url-pattern>/webapi/configurations/*</url-pattern>
             <url-pattern>/webapi/email/*</url-pattern>
+            <url-pattern>/webapi/configurations/*</url-pattern>
             <url-pattern>/webapi/templates/*</url-pattern>
-            <url-pattern>/webapi/users/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
             <role-name>Administrator</role-name>

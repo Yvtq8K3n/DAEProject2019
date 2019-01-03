@@ -33,19 +33,26 @@
                                 <h3>#{template.name}</h3>
                                 <p> #{template.description}</p>
                                 <p>
-                                <b:commandLink value="Details" class="btn btn-success" 
-                                    action="/faces/admin/catalog/details.xhtml?faces-redirect=true">
+                                <c:if test="#{userManager.someUserAuthenticated and userManager.admin}">
+                                    <b:commandLink value="Details" class="btn btn-success" 
+                                        action="/faces/admin/catalog/details.xhtml?faces-redirect=true">
+                                        <f:setPropertyActionListener value="${template}"
+                                           target="#{administratorManager.templateDTO}" />
+                                    </b:commandLink>
+                                    <b:commandButton value="Delete" class="btn btn-danger" id="delete"
+                                        action="/faces/index?faces-redirect=true"
+                                        actionListener="#{administratorManager.removeTemplate}">
+                                        <f:param name="deletetemplateId" id="deleteTemplateId" 
+                                           value="#{template.id}" />
+                                    </b:commandButton>
+                                </c:if>
+                                <c:otherwise>
+                                    <b:commandLink value="Details" class="btn btn-success" 
+                                    action="/faces/guest/catalog/details?faces-redirect=false">
                                     <f:setPropertyActionListener value="${template}"
                                        target="#{administratorManager.templateDTO}" />
                                 </b:commandLink>
-                                <b:commandButton value="Delete" class="btn btn-danger" id="delete"
-                                    rendered="${userManager.someUserAuthenticated and userManager.admin}"
-                                    action="/faces/index?faces-redirect=true"
-                                    actionListener="#{administratorManager.removeTemplate}">
-                                    <f:param name="deletetemplateId" id="deleteTemplateId" 
-                                       value="#{template.id}" />
-                                </b:commandButton>
-                         
+                                    </c:otherwise>
                                  </p>
                             </f:facet>
                       </b:thumbnail>

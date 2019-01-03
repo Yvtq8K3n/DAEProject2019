@@ -5,25 +5,59 @@
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:b="http://bootsfaces.net/ui"
-    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-    xmlns:f="http://java.sun.com/jsf/core">
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
  <ui:composition template="../../templates/skeleton.xhtml">
      
  <ui:define name="title"> Details </ui:define> 
  
  <ui:define name="main">
-    <h:form id="formId">
-        <c:set var="template" value="#{guestManager.selectedProduct}"/>
-        <h2>Product: #{template.name}</h2>
-        <b:inputText label="Name" disabled="true" value="#{template.name}"/>
-        <b:inputTextarea label="Description" value="#{template.description}"/>
-
-        <h:outputText value="Configurations:" style="font-weight:bold"/>
-        <b:dataTable var="rowItem" value="#{guestManager.configurations}" lang="en" 
+     <c:set var="template" value="#{guestManager.templateDTO}"/>
+    <h2>Template #{template.name}</h2>
+  
+    <h:form id="formMain">
+        <b:inputTextarea label="Description" disabled="true" 
+            value="#{template.description}"/>
+    </h:form>
+        
+    <hr></hr>
+    
+    <h3>Modules:</h3>
+    <h:form id="formModules">
+        <b:dataTable var="rowItem" value="#{guestManager.templateModules}" lang="en" 
             responsive="true" info="false" paginated="false" searching="false">
-            <b:dataTableColumn value="#{rowItem.description}" />
+            <b:dataTableColumn value="#{rowItem.id}" />
+            <b:dataTableColumn value="#{rowItem.name}" />
+            <b:dataTableColumn value="#{rowItem.version}" />
+
+            <b:dataTableColumn label="Actions">
+                <b:commandButton value="Delete" class="btn btn-danger" id="delete" 
+                     actionListener="#{administratorManager.removeTemplateModule}">
+                    <f:param name="deleteTemplateModuleId" id="deleteTemplateModuleId" 
+                       value="#{rowItem.id}" />
+                </b:commandButton>
+            </b:dataTableColumn>
         </b:dataTable>
-    </h:form>  
+    </h:form>
+    <h3>Artifacts:</h3>
+    <h:form id="formArtifacts">
+        <b:dataTable var="rowItem" value="#{guestManager.templateArtifacts}" lang="en" 
+            responsive="true" info="false" paginated="false" searching="false">
+            <b:dataTableColumn value="#{rowItem.desiredName}" />
+            <b:dataTableColumn value="#{rowItem.filepath}" />
+            <b:dataTableColumn value="#{rowItem.mimeType}" />
+
+            <b:dataTableColumn label="Actions">
+                <b:commandButton value="Delete" class="btn btn-danger" id="delete" 
+                    rendered="${userManager.someUserAuthenticated and userManager.admin}"
+                    actionListener="#{administratorManager.removeTemplateArtifact}">
+                    <f:param name="deleteTemplateArtifactId" id="deleteTemplateArtifactId" 
+                       value="#{rowItem.id}" />
+                </b:commandButton>
+            </b:dataTableColumn>
+        </b:dataTable>
+    </h:form>
  </ui:define>
  </ui:composition>
 </html>

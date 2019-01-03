@@ -1,6 +1,8 @@
 package web;
 
+import dtos.ArtifactDTO;
 import dtos.ConfigurationDTO;
+import dtos.ModuleDTO;
 import dtos.TemplateDTO;
 import ejbs.TemplateBean;
 import entities.Configuration;
@@ -20,6 +22,8 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import lombok.Getter;
+import lombok.Setter;
 import util.MessageHandler;
 import util.URILookup;
 
@@ -36,48 +40,64 @@ public class GuestManager implements Serializable {
     
     private static final Logger logger = Logger.getLogger("web.GuestManager");
     private UIComponent component;
-    
-    private ConfigurationDTO selectedProduct;
  
-    private List<ConfigurationDTO> templates;
-    private String searchTemplate;   
+    private @Getter @Setter String searchTemplate;
+    private @Getter @Setter TemplateDTO templateDTO;
         
     public void GuestManager(){
-        
+    
     }
     
-    
-    @PostConstruct
-    public void Init(){
-    };
-    
-   
-    
-    /**
-    *
-    * Methods
-     * @return 
-    */
-    
+    public List<ModuleDTO> getTemplateModules(){
+        try {
 
-    
-    public ConfigurationDTO getSelectedProduct() {
-        return selectedProduct;
-    }
-    public void setSelectedProduct(ConfigurationDTO selectedProduct) {
-        this.selectedProduct = selectedProduct;
-    }
-    
-    public List<Configuration> getConfigurations(){
-        List<Configuration> configurations = new ArrayList<>();
-        //configurations.addAll(productCatalogBean.getConfigurations(selectedProduct.getId()));
+            Invocation.Builder invocationBuilder = ClientBuilder.newClient()
+                    .target(URILookup.getBaseAPI())
+                    .path("/templates/")
+                    .path(String.valueOf(templateDTO.getId()))
+                    .path("/modules")
+                    .request(MediaType.APPLICATION_XML);
             
-        return configurations;
+            Response response = invocationBuilder.get(Response.class);
+            if (response.getStatus() != HTTP_OK){
+                String message = response.readEntity(String.class);
+                throw new Exception(message);
+            }
+
+            List<ModuleDTO> modulesDTO =
+                response.readEntity(new GenericType<List<ModuleDTO>>() {}); 
+
+            return modulesDTO;
+        } catch (Exception e) {
+            MessageHandler.failMessage("Unexpected error!", e.getMessage());
+            return null;
+        }
+    }
+    public List<ArtifactDTO> getTemplateArtifacts(){
+        try {
+            Invocation.Builder invocationBuilder = ClientBuilder.newClient()
+                    .target(URILookup.getBaseAPI())
+                    .path("/templates/")
+                    .path(String.valueOf(templateDTO.getId()))
+                    .path("/artifacts")
+                    .request(MediaType.APPLICATION_XML);
+            
+            Response response = invocationBuilder.get(Response.class);
+            if (response.getStatus() != HTTP_OK){
+                String message = response.readEntity(String.class);
+                throw new Exception(message);
+            }
+
+            List<ArtifactDTO> artifactDTO =
+                response.readEntity(new GenericType<List<ArtifactDTO>>() {}); 
+
+            return artifactDTO;
+        } catch (Exception e) {
+            MessageHandler.failMessage("Unexpected error!", e.getMessage());
+            return null;
+        }
     }
     
-    ////////////////////////////////////////////////////////////////////////////
-    //The following code is for the Filter in Catalog View /////////////////////
-    ////////////////////////////////////////////////////////////////////////////
     public List<TemplateDTO> getAllTemplates(){
         try {
             Invocation.Builder invocationBuilder = ClientBuilder.newClient()
@@ -100,7 +120,6 @@ public class GuestManager implements Serializable {
             return null;
         }
     }
-    
     public List<TemplateDTO> getAllTemplatesCatalog(){
         List<TemplateDTO> allTemplateDTO = getAllTemplates();
         
@@ -116,16 +135,9 @@ public class GuestManager implements Serializable {
         
         return allTemplateDTO;
     }
-   
-        
+
     
     
-    public String getSearchTemplate() {
-        return searchTemplate;
-    }
-    public void setSearchTemplate(String searchTemplate) {
-        this.searchTemplate = searchTemplate;
-    }
     
     void reset() {
         //templates  = getAllProductCatalog();
