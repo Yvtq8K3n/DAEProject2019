@@ -52,6 +52,9 @@ public class Configuration extends Software implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true)
     private List<Module> modules;
     
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true)
+    private List<Parameter> parameters;
+    
     @OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
     private List<Artifact> artifacts;
     
@@ -67,6 +70,7 @@ public class Configuration extends Software implements Serializable {
         this.params = new ArrayList<>();
         this.artifacts = new ArrayList<>();
         this.comments = new ArrayList<>();
+        this.parameters = new ArrayList<>();
     }
 
     public Configuration(String name, String description, String baseVersion, Client client, String contractDate) {
@@ -82,6 +86,7 @@ public class Configuration extends Software implements Serializable {
     public void addModule(Module module) {
        modules.add(module);
     }
+    
     public Module removeModule(Module module) {
         modules.remove(module);
         return module;
@@ -102,6 +107,16 @@ public class Configuration extends Software implements Serializable {
         comments.remove(comment);
         return comment;
     }
+    
+    public void addParameter(Parameter parameter) {
+       parameters.add(parameter);
+    }
+    
+    public Parameter removeParameter(Parameter parameter) {
+        parameters.remove(parameter);
+        return parameter;
+    }
+    
 
     
     public String getBaseVersion() {
