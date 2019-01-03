@@ -76,7 +76,7 @@ public class TemplateBean extends Bean<Template>{
     @Produces(MediaType.APPLICATION_XML)
     public Response update(TemplateDTO templateDTO) {
         try{
-            if (templateDTO.getId()== null)
+            if (templateDTO.getId() == null)
                 throw new EntityDoesNotExistException("Invalid template");
             
             Template template = em.find(Template.class, templateDTO.getId());
@@ -276,7 +276,7 @@ public class TemplateBean extends Bean<Template>{
     @RolesAllowed("Administrator")
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_XML)
-    public Response removeModule(@PathParam("confId") Long templateId, @PathParam("id") Long id){
+    public Response removeModule(@PathParam("templateId") Long templateId, @PathParam("id") Long id){
         try{
             if (templateId == null)
                 throw new EntityDoesNotExistException("Invalid template");

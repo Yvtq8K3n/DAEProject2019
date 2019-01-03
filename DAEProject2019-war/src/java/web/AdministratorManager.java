@@ -428,7 +428,7 @@ public class AdministratorManager implements Serializable {
         }
     }
     public void removeTemplateModule(ActionEvent event){
-        FacesMessage facesMsg;
+        
         try {
             UIParameter param = (UIParameter) event.getComponent().findComponent("deleteTemplateModuleId");
             Long id = (Long)param.getValue();
