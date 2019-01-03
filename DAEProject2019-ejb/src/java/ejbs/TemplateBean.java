@@ -6,9 +6,12 @@
 package ejbs;
 
 import dtos.ArtifactDTO;
+import dtos.ConfigurationDTO;
 import dtos.ModuleDTO;
 import dtos.TemplateDTO;
 import entities.Artifact;
+import entities.Client;
+import entities.Configuration;
 import entities.Module;
 import entities.Template;
 import exceptions.EntityDoesNotExistException;
@@ -304,6 +307,67 @@ public class TemplateBean extends Bean<Template>{
             return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
         }
     }
+    
+    //Base On
+    @POST
+    @Path("{templateId}/baseOn/Configuration")
+    @RolesAllowed("Administrator")
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_XML)
+    public Response createConfigurationBasedOnTemplate(
+            @PathParam("templateId") Long templateId, ConfigurationDTO configurationDTO){
+        try{
+            if (templateId == null)
+                throw new EntityDoesNotExistException("Invalid template");
+            
+            Template template = em.find(Template.class, templateId);
+            if(template == null) 
+                throw new EntityDoesNotExistException("Template not found.");
+    
+            if (configurationDTO.getOwner() == null)
+                throw new EntityDoesNotExistException("Invalid Owner.");
+            Client owner = em.find(Client.class, configurationDTO.getOwner());
+            
+            Configuration newConfiguration = new Configuration(
+                configurationDTO.getName(),
+                configurationDTO.getDescription(),
+                Configuration.Status.ACTIVE,
+                configurationDTO.getBaseVersion(),
+                owner,
+                configurationDTO.getContractDate()
+            );
+            
+            List<Module> modules = new ArrayList<>();
+            template.getModules().forEach((module) -> {
+                modules.add(new Module(
+                    module.getName(), 
+                    module.getVersion()
+                ));
+            });
+            newConfiguration.setModules(modules);
+            
+            List<Artifact> artifacts = new ArrayList<>();
+            template.getArtifacts().forEach((arti) -> {
+                artifacts.add(new Artifact(
+                        arti.getFilepath(),
+                        arti.getDesiredName(),
+                        arti.getMimeType()
+                ));
+            });
+            newConfiguration.setArtifacts(artifacts);
+            
+            owner.addConfiguration(newConfiguration);
+            em.persist(owner);
+            
+            ConfigurationDTO newConfigurationDTO = ConfigurationBean.convertDTO(newConfiguration);          
+            return Response.status(Response.Status.CREATED).entity(newConfigurationDTO).build();
+        }catch (ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
+        }catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
+        }
+    }
+    
     
     @GET
     @PermitAll

@@ -52,8 +52,8 @@
                 <b:dataTableColumn value="#{rowItem.description}" />
                 <b:dataTableColumn label="Actions">
                     <b:commandButton value="Base On" class="btn btn-success"
-                        actionListener="#{administratorManager.createConfigurationWhitTemplate(rowItem)}"
-                        action="/faces/guest/catalog/details?faces-redirect=false">
+                        actionListener="#{administratorManager.createConfigurationFromTemplate(rowItem)}"
+                        action="/faces/admin/users/clients/configurations/details?faces-redirect=false">
                     </b:commandButton>
                 </b:dataTableColumn>
             </b:dataTable>
@@ -75,7 +75,8 @@
                 
                 <b:dataTableColumn label="Actions">
                     <b:commandButton value="Base On" class="btn btn-success"
-                        action="/faces/guest/catalog/details?faces-redirect=false">
+                        actionListener="#{administratorManager.createConfigurationFromConfiguration(rowItem)}"
+                        action="/faces/admin/users/clients/configurations/details?faces-redirect=false">
                     </b:commandButton>
                 </b:dataTableColumn>
             </b:dataTable>

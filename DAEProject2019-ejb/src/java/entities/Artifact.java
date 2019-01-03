@@ -11,6 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -22,13 +24,10 @@ public class Artifact implements Serializable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    
-    private String filepath;
-
-    private String desiredName;
-    
-    private String mimeType;
+    private @Getter @Setter Long id;
+    private @Getter @Setter String filepath;
+    private @Getter @Setter String desiredName;
+    private @Getter @Setter String mimeType;
     
     public Artifact(){
         
@@ -39,36 +38,4 @@ public class Artifact implements Serializable {
         this.desiredName = desiredName;
         this.mimeType = mimeType;
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFilepath() {
-        return filepath;
-    }
-
-    public void setFilepath(String filepath) {
-        this.filepath = filepath;
-    }
-
-    public String getDesiredName() {
-        return desiredName;
-    }
-
-    public void setDesiredName(String desiredName) {
-        this.desiredName = desiredName;
-    }
-
-    public String getMimeType() {
-        return mimeType;
-    }
-
-    public void setMimeType(String mimeType) {
-        this.mimeType = mimeType;
-    }        
 }
