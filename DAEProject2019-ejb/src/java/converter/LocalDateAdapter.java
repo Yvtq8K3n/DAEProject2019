@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
@@ -19,15 +21,16 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
  */
 public class LocalDateAdapter {
 
-    public static LocalDate unmarshal(String dateString){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-        LocalDate localDate = LocalDate.parse(dateString, formatter);
-        return localDate;
+    public static LocalDate unmarshal(Date date){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return LocalDate.of(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH)+1, cal.get(Calendar.DAY_OF_MONTH));
     }
 
-    public static String marshal(LocalDate localDate){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
-        String dateString = localDate.format(formatter);
-        return dateString;
+    public static Date marshal(LocalDate localDate){
+        return Date.from(
+            LocalDate.of(localDate.getYear(), localDate.getMonth(), localDate.getDayOfMonth())
+            .atStartOfDay(ZoneId.of( "Africa/Tunis" )).toInstant()
+        );
     }
 }

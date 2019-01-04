@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.servlet.http.Part;
@@ -28,13 +29,15 @@ public class UploadManager implements Serializable{
     public void upload() {
         
         if (file != null) {
-            try { 
-                filename = extractFileName(file);//file.getSubmittedFileName();
+            try {
+                String fullFileName = extractFileName(file);//file.getSubmittedFileName();
+                String separator = "\\";
+                String[] split = fullFileName.replaceAll(Pattern.quote(separator), "\\\\").split("\\\\");
+                filename = split[split.length-1];
                 completePathFile = URILookup.getServerDocumentsFolder() +"\\"+ filename;
 
                 InputStream in = file.getInputStream();
-                FileOutputStream out = new FileOutputStream(completePathFile);
-
+                    FileOutputStream out = new FileOutputStream(completePathFile);
 
                 byte[] b = new byte[1024];
                 int readBytes = in.read(b);
@@ -95,7 +98,7 @@ public class UploadManager implements Serializable{
                 return s.substring(s.indexOf("=") + 2, s.length()-1);
             }
         }
-        return "";
+        return null;
     }
     
 }

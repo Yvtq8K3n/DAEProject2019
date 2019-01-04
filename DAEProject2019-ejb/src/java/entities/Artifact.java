@@ -22,20 +22,32 @@ import lombok.Setter;
 @Table(name = "Artifacts")
 public class Artifact implements Serializable {
     
+    public enum UserType {
+        USER,PROGRAMMER,SUPPORT
+    }
+    
+    public enum MaterialType {
+        VIDEO,TUTORIAL,MANUAL,LINK,DOCUMENT
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private @Getter @Setter Long id;
     private @Getter @Setter String filepath;
     private @Getter @Setter String desiredName;
     private @Getter @Setter String mimeType;
+    private @Getter @Setter UserType userType;
+    private @Getter @Setter MaterialType materialType;
     
     public Artifact(){
         
     }
     
-    public Artifact(String filepath, String desiredName, String mimeType) {
+    public Artifact(String filepath, String desiredName, String mimeType, UserType userType, MaterialType materialType) {
         this.filepath = filepath;
         this.desiredName = desiredName;
         this.mimeType = mimeType;
+        this.userType = userType;
+        this.materialType = materialType;
     }
 }

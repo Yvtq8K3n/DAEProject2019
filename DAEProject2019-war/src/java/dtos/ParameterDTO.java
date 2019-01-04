@@ -6,6 +6,7 @@
 package dtos;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -28,13 +29,13 @@ public class ParameterDTO implements Serializable{
     private MaterialType materialType;
     private String name;
     private String description;
-    private String validDate;
+    private Date validDate;
     
     public ParameterDTO(){
         
     }
 
-    public ParameterDTO(Long id, MaterialType materialType, String name, String DesString, String validDate) {
+    public ParameterDTO(Long id, MaterialType materialType, String name, String DesString, Date validDate) {
         this.id = id;
         this.materialType = materialType;
         this.name = name;
@@ -82,11 +83,11 @@ public class ParameterDTO implements Serializable{
         this.id = id;
     }
 
-    public String getValidDate() {
+    public Date getValidDate() {
         return validDate;
     }
 
-    public void setValidDate(String validDate) {
+    public void setValidDate(Date validDate) {
         this.validDate = validDate;
     }
     

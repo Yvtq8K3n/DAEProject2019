@@ -86,11 +86,13 @@ public class GuestManager implements Serializable {
                 String message = response.readEntity(String.class);
                 throw new Exception(message);
             }
-
+            
             List<ArtifactDTO> artifactDTO =
                 response.readEntity(new GenericType<List<ArtifactDTO>>() {}); 
-
-            return artifactDTO;
+                
+            return artifactDTO.stream()
+                .filter(p -> p.getUserType()==ArtifactDTO.UserType.SUPPORT    
+            ).collect(Collectors.toList());
         } catch (Exception e) {
             MessageHandler.failMessage("Unexpected error!", e.getMessage());
             return null;

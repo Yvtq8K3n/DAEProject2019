@@ -22,12 +22,9 @@ public class Template extends Software implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true)
     private @Getter @Setter List<Artifact> artifacts;
     
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true)
-    private @Getter @Setter List<SupportMaterial> supportMaterials;
-    
     public Template() {
         this.modules = new ArrayList<>();
-        this.supportMaterials = new ArrayList<>();
+        this.artifacts = new ArrayList<>();
     }
 
     public Template(String name, String description) {

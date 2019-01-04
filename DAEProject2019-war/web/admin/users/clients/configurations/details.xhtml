@@ -26,7 +26,7 @@
         <b:inputText label="Owner" disabled="true" value="#{configuration.owner}"/>
         
         <b:inputText label="Base Version:" value="#{configuration.baseVersion}"/>
-        <b:datepicker label="Contract Date:" mode="popup-icon" value="#{configuration.contractDate}"/>
+        <b:dateTimePicker label="Contract Date:" format="DD/MM/YYYY" value="#{configuration.contractDate}"/>
         
         <h3>Status:</h3>
         <b:radiobutton value="#{configuration.status}">
@@ -66,9 +66,10 @@
         <b:dataTable var="rowItem" value="#{administratorManager.configurationArtifacts}" lang="en" 
             responsive="true" info="false" paginated="false" searching="false">
             <b:dataTableColumn value="#{rowItem.desiredName}" />
-            <b:dataTableColumn value="#{rowItem.filepath}" />
             <b:dataTableColumn value="#{rowItem.mimeType}" />
-
+            <b:dataTableColumn value="#{rowItem.userType}" />
+            <b:dataTableColumn value="#{rowItem.materialType}" />
+            
             <b:dataTableColumn label="Actions">
                 <b:commandButton value="Delete" class="btn btn-danger" id="delete" 
                     rendered="${userManager.someUserAuthenticated and userManager.admin}"
@@ -123,7 +124,7 @@
             </b:radiobutton>
             <b:inputText label="Name" value="#{parameter.name}"/>
             <b:inputTextarea label="Description" value="#{parameter.description}"/>
-            <b:inputText label="Valid Date" value="#{parameter.validDate}"/>
+            <b:dateTimePicker label="Valid Date:" format="DD/MM/YYYY" value="#{parameter.validDate}"/>
             <b:commandButton
                 value="Create" class="btn btn-primary"
                 action="${administratorManager.createConfigurationParameter}"/>
@@ -165,6 +166,17 @@
 
     <b:modal id="artifactsModal" title="Creating Artifact" styleClass="modalPseudoClass">
         <h:form enctype="multipart/form-data">
+            <c:set var="artifact" value="#{administratorManager.artifactDTO}"/>
+            <h3>User Type:</h3>
+            <b:radiobutton value="#{artifact.userType}">
+                <f:selectItems value="#{artifact.allUserType}" />
+            </b:radiobutton>
+            
+            <h3>Material Type:</h3>
+            <b:radiobutton value="#{artifact.materialType}">
+                <f:selectItems value="#{artifact.allMaterialType}" />
+            </b:radiobutton>
+            
             <h:inputFile value="#{uploadManager.file}" ></h:inputFile>
             <b:commandButton
                 value="Submit"

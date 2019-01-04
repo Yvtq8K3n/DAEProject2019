@@ -5,6 +5,7 @@
  */
 package ejbs;
 
+import converter.LocalDateAdapter;
 import dtos.AdministratorDTO;
 import dtos.ClientDTO;
 import dtos.CommentDTO;
@@ -52,10 +53,10 @@ public class ConfigBean {
             adminstratorBean.create(new AdministratorDTO("administrator2", "secret", "João Marques", "dae.ei.ipleiria@gmail.com", "Vendedor"));
             
             //Create Configurations
-            configurationBean.create(new ConfigurationDTO(null,"Office 2017","Service for life", "V1.5.0", "client1",ConfigurationDTO.Status.SUSPEND,"1/10/1997"));
-            configurationBean.create(new ConfigurationDTO(null,"Karsperkey","Securing your information", "V1.7.8", "client1",ConfigurationDTO.Status.ACTIVE,"1/10/1997"));
-            configurationBean.create(new ConfigurationDTO(null,"CMTV","The wost tv news ever created!", "V1.5.0", "client1",ConfigurationDTO.Status.ACTIVE,"1/10/1997"));
-            configurationBean.create(new ConfigurationDTO(null,"Pokemon","Hey! Someone got catche them all, lets hope is not you", "V1.7.8", "client1",ConfigurationDTO.Status.ACTIVE,"1/10/1997"));
+            configurationBean.create(new ConfigurationDTO(null,"Office 2017","Service for life", "V1.5.0", "client1",ConfigurationDTO.Status.SUSPEND,LocalDateAdapter.marshal(LocalDate.of(2019,11,10))));
+            configurationBean.create(new ConfigurationDTO(null,"Karsperkey","Securing your information", "V1.7.8", "client1",ConfigurationDTO.Status.ACTIVE,LocalDateAdapter.marshal(LocalDate.of(2019,12,23))));
+            configurationBean.create(new ConfigurationDTO(null,"CMTV","The wost tv news ever created!", "V1.5.0", "client1",ConfigurationDTO.Status.ACTIVE,LocalDateAdapter.marshal(LocalDate.of(2020,12,31))));
+            configurationBean.create(new ConfigurationDTO(null,"Pokemon","Hey! Someone got catche them all, lets hope is not you", "V1.7.8", "client1",ConfigurationDTO.Status.ACTIVE,LocalDateAdapter.marshal(LocalDate.of(2015,6,21))));
             
             //Create Templates
             templateBean.create(new TemplateDTO(1L, "Office 2017 Professional Edition", "A combination of escencial tools that provide, the best of personal computers"));
@@ -73,10 +74,10 @@ public class ConfigBean {
             configurationBean.createModule(1L, new ModuleDTO(null,"Excel 2017", "11.30"));
             
             //Create module for Configuration:Pokemon
-            configurationBean.createModule(2L, new ModuleDTO(null,"Charizard", "21.40"));
-            configurationBean.createModule(2L, new ModuleDTO(null,"Pikachu", "32.1"));
-            configurationBean.createModule(2L, new ModuleDTO(null,"Onix", "21.40"));
-            configurationBean.createModule(2L, new ModuleDTO(null,"Salamance", "32.1"));
+            configurationBean.createModule(4L, new ModuleDTO(null,"Charizard", "21.40"));
+            configurationBean.createModule(4L, new ModuleDTO(null,"Pikachu", "32.1"));
+            configurationBean.createModule(4L, new ModuleDTO(null,"Onix", "21.40"));
+            configurationBean.createModule(4L, new ModuleDTO(null,"Salamance", "32.1"));
             
             //Create module for Template:Office 2017
             templateBean.createModule(5L, new ModuleDTO(null,"Word 2017", "21.40"));
@@ -90,15 +91,15 @@ public class ConfigBean {
         
         try{
             //Create parameter for Configuration:Office 2017
-            configurationBean.createParameter(1L,new ParameterDTO(null,ParameterDTO.MaterialType.HARDWARE, "Placa Gráfica", "Para conseguir um maior desempenho gráfico em jogos", "16/12/2018"));
-            configurationBean.createParameter(1L,new ParameterDTO(null,ParameterDTO.MaterialType.CLOUD, "Meo Cloud", "My Cloud Home is the perfect storage solution to easily keep all your photos", "13/10/2017"));
-            configurationBean.createParameter(1L,new ParameterDTO(null,ParameterDTO.MaterialType.EXTENSIONS, "Develop Extensions", "After reading the Getting Started tutorial and Overview", "13/7/2017"));
-            configurationBean.createParameter(1L,new ParameterDTO(null,ParameterDTO.MaterialType.REPOSITORY, "Component repository", "field of configuration management", "15/8/2017"));
+            configurationBean.createParameter(1L,new ParameterDTO(null,ParameterDTO.MaterialType.HARDWARE, "Placa Gráfica", "Para conseguir um maior desempenho gráfico em jogos", LocalDateAdapter.marshal(LocalDate.of(2021,9,12))));
+            configurationBean.createParameter(1L,new ParameterDTO(null,ParameterDTO.MaterialType.CLOUD, "Meo Cloud", "My Cloud Home is the perfect storage solution to easily keep all your photos", LocalDateAdapter.marshal(LocalDate.of(2019,11,11))));
+            configurationBean.createParameter(1L,new ParameterDTO(null,ParameterDTO.MaterialType.EXTENSIONS, "Develop Extensions", "After reading the Getting Started tutorial and Overview", LocalDateAdapter.marshal(LocalDate.of(2021,1,10))));
+            configurationBean.createParameter(1L,new ParameterDTO(null,ParameterDTO.MaterialType.REPOSITORY, "Component repository", "field of configuration management", LocalDateAdapter.marshal(LocalDate.of(2019,5,3))));
             
             //Create module for Configuration:Pokemon
-            configurationBean.createParameter(2L,new ParameterDTO(null,ParameterDTO.MaterialType.CLOUD, "Cloud Storage", "Google Cloud Storage is unified object storage for developers and enterprises", "18/6/2018"));
+            configurationBean.createParameter(2L,new ParameterDTO(null,ParameterDTO.MaterialType.CLOUD, "Cloud Storage", "Google Cloud Storage is unified object storage for developers and enterprises", LocalDateAdapter.marshal(LocalDate.of(2021,2,16))));
             //Create module for Template:Office 2017
-            configurationBean.createParameter(5L,new ParameterDTO(null,ParameterDTO.MaterialType.HARDWARE, "MySensors", "The MySensors core team have created a few hardware components to ease up life", "19/5/2018"));
+            configurationBean.createParameter(5L,new ParameterDTO(null,ParameterDTO.MaterialType.HARDWARE, "MySensors", "The MySensors core team have created a few hardware components to ease up life", LocalDateAdapter.marshal(LocalDate.of(2019,7,5))));
         }catch (Exception ex){
             System.out.println(ex);
         }

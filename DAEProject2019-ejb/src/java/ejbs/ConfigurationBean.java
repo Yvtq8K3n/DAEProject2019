@@ -22,6 +22,8 @@ import exceptions.EntityDoesNotExistException;
 import exceptions.EntityExistsException;
 import exceptions.MyConstraintViolationException;
 import exceptions.Utils;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -202,7 +204,9 @@ public class ConfigurationBean extends Bean<Configuration>{
             Artifact artifact = new Artifact(
                 artifactDTO.getFilepath(), 
                 artifactDTO.getDesiredName(), 
-                artifactDTO.getMimeType()
+                artifactDTO.getMimeType(),
+                Artifact.UserType.valueOf(artifactDTO.getUserType().toString()),    
+                Artifact.MaterialType.valueOf(artifactDTO.getMaterialType().toString())
             );
             
             configuration.addArtifact(artifact);
@@ -300,7 +304,7 @@ public class ConfigurationBean extends Bean<Configuration>{
                         ParameterDTO.MaterialType.valueOf(parameter.getMaterialType().toString()), 
                         parameter.getName(), 
                         parameter.getDescription(), 
-                        parameter.getValidDate()));
+                        LocalDateAdapter.marshal(parameter.getValidDate())));
             }
             GenericEntity<List<ParameterDTO>> entity =
                 new GenericEntity<List<ParameterDTO>>(new ArrayList<>(parameterDTOs)) {};      
@@ -364,7 +368,7 @@ public class ConfigurationBean extends Bean<Configuration>{
                     Parameter.MaterialType.valueOf(parameterDTO.getMaterialType().toString()),
                     parameterDTO.getName(), 
                     parameterDTO.getDescription(), 
-                    parameterDTO.getValidDate()
+                    LocalDateAdapter.unmarshal(parameterDTO.getValidDate())
             ));
             System.out.println("DENTRO 4");
             em.persist(configuration);
@@ -540,7 +544,9 @@ public class ConfigurationBean extends Bean<Configuration>{
                 artifacts.add(new Artifact(
                         arti.getFilepath(),
                         arti.getDesiredName(),
-                        arti.getMimeType()
+                        arti.getMimeType(),
+                        arti.getUserType(),    
+                        arti.getMaterialType()
                 ));
             });
             newConfiguration.setArtifacts(artifacts);

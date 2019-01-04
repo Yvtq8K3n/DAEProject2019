@@ -172,7 +172,9 @@ public class TemplateBean extends Bean<Template>{
             Artifact artifact = new Artifact(
                 artifactDTO.getFilepath(), 
                 artifactDTO.getDesiredName(), 
-                artifactDTO.getMimeType()
+                artifactDTO.getMimeType(),
+                Artifact.UserType.valueOf(artifactDTO.getUserType().toString()),    
+                Artifact.MaterialType.valueOf(artifactDTO.getMaterialType().toString())
             );
             
             template.addArtifact(artifact);
@@ -353,7 +355,9 @@ public class TemplateBean extends Bean<Template>{
                 artifacts.add(new Artifact(
                         arti.getFilepath(),
                         arti.getDesiredName(),
-                        arti.getMimeType()
+                        arti.getMimeType(),
+                        arti.getUserType(),    
+                        arti.getMaterialType()
                 ));
             });
             newConfiguration.setArtifacts(artifacts);

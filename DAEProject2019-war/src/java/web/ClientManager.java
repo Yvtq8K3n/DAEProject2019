@@ -9,6 +9,7 @@ import dtos.ParameterDTO;
 import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.bean.ManagedBean;
@@ -144,9 +145,11 @@ public class ClientManager implements Serializable {
 
             List<ArtifactDTO> artifactDTO =
                 response.readEntity(new GenericType<List<ArtifactDTO>>() {}); 
-          
-            logger.warning("artifact:"+artifactDTO.size());
-            return artifactDTO;
+                   
+            return artifactDTO.stream()
+                .filter(p -> p.getUserType() == ArtifactDTO.UserType.SUPPORT 
+                    || p.getUserType() == ArtifactDTO.UserType.USER
+            ).collect(Collectors.toList());
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
             return null;

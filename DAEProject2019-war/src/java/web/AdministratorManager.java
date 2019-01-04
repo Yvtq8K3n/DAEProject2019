@@ -10,14 +10,11 @@ import dtos.ModuleDTO;
 import dtos.ParameterDTO;
 import dtos.TemplateDTO;
 import dtos.UserDTO;
-import ejbs.TemplateBean;
 import java.io.Serializable;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.Asynchronous;
-import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -47,8 +44,7 @@ import util.MessageHandler;
 public class AdministratorManager implements Serializable {
     private static final int HTTP_CREATED = Response.Status.CREATED.getStatusCode();
     private static final int HTTP_OK = Response.Status.OK.getStatusCode();
-    
-    
+
     private static final Logger logger = Logger.getLogger("web.AdministratorManager");
     
     private @Getter @Setter UIComponent component;
@@ -60,14 +56,13 @@ public class AdministratorManager implements Serializable {
     private @Getter @Setter TemplateDTO templateDTO;
     private @Getter @Setter ConfigurationDTO configurationDTO;
     private @Getter @Setter CommentDTO commentDTO;
-
-    @ManagedProperty(value="#{emailManager}")
-    private EmailManager emailManager;
+    private @Getter @Setter ArtifactDTO artifactDTO;
 
     public AdministratorManager() {
         clientDTO = new ClientDTO();
         templateDTO = new TemplateDTO();
         commentDTO = new CommentDTO();
+        artifactDTO = new ArtifactDTO();
         configurationDTO = new ConfigurationDTO();
         administratorDTO = new AdministratorDTO();
         moduleDTO = new ModuleDTO();
@@ -345,8 +340,10 @@ public class AdministratorManager implements Serializable {
             javax.faces.application.Application app = context.getApplication();
             UploadManager uploadManager = app.evaluateExpressionGet(context, "#{uploadManager}", UploadManager.class);
         
-            ArtifactDTO document = 
-                new ArtifactDTO(uploadManager.getCompletePathFile(), uploadManager.getFilename(), uploadManager.getFile().getContentType());
+            //Add uploadManager File properties to ArtifactDTO
+            artifactDTO.setFilepath(uploadManager.getCompletePathFile());
+            artifactDTO.setDesiredName(uploadManager.getFilename());
+            artifactDTO.setMimeType(uploadManager.getFile().getContentType());
 
             Invocation.Builder invocationBuilder = addHeaderBASIC()
                 .target(URILookup.getBaseAPI())
@@ -355,21 +352,21 @@ public class AdministratorManager implements Serializable {
                 .path("/artifacts")
                 .request(MediaType.APPLICATION_XML);
 
-            Response response = invocationBuilder.post(Entity.xml(document));     
+            Response response = invocationBuilder.post(Entity.xml(artifactDTO));     
             
             String message = response.readEntity(String.class);
             if (response.getStatus() != HTTP_CREATED){
                 throw new Exception(message);
             }
+            
+            sendMailCreateArtifact(artifactDTO.getDesiredName());
+            artifactDTO.reset();
             MessageHandler.successMessage("Artifact Created:", message);
-            sendMailCreateArtifact(document.getDesiredName());
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
         }
     }
    
-    @EJB
-    private TemplateBean templateBean;
     public void createTemplateModule(){
         try {         
             Invocation.Builder invocationBuilder = 
@@ -398,8 +395,10 @@ public class AdministratorManager implements Serializable {
             javax.faces.application.Application app = context.getApplication();
             UploadManager uploadManager = app.evaluateExpressionGet(context, "#{uploadManager}", UploadManager.class);
         
-            ArtifactDTO document = 
-                new ArtifactDTO(uploadManager.getCompletePathFile(), uploadManager.getFilename(), uploadManager.getFile().getContentType());
+            //Add uploadManager File properties to ArtifactDTO
+            artifactDTO.setFilepath(uploadManager.getCompletePathFile());
+            artifactDTO.setDesiredName(uploadManager.getFilename());
+            artifactDTO.setMimeType(uploadManager.getFile().getContentType());
 
             Invocation.Builder invocationBuilder = addHeaderBASIC()
                 .target(URILookup.getBaseAPI())
@@ -408,12 +407,13 @@ public class AdministratorManager implements Serializable {
                 .path("/artifacts")
                 .request(MediaType.APPLICATION_XML);
 
-            Response response = invocationBuilder.post(Entity.xml(document));     
+            Response response = invocationBuilder.post(Entity.xml(artifactDTO));     
             
             String message = response.readEntity(String.class);
             if (response.getStatus() != HTTP_CREATED){
                 throw new Exception(message);
             }
+            artifactDTO.reset();
             MessageHandler.successMessage("Artifact Created:", message);
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);

@@ -52,8 +52,9 @@
         <b:dataTable var="rowItem" value="#{administratorManager.templateArtifacts}" lang="en" 
             responsive="true" info="false" paginated="false" searching="false">
             <b:dataTableColumn value="#{rowItem.desiredName}" />
-            <b:dataTableColumn value="#{rowItem.filepath}" />
             <b:dataTableColumn value="#{rowItem.mimeType}" />
+            <b:dataTableColumn value="#{rowItem.userType}" />
+            <b:dataTableColumn value="#{rowItem.materialType}" />
 
             <b:dataTableColumn label="Actions">
                 <b:commandButton value="Delete" class="btn btn-danger" id="delete" 
