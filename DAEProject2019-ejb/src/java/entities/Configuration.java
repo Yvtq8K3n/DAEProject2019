@@ -188,6 +188,16 @@ public class Configuration extends Software implements Serializable {
     public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
+
+    public List<Parameter> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(List<Parameter> parameters) {
+        this.parameters = parameters;
+    }
+    
+    
     
     
 }

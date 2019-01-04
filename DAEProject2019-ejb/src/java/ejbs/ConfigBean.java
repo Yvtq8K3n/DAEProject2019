@@ -10,6 +10,7 @@ import dtos.ClientDTO;
 import dtos.CommentDTO;
 import dtos.ConfigurationDTO;
 import dtos.ModuleDTO;
+import dtos.ParameterDTO;
 import dtos.TemplateDTO;
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RunAs;
@@ -87,7 +88,23 @@ public class ConfigBean {
         }
         
         try{
-            Long dad = 21L;
+            //Create parameter for Configuration:Office 2017
+            configurationBean.createParameter(1L,new ParameterDTO(null,ParameterDTO.MaterialType.HARDWARE, "Placa Gráfica", "Para conseguir um maior desempenho gráfico em jogos", "16/12/2018"));
+            configurationBean.createParameter(1L,new ParameterDTO(null,ParameterDTO.MaterialType.CLOUD, "Meo Cloud", "My Cloud Home is the perfect storage solution to easily keep all your photos", "13/10/2017"));
+            configurationBean.createParameter(1L,new ParameterDTO(null,ParameterDTO.MaterialType.EXTENSIONS, "Develop Extensions", "After reading the Getting Started tutorial and Overview", "13/7/2017"));
+            configurationBean.createParameter(1L,new ParameterDTO(null,ParameterDTO.MaterialType.REPOSITORY, "Component repository", "field of configuration management", "15/8/2017"));
+            
+            //Create module for Configuration:Pokemon
+            configurationBean.createParameter(2L,new ParameterDTO(null,ParameterDTO.MaterialType.CLOUD, "Cloud Storage", "Google Cloud Storage is unified object storage for developers and enterprises", "18/6/2018"));
+            //Create module for Template:Office 2017
+            configurationBean.createParameter(5L,new ParameterDTO(null,ParameterDTO.MaterialType.HARDWARE, "MySensors", "The MySensors core team have created a few hardware components to ease up life", "19/5/2018"));
+        }catch (Exception ex){
+            System.out.println(ex);
+        }
+        
+        try{
+            //Long dad = 21L;
+            Long dad = 26L;
             commentBean.create(new CommentDTO(null, null, null, 1L, "Im Your Granpha!","client1"));//granpha
             commentBean.create(new CommentDTO(null, dad, null, 1L, "Im Your True DAD!", "administrator1"));//dad
             commentBean.create(new CommentDTO(null, dad+1, null, 1L, "Im Child1!","client1"));//child1

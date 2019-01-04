@@ -24,7 +24,7 @@ public class Parameter {
     
     
     public enum MaterialType {
-        HARDWARE,CLOUD,REPOSITORY,EXTENSIONS,USER_MANUAL,PROGRAMMER_MANUAL
+        HARDWARE,CLOUD,REPOSITORY,EXTENSIONS,ACTIVE_LICENSES,PARAMETERIZATION
     }
     
     @Id
@@ -37,16 +37,21 @@ public class Parameter {
     @NotNull(message = "Name must not be empty")
     private String name;
     
-    private String DesString;
+    @NotNull(message = "Parameter must have base Valid Data")
+    private String description;
+    
+    
+    private String validDate;
     
     public Parameter(){
         
     }
 
-    public Parameter(MaterialType MaterialType, String name, String DesString) {
+    public Parameter(MaterialType MaterialType, String name, String description, String validDate) {
         this.materialType = MaterialType;
         this.name = name;
-        this.DesString = DesString;
+        this.description = description;
+        this.validDate = validDate;
     }
 
     public MaterialType getMaterialType() {
@@ -65,12 +70,28 @@ public class Parameter {
         this.name = name;
     }
 
-    public String getDesString() {
-        return DesString;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDesString(String DesString) {
-        this.DesString = DesString;
+    public void setDescription(String DesString) {
+        this.description = DesString;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getValidDate() {
+        return validDate;
+    }
+
+    public void setValidDate(String validDate) {
+        this.validDate = validDate;
     }
     
 }

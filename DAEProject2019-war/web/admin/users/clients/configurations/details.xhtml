@@ -79,6 +79,26 @@
         </b:dataTable>
     </h:form>
     
+    <h3>Parameters:</h3>
+    <b:button value="Create" look="success" p:data-target="#parametersModal" p:data-toggle="modal"/>
+    <h:form id="formParameters">
+        <!--<b:button value="Create" look="success" p:data-target="#modulesModal" p:data-toggle="modal"/>-->
+        <b:dataTable var="rowItem" value="#{administratorManager.configurationParameters}" lang="en" 
+            responsive="true" info="false" paginated="false" searching="false">
+            <b:dataTableColumn value="#{rowItem.id}" />
+            <b:dataTableColumn value="#{rowItem.name}" />
+            <b:dataTableColumn value="#{rowItem.description}" />
+            <b:dataTableColumn value="#{rowItem.validDate}" />
+            <b:dataTableColumn label="Actions">
+                <b:commandButton value="Delete" class="btn btn-danger" id="delete" 
+                                 actionListener="#{administratorManager.removeConfigurationParameter}">
+                    <f:param name="deleteConfigurationParameterId" id="deleteConfigurationParameterId" 
+                       value="#{rowItem.id}" />
+                </b:commandButton>
+            </b:dataTableColumn>
+        </b:dataTable>
+    </h:form>
+    
     <b:modal id="modulesModal" title="Creating Modal" styleClass="modalPseudoClass">
         <h:form>
             <c:set var="module" value="#{administratorManager.moduleDTO}"/>
@@ -87,6 +107,25 @@
             <b:commandButton
                 value="Create" class="btn btn-primary"
                 action="${administratorManager.createConfigurationModule}"/>
+        </h:form>
+        <f:facet name="footer">
+            <b:button value="Close" dismiss="modal" />
+        </f:facet>
+    </b:modal>
+     
+     <b:modal id="parametersModal" title="Creating Parameter" styleClass="modalPseudoClass">
+        <h:form>
+            <c:set var="parameter" value="#{administratorManager.parameterDTO}"/>
+            <h3>Status:</h3>
+            <b:radiobutton value="#{parameter.materialType}">
+                <f:selectItems value="#{parameter.allMaterialType}" />
+            </b:radiobutton>
+            <b:inputText label="Name" value="#{parameter.name}"/>
+            <b:inputTextarea label="Description" value="#{parameter.description}"/>
+            <b:inputText label="Valid Date" value="#{parameter.validDate}"/>
+            <b:commandButton
+                value="Create" class="btn btn-primary"
+                action="${administratorManager.createConfigurationParameter}"/>
         </h:form>
         <f:facet name="footer">
             <b:button value="Close" dismiss="modal" />

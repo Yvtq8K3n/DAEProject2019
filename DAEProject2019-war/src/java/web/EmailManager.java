@@ -46,7 +46,7 @@ public class EmailManager implements Serializable{
     
     public EmailDTO sendEmailModuleCreate(AdministratorDTO admin, ConfigurationDTO conf, ClientDTO clientDTO, String module){
         String recipient = clientDTO.getEmail();
-        String msg = "New module " + module + " has been insered in configuration " + conf.getName();
+        String msg = "New module " + module + " has been inserted in configuration " + conf.getName();
         EmailDTO email = new EmailDTO(admin.getEmail(),null,"DAE Project", msg, recipient);
         return email;   
     } 
@@ -60,7 +60,7 @@ public class EmailManager implements Serializable{
     
     public EmailDTO sendEmailArtifactCreate(AdministratorDTO admin, ConfigurationDTO conf, ClientDTO clientDTO, String artifact){
         String recipient = clientDTO.getEmail();
-        String msg = "New artifact " + artifact + " has been insered in configuration " + conf.getName();
+        String msg = "New artifact " + artifact + " has been inserted in configuration " + conf.getName();
         EmailDTO email = new EmailDTO(admin.getEmail(),null,"DAE Project", msg, recipient);
         return email;   
     } 
@@ -71,5 +71,22 @@ public class EmailManager implements Serializable{
         EmailDTO email = new EmailDTO(admin.getEmail(),null,"DAE Project", msg, recipient);
         return email;   
     } 
+    
+    public EmailDTO sendEmailParameterCreate(AdministratorDTO admin, ConfigurationDTO conf, ClientDTO clientDTO, String parameter){
+        String recipient = clientDTO.getEmail();
+        String msg = "New parameter " + parameter + " has been inserted in configuration " + conf.getName();
+        EmailDTO email = new EmailDTO(admin.getEmail(),null,"DAE Project", msg, recipient);
+        return email;   
+    } 
+    
+    public EmailDTO sendEmailParameterRemove(AdministratorDTO admin, ConfigurationDTO conf, ClientDTO clientDTO){
+        String recipient = clientDTO.getEmail();
+        String msg = "Parameter has been removed from configuration " + conf.getName();
+        EmailDTO email = new EmailDTO(admin.getEmail(),null,"DAE Project", msg, recipient);
+        return email;   
+    } 
+    
+    
+    
     
 }
