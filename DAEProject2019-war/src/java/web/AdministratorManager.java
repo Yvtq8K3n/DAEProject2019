@@ -654,13 +654,15 @@ public class AdministratorManager implements Serializable {
                     .request(MediaType.APPLICATION_XML);
             Response response = invocationBuilder.delete();
             
-            String message = response.readEntity(String.class);
+            
             if (response.getStatus() != HTTP_OK){
+                String message = response.readEntity(String.class);
                 throw new Exception(message);
             }
+            String message = response.readEntity(String.class);
             
             MessageHandler.successMessage("Parameter Deleted:", message);
-            CompletableFuture.runAsync(() -> sendMailRemoveParameter());
+            sendMailRemoveParameter();
         } catch (Exception e) {
             MessageHandler.failMessage("Delete Failed:", e.getMessage());
         }

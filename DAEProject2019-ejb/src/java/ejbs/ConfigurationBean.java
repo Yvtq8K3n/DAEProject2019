@@ -544,6 +544,17 @@ public class ConfigurationBean extends Bean<Configuration>{
             });
             newConfiguration.setArtifacts(artifacts);
             
+            List<Parameter> parameters = new ArrayList<>();
+            configuration.getParameters().forEach((params) -> {
+                parameters.add(new Parameter(
+                        Parameter.MaterialType.valueOf(params.getMaterialType().toString()),
+                        params.getName(),
+                        params.getDescription(),
+                        params.getValidDate()
+                ));
+            });
+            newConfiguration.setParameters(parameters);
+            
             owner.addConfiguration(newConfiguration);
             em.persist(owner);
             
