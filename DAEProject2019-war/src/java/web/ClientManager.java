@@ -5,6 +5,7 @@ import dtos.ClientDTO;
 import dtos.CommentDTO;
 import dtos.ConfigurationDTO;
 import dtos.ModuleDTO;
+import dtos.ParameterDTO;
 import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Logger;
@@ -152,6 +153,31 @@ public class ClientManager implements Serializable {
         }
     }
      
+     public List<ParameterDTO> getConfigurationParameters(){
+        try {
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                    .target(URILookup.getBaseAPI())
+                    .path("/configurations/")
+                    .path(String.valueOf(currentConfiguration.getId()))
+                    .path("/parameters")
+                    .request(MediaType.APPLICATION_XML);
+            
+            Response response = invocationBuilder.get(Response.class);
+            if (response.getStatus() != HTTP_OK){
+                String message = response.readEntity(String.class);
+                throw new Exception(message);
+            }
+
+            List<ParameterDTO> parameterDTOs =
+                response.readEntity(new GenericType<List<ParameterDTO>>() {}); 
+
+            return parameterDTOs;
+        } catch (Exception e) {
+            MessageHandler.failMessage("Unexpected error!", e.getMessage());      
+            return null;
+        }
+    }
+     
     public List<CommentDTO> getConfigurationComments(){
         try {
             Invocation.Builder invocationBuilder = addHeaderBASIC()
@@ -193,12 +219,12 @@ public class ClientManager implements Serializable {
             Response response = invocationBuilder.post(Entity.xml(newCommentDTO));
             newCommentDTO.reset();
             
-            String message = response.readEntity(String.class);
             if (response.getStatus() != HTTP_CREATED){
+                String message = response.readEntity(String.class);
                 throw new Exception(message);
             }
             
-            MessageHandler.successMessage("Comment Created:",message);
+            MessageHandler.successMessage("Comment Created:","Comment was successfully created.");
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
         }

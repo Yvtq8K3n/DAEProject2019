@@ -6,6 +6,9 @@
 package dtos;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -19,21 +22,24 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ParameterDTO implements Serializable{
     
     public enum MaterialType {
-        HARDWARE,CLOUD,REPOSITORY,EXTENSIONS,USER_MANUAL,PROGRAMMER_MANUAL
+        HARDWARE,CLOUD,REPOSITORY,EXTENSIONS
     }
     private Long id;
     private MaterialType materialType;
     private String name;
     private String description;
+    private String validDate;
     
     public ParameterDTO(){
         
     }
 
-    public ParameterDTO(MaterialType materialType, String name, String DesString) {
+    public ParameterDTO(Long id, MaterialType materialType, String name, String DesString, String validDate) {
+        this.id = id;
         this.materialType = materialType;
         this.name = name;
         this.description = DesString;
+        this.validDate = validDate;
     }
     
     public void reset(){
@@ -41,6 +47,7 @@ public class ParameterDTO implements Serializable{
         setMaterialType(null);
         setDescription(null);
         setName(null);
+        setValidDate(null);
     }
 
     public MaterialType getMaterialType() {
@@ -74,6 +81,17 @@ public class ParameterDTO implements Serializable{
     public void setId(Long id) {
         this.id = id;
     }
+
+    public String getValidDate() {
+        return validDate;
+    }
+
+    public void setValidDate(String validDate) {
+        this.validDate = validDate;
+    }
     
-    
+    public List<String> getAllMaterialType(){
+        return Stream.of(MaterialType.values())
+            .map(Enum::name).collect(Collectors.toList());
+    }
 }

@@ -49,6 +49,17 @@
                     <b:dataTableColumn value="#{rowItem.mimeType}" />
                 </b:dataTable>
             </h:form>
+             
+             <h3>Parameters:</h3>
+            <h:form id="formParameters">
+                <b:dataTable var="rowItem" value="#{clientManager.configurationParameters}" lang="en" 
+                    responsive="true" info="false" paginated="false" searching="false">
+                    <b:dataTableColumn value="#{rowItem.id}" />
+                    <b:dataTableColumn value="#{rowItem.name}" />
+                    <b:dataTableColumn value="#{rowItem.description}" />
+                    <b:dataTableColumn value="#{rowItem.validDate}" />
+                </b:dataTable>
+            </h:form>
             
             <b:modal id="commentsModal" title="" size="modal-lg">
                 <h2>Configuration: #{configuration.name}</h2>

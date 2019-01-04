@@ -7,13 +7,16 @@ import dtos.CommentDTO;
 import dtos.ConfigurationDTO;
 import dtos.EmailDTO;
 import dtos.ModuleDTO;
+import dtos.ParameterDTO;
 import dtos.TemplateDTO;
 import dtos.UserDTO;
 import ejbs.TemplateBean;
 import java.io.Serializable;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
@@ -53,6 +56,7 @@ public class AdministratorManager implements Serializable {
     private @Getter @Setter ClientDTO clientDTO;
     private @Getter @Setter AdministratorDTO administratorDTO;
     private @Getter @Setter ModuleDTO moduleDTO;
+    private @Getter @Setter ParameterDTO parameterDTO;
     private @Getter @Setter TemplateDTO templateDTO;
     private @Getter @Setter ConfigurationDTO configurationDTO;
     private @Getter @Setter CommentDTO commentDTO;
@@ -67,6 +71,7 @@ public class AdministratorManager implements Serializable {
         configurationDTO = new ConfigurationDTO();
         administratorDTO = new AdministratorDTO();
         moduleDTO = new ModuleDTO();
+        parameterDTO = new ParameterDTO();
     }
         
     @PostConstruct
@@ -268,12 +273,13 @@ public class AdministratorManager implements Serializable {
             Response response = invocationBuilder.post(Entity.xml(commentDTO));
             commentDTO.reset();
             
-            String message = response.readEntity(String.class);
+           
             if (response.getStatus() != HTTP_CREATED){
+                String message = response.readEntity(String.class);
                 throw new Exception(message);
             }
             
-            MessageHandler.successMessage("Comment Created:",message);
+            MessageHandler.successMessage("Comment Created:","Comment was successfully created.");
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
         }
@@ -302,6 +308,37 @@ public class AdministratorManager implements Serializable {
             FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
         }
     }
+    
+    
+    public void createConfigurationParameter(){
+        try {
+            System.out.println("ENTREI 1");
+            Invocation.Builder invocationBuilder = 
+                addHeaderBASIC().target(URILookup.getBaseAPI())
+                    .path("/configurations/")
+                    .path(String.valueOf(configurationDTO.getId()))
+                    .path("/parameters")
+                    .request(MediaType.APPLICATION_XML);
+            System.out.println("ENTREI 2");
+            Response response = invocationBuilder.post(Entity.xml(parameterDTO));
+            System.out.println("ENTREI 3");
+            
+            System.out.println("ENTREI 4");
+            if (response.getStatus() != HTTP_CREATED){
+                String message = response.readEntity(String.class);
+                throw new Exception(message);
+            }
+            String message = response.readEntity(String.class);
+            System.out.println("ENTREI 5");
+            
+            MessageHandler.successMessage("Parameter Created:",message);
+            sendMailCreateParameter(parameterDTO.getName());
+            moduleDTO.reset();
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
+        }
+    }
+    
     public void createConfigurationArtifact() {
         try {
             FacesContext context = FacesContext.getCurrentInstance();
@@ -601,6 +638,39 @@ public class AdministratorManager implements Serializable {
             MessageHandler.failMessage("Delete Failed:", e.getMessage());
         }
     }
+    
+    
+ 
+    public void removeConfigurationParameter(ActionEvent event){
+        FacesMessage facesMsg;
+        try {
+            UIParameter param = (UIParameter) event.getComponent().findComponent("deleteConfigurationParameterId");
+            Long id = (Long)param.getValue();
+            
+            
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                    .target(URILookup.getBaseAPI())
+                    .path("/configurations/")
+                    .path(String.valueOf(configurationDTO.getId()))
+                    .path("/parameters/")
+                    .path(String.valueOf(id))
+                    .request(MediaType.APPLICATION_XML);
+            Response response = invocationBuilder.delete();
+            
+            
+            if (response.getStatus() != HTTP_OK){
+                String message = response.readEntity(String.class);
+                throw new Exception(message);
+            }
+            String message = response.readEntity(String.class);
+            
+            MessageHandler.successMessage("Parameter Deleted:", message);
+            sendMailRemoveParameter();
+        } catch (Exception e) {
+            MessageHandler.failMessage("Delete Failed:", e.getMessage());
+        }
+    }
+    
     public void removeConfigurationArtifact(ActionEvent event){
         FacesMessage facesMsg;
         try {
@@ -767,6 +837,33 @@ public class AdministratorManager implements Serializable {
             return null;
         }
     }
+    
+    public List<ParameterDTO> getConfigurationParameters(){
+        try {
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                    .target(URILookup.getBaseAPI())
+                    .path("/configurations/")
+                    .path(String.valueOf(configurationDTO.getId()))
+                    .path("/parameters")
+                    .request(MediaType.APPLICATION_XML);
+            
+            Response response = invocationBuilder.get(Response.class);
+            if (response.getStatus() != HTTP_OK){
+                String message = response.readEntity(String.class);
+                throw new Exception(message);
+            }
+
+            List<ParameterDTO> parameterDTOs =
+                response.readEntity(new GenericType<List<ParameterDTO>>() {}); 
+
+            return parameterDTOs;
+        } catch (Exception e) {
+            MessageHandler.failMessage("Unexpected error!", e.getMessage());      
+            return null;
+        }
+    }
+    
+    
     public List<ArtifactDTO> getConfigurationArtifacts(){
         try {
             Invocation.Builder invocationBuilder = addHeaderBASIC()
@@ -997,6 +1094,32 @@ public class AdministratorManager implements Serializable {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
         } 
     }
+    
+    public void sendMailCreateParameter(String parameterName){
+        try {
+            FacesContext context = FacesContext.getCurrentInstance();
+            javax.faces.application.Application app = context.getApplication();
+            UserManager userManager = app.evaluateExpressionGet(context, "#{userManager}", UserManager.class);
+            AdministratorDTO administratorDTO = getLoggedUser(userManager.getUsername());
+            EmailManager emailManager = app.evaluateExpressionGet(context, "#{emailManager}", EmailManager.class);
+            EmailDTO email = email = emailManager.sendEmailParameterCreate(administratorDTO, configurationDTO, clientDTO, parameterName); 
+            
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                        .target(URILookup.getBaseAPI())
+                        .path("/email")
+                        .request(MediaType.APPLICATION_XML);
+            Response response = invocationBuilder.post(Entity.xml(email));   
+            
+            String message = response.readEntity(String.class);
+            if (response.getStatus() != HTTP_OK){
+                throw new Exception(message);
+            }
+            MessageHandler.successMessage("Message sent: ", message);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+        } 
+    }
+    
     public void sendMailRemoveArtifact(){
         try {
             FacesContext context = FacesContext.getCurrentInstance();
@@ -1005,6 +1128,32 @@ public class AdministratorManager implements Serializable {
             AdministratorDTO administratorDTO = getLoggedUser(userManager.getUsername());
             EmailManager emailManager = app.evaluateExpressionGet(context, "#{emailManager}", EmailManager.class);
             EmailDTO email = email = emailManager.sendEmailArtifactRemove(administratorDTO, configurationDTO, clientDTO); 
+            
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                        .target(URILookup.getBaseAPI())
+                        .path("/email")
+                        .request(MediaType.APPLICATION_XML);
+            Response response = invocationBuilder.post(Entity.xml(email));   
+            
+            String message = response.readEntity(String.class);
+            if (response.getStatus() != HTTP_OK){
+                throw new Exception(message);
+            }
+            MessageHandler.successMessage("Message sent: ", message);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+        } 
+    }
+    
+    @Asynchronous
+    public void sendMailRemoveParameter(){
+        try {
+            FacesContext context = FacesContext.getCurrentInstance();
+            javax.faces.application.Application app = context.getApplication();
+            UserManager userManager = app.evaluateExpressionGet(context, "#{userManager}", UserManager.class);
+            AdministratorDTO administratorDTO = getLoggedUser(userManager.getUsername());
+            EmailManager emailManager = app.evaluateExpressionGet(context, "#{emailManager}", EmailManager.class);
+            EmailDTO email = email = emailManager.sendEmailParameterRemove(administratorDTO, configurationDTO, clientDTO); 
             
             Invocation.Builder invocationBuilder = addHeaderBASIC()
                         .target(URILookup.getBaseAPI())

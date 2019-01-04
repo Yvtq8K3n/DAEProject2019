@@ -279,6 +279,43 @@ public class ConfigurationBean extends Bean<Configuration>{
             return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
         } 
     }
+    
+    @GET
+    @Path("/{confId}/parameters")
+    @RolesAllowed({"Administrator","Client"})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response getParameters(@PathParam("confId") Long confId){
+        try{
+            if (confId == null)
+                throw new EntityDoesNotExistException("Invalid configuration");
+            
+            Configuration configuration = em.find(Configuration.class, confId);
+            if(configuration == null) 
+                throw new EntityDoesNotExistException("Configuration not found.");
+
+            Collection<ParameterDTO> parameterDTOs = new ArrayList<>();
+            for(Parameter parameter : configuration.getParameters()){
+                parameterDTOs.add(new ParameterDTO(
+                        parameter.getId(),
+                        ParameterDTO.MaterialType.valueOf(parameter.getMaterialType().toString()), 
+                        parameter.getName(), 
+                        parameter.getDescription(), 
+                        parameter.getValidDate()));
+            }
+            GenericEntity<List<ParameterDTO>> entity =
+                new GenericEntity<List<ParameterDTO>>(new ArrayList<>(parameterDTOs)) {};      
+
+            return Response.status(Response.Status.OK).entity(entity).build();
+        }catch (EntityDoesNotExistException e) {
+            return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
+        }catch (ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
+        }catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
+        } 
+    }
+    
+    
     @POST
     @Path("{confId}/modules")
     @RolesAllowed("Administrator")
@@ -306,6 +343,40 @@ public class ConfigurationBean extends Bean<Configuration>{
             return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
         }
     }
+    
+    @POST
+    @Path("{confId}/parameters")
+    @RolesAllowed("Administrator")
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_XML)
+    public Response createParameter(@PathParam("confId") Long confId, ParameterDTO parameterDTO){
+        try{
+            System.out.println("DENTRO 1");
+            if (confId == null)
+                throw new EntityDoesNotExistException("Invalid configuration");
+            
+            System.out.println("DENTRO 2");
+            Configuration configuration = em.find(Configuration.class, confId);
+            if(configuration == null) 
+                throw new EntityDoesNotExistException("Configuration not found.");
+            System.out.println("DENTRO 3");
+            configuration.addParameter(new Parameter(
+                    Parameter.MaterialType.valueOf(parameterDTO.getMaterialType().toString()),
+                    parameterDTO.getName(), 
+                    parameterDTO.getDescription(), 
+                    parameterDTO.getValidDate()
+            ));
+            System.out.println("DENTRO 4");
+            em.persist(configuration);
+            System.out.println("DENTRO 5");
+            return Response.status(Response.Status.CREATED).entity("Parameter was successfully created.").build();
+        }catch (ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
+        }catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
+        }
+    }
+    
     @DELETE
     @Path("/{confId}/modules/{id}")
     @RolesAllowed("Administrator")
@@ -331,6 +402,40 @@ public class ConfigurationBean extends Bean<Configuration>{
             em.remove(module);
             
             return Response.status(Response.Status.OK).entity("Module was successfully deleted.").build();
+        }catch (EntityDoesNotExistException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        }catch (ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
+        }catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
+        }
+    }
+    
+    @DELETE
+    @Path("/{confId}/parameters/{id}")
+    @RolesAllowed("Administrator")
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_XML)
+    public Response removeParameter(@PathParam("confId") Long confId, @PathParam("id") Long id){
+        try{
+            if (confId == null)
+                throw new EntityDoesNotExistException("Invalid configuration");
+            Configuration configuration = em.find(Configuration.class, confId);
+            if(configuration == null) 
+                throw new EntityDoesNotExistException("Configuration not found.");
+            
+            if (id == null) 
+                throw new EntityDoesNotExistException("Invalid Parameter");
+            Parameter parameter = em.find(Parameter.class, id);
+            if (parameter == null) {
+                throw new EntityDoesNotExistException("A module with that id doesnt exists.");
+            }
+            
+            configuration.removeParameter(parameter);
+            em.persist(configuration);
+            em.remove(parameter);
+            
+            return Response.status(Response.Status.OK).entity("Parameter was successfully deleted.").build();
         }catch (EntityDoesNotExistException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }catch (ConstraintViolationException e){
@@ -439,6 +544,17 @@ public class ConfigurationBean extends Bean<Configuration>{
                 ));
             });
             newConfiguration.setArtifacts(artifacts);
+            
+            List<Parameter> parameters = new ArrayList<>();
+            configuration.getParameters().forEach((params) -> {
+                parameters.add(new Parameter(
+                        Parameter.MaterialType.valueOf(params.getMaterialType().toString()),
+                        params.getName(),
+                        params.getDescription(),
+                        params.getValidDate()
+                ));
+            });
+            newConfiguration.setParameters(parameters);
             
             owner.addConfiguration(newConfiguration);
             em.persist(owner);
