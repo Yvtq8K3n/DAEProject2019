@@ -8,7 +8,7 @@ package ejbs;
 import dtos.ClientDTO;
 import dtos.ConfigurationDTO;
 import entities.Client;
-import entities.Configuration;
+import entities.User;
 import exceptions.EntityDoesNotExistException;
 import exceptions.EntityExistsException;
 import exceptions.MyConstraintViolationException;
@@ -17,9 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.annotation.security.DeclareRoles;
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -28,6 +26,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -54,8 +53,8 @@ public class ClientBean extends Bean<Client>{
     public Response create(ClientDTO clientDTO)
         throws EntityExistsException, MyConstraintViolationException{
         try{
-            Client client = em.find(Client.class, clientDTO.getUsername());
-            if (client != null) {
+            User user = em.find(User.class, clientDTO.getUsername());
+            if (user != null) {
                 throw new EntityExistsException("Username already taken.");
             }
             em.persist(new Client(
@@ -75,6 +74,35 @@ public class ClientBean extends Bean<Client>{
         }catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
         }  
+    }
+    
+    @PUT
+    @RolesAllowed("Administrator")
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_XML)
+    public Response update(ClientDTO clientDTO) {
+        try{
+  
+            if (clientDTO.getUsername()== null)
+                throw new EntityDoesNotExistException("Invalid Client");
+            Client client = em.find(Client.class, clientDTO.getUsername());
+            if(client == null) 
+                throw new EntityDoesNotExistException("Client not found.");
+            
+            client.setName(clientDTO.getName());
+            client.setEmail(clientDTO.getEmail());
+            client.setContact(clientDTO.getContact());
+            client.setAddress(clientDTO.getAddress());
+                
+            em.persist(client);
+        return Response.status(Response.Status.OK).entity("Client was successfully edited.").build();
+        }catch (EntityDoesNotExistException e) {
+            return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
+        }catch (ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
+        }catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
+        } 
     }
     
     @DELETE

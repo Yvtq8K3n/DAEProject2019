@@ -100,7 +100,7 @@ public class ConfigurationBean extends Bean<Configuration>{
     @Produces(MediaType.APPLICATION_XML)
     public Response update(ConfigurationDTO confDTO) {
         try{
-            System.out.println("I was executed");
+
             if (confDTO.getId()== null)
                 throw new EntityDoesNotExistException("Invalid Configuration");
             

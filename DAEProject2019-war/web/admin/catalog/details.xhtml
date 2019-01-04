@@ -49,23 +49,30 @@
     <h3>Artifacts:</h3>
     <h:form id="formArtifacts">
         <b:button value="Create" look="success" p:data-target="#artifactsModal" p:data-toggle="modal"/>
-        <b:dataTable var="rowItem" value="#{administratorManager.templateArtifacts}" lang="en" 
-            responsive="true" info="false" paginated="false" searching="false">
-            <b:dataTableColumn value="#{rowItem.desiredName}" />
-            <b:dataTableColumn value="#{rowItem.mimeType}" />
-            <b:dataTableColumn value="#{rowItem.userType}" />
-            <b:dataTableColumn value="#{rowItem.materialType}" />
+    </h:form>
+    <b:dataTable var="rowItem" value="#{administratorManager.templateArtifacts}" lang="en" 
+        responsive="true" info="false" paginated="false" searching="false">
+        <b:dataTableColumn value="#{rowItem.desiredName}" />
+        <b:dataTableColumn value="#{rowItem.mimeType}" />
+        <b:dataTableColumn value="#{rowItem.userType}" />
+        <b:dataTableColumn value="#{rowItem.materialType}" />
 
-            <b:dataTableColumn label="Actions">
+        <b:dataTableColumn label="Actions">
+            <h:form>
                 <b:commandButton value="Delete" class="btn btn-danger" id="delete" 
                     rendered="${userManager.someUserAuthenticated and userManager.admin}"
                     actionListener="#{administratorManager.removeTemplateArtifact}">
                     <f:param name="deleteTemplateArtifactId" id="deleteTemplateArtifactId" 
                        value="#{rowItem.id}" />
                 </b:commandButton>
-            </b:dataTableColumn>
-        </b:dataTable>
-    </h:form>
+            </h:form>
+            <form action="../../../download" method="post">
+                <input type="text" name="filename" value="#{rowItem.desiredName}" hidden="hidden"/>
+                <input type="text" name="filepath" value="#{rowItem.filepath}" hidden="hidden"/>
+                <input class="btn btn-primary" type="submit" value="Download"/>
+            </form>
+        </b:dataTableColumn>
+    </b:dataTable>
     
     <b:modal id="modulesModal" title="Creating Modal" styleClass="modalPseudoClass">
         <h:form>
@@ -83,6 +90,18 @@
 
     <b:modal id="artifactsModal" title="Creating Artifact" styleClass="modalPseudoClass">
         <h:form enctype="multipart/form-data">
+            <c:set var="artifact" value="#{administratorManager.artifactDTO}"/>
+            <h3>User Type:</h3>
+            <b:radiobutton value="#{artifact.userType}">
+                <f:selectItems value="#{artifact.allUserType}" />
+            </b:radiobutton>
+            
+            <h3>Material Type:</h3>
+            <b:radiobutton value="#{artifact.materialType}">
+                <f:selectItems value="#{artifact.allMaterialType}" />
+            </b:radiobutton>
+            
+            <h3>Resource:</h3>
             <h:inputFile value="#{uploadManager.file}" ></h:inputFile>
             <b:commandButton
                 value="Submit"

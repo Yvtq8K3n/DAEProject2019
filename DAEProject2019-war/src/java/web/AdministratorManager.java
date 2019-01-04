@@ -10,6 +10,7 @@ import dtos.ModuleDTO;
 import dtos.ParameterDTO;
 import dtos.TemplateDTO;
 import dtos.UserDTO;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Logger;
@@ -113,16 +114,17 @@ public class AdministratorManager implements Serializable {
                     .request(MediaType.APPLICATION_XML);
             
             Response response = invocationBuilder.post(Entity.xml(clientDTO));
-            clientDTO.reset();
-            
-            String message = response.readEntity(String.class);
+
             if (response.getStatus() != HTTP_CREATED){
+                String message = response.readEntity(String.class);
                 throw new Exception(message);
             }
             
+            clientDTO.reset();
+            String message = response.readEntity(String.class);           
             MessageHandler.successMessage("Client Created:", message);
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
+            MessageHandler.failMessage("Created Failed:", e.getMessage());
             return null;
         }
         return "/admin/users/clients/view.xhtml?faces-redirect=true";
@@ -135,16 +137,17 @@ public class AdministratorManager implements Serializable {
                     .request(MediaType.APPLICATION_XML);
             
             Response response = invocationBuilder.post(Entity.xml(administratorDTO));
-            administratorDTO.reset();
-            
-            String message = response.readEntity(String.class);
+
             if (response.getStatus() != HTTP_CREATED){
+                String message = response.readEntity(String.class);
                 throw new Exception(message);
             }
             
-            MessageHandler.successMessage("Administrator Created:",message);
+            administratorDTO.reset();
+            String message = response.readEntity(String.class);           
+            MessageHandler.successMessage("Client Created:", message);
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
+            MessageHandler.failMessage("Created Failed:", e.getMessage());
             return null;
         }
         return "/admin/users/administrators/view.xhtml?faces-redirect=true";
@@ -418,8 +421,49 @@ public class AdministratorManager implements Serializable {
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
         }
-    }
+    }   
     
+    
+    public void updateAdministrator(){
+        try {
+            Invocation.Builder invocationBuilder = 
+                addHeaderBASIC().target(URILookup.getBaseAPI())
+                    .path("/administrators")
+                    .request(MediaType.APPLICATION_XML);
+            
+            Response response = invocationBuilder.put(Entity.xml(administratorDTO));
+  
+            if (response.getStatus() != HTTP_OK){
+                String message = response.readEntity(String.class);
+                throw new Exception(message);
+            }
+            
+            String message = response.readEntity(String.class);
+            MessageHandler.successMessage("Administrator Updated:",message);
+        } catch (Exception e) {
+            MessageHandler.failMessage("Update Failed:",e.getMessage());
+        } 
+    }
+    public void updateClient(){
+        try {
+            Invocation.Builder invocationBuilder = 
+                addHeaderBASIC().target(URILookup.getBaseAPI())
+                    .path("/clients")
+                    .request(MediaType.APPLICATION_XML);
+            
+            Response response = invocationBuilder.put(Entity.xml(clientDTO));
+  
+            if (response.getStatus() != HTTP_OK){
+                String message = response.readEntity(String.class);
+                throw new Exception(message);
+            }
+            
+            String message = response.readEntity(String.class);
+            MessageHandler.successMessage("Client Updated:",message);
+        } catch (Exception e) {
+            MessageHandler.failMessage("Update Failed:",e.getMessage());
+        } 
+    }
     public void updateTemplate(){
         templateDTO.getDescription();
         try {
@@ -430,23 +474,20 @@ public class AdministratorManager implements Serializable {
             
             Response response = invocationBuilder.put(Entity.xml(templateDTO));
             
-            String message = response.readEntity(String.class);
             if (response.getStatus() != HTTP_OK){
+                String message = response.readEntity(String.class);
                 throw new Exception(message);
             }
             
+            String message = response.readEntity(String.class);
             MessageHandler.successMessage("Template Updated:",message);
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
+            MessageHandler.failMessage("Updated Failed:",e.getMessage());
             
         }
        
     }
     public void updateConfiguration(){
-        logger.warning("ssdasd"+configurationDTO.getId());
-        logger.warning("Date:"+configurationDTO.getContractDate());
-        logger.info("sadasd");
-        System.out.println("Configuration Status: " + configurationDTO.getStatus());
         try {
             Invocation.Builder invocationBuilder = 
                 addHeaderBASIC().target(URILookup.getBaseAPI())
@@ -459,8 +500,8 @@ public class AdministratorManager implements Serializable {
                 String message = response.readEntity(String.class);
                 throw new Exception(message);
             }
-            String message = response.readEntity(String.class);
             
+            String message = response.readEntity(String.class);
             MessageHandler.successMessage("Configuration Updated:",message);
             sendMailUpdate();
         } catch (Exception e) {
@@ -492,10 +533,18 @@ public class AdministratorManager implements Serializable {
         }
     }
     public void removeAdministrator(ActionEvent event){
+        Client client = ClientBuilder.newClient();
+        FacesContext context = FacesContext.getCurrentInstance();
+        javax.faces.application.Application app = context.getApplication();
+        UserManager userManager = app.evaluateExpressionGet(context, "#{userManager}", UserManager.class);
+        
         try {
             UIParameter param = (UIParameter) event.getComponent().findComponent("deleteAdministratorId");
             String administratorId = param.getValue().toString();
 
+            if (administratorId.compareTo(userManager.getUsername())==0)
+                throw new Exception("Unable to delete account.");
+            
             Invocation.Builder invocationBuilder = addHeaderBASIC()
                     .target(URILookup.getBaseAPI())
                     .path("/administrators/"+administratorId)

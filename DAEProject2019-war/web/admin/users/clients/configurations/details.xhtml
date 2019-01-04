@@ -34,7 +34,7 @@
         </b:radiobutton>
         
         <b:commandButton
-            value="Submit" class="btn btn-primary"
+            value="Update" class="btn btn-primary"
             action="${administratorManager.updateConfiguration}">
         </b:commandButton>
     </h:form>
@@ -63,24 +63,30 @@
     <h3>Artifacts:</h3>
     <h:form id="formArtifacts">
         <b:button value="Create" look="success" p:data-target="#artifactsModal" p:data-toggle="modal"/>
-        <b:dataTable var="rowItem" value="#{administratorManager.configurationArtifacts}" lang="en" 
-            responsive="true" info="false" paginated="false" searching="false">
-            <b:dataTableColumn value="#{rowItem.desiredName}" />
-            <b:dataTableColumn value="#{rowItem.mimeType}" />
-            <b:dataTableColumn value="#{rowItem.userType}" />
-            <b:dataTableColumn value="#{rowItem.materialType}" />
-            
-            <b:dataTableColumn label="Actions">
+    </h:form>
+    <b:dataTable var="rowItem" value="#{administratorManager.configurationArtifacts}" lang="en" 
+        responsive="true" info="false" paginated="false" searching="false">
+        <b:dataTableColumn value="#{rowItem.desiredName}" />
+        <b:dataTableColumn value="#{rowItem.mimeType}" />
+        <b:dataTableColumn value="#{rowItem.userType}" />
+        <b:dataTableColumn value="#{rowItem.materialType}" />
+
+        <b:dataTableColumn label="Actions">
+            <h:form>
                 <b:commandButton value="Delete" class="btn btn-danger" id="delete" 
-                    rendered="${userManager.someUserAuthenticated and userManager.admin}"
                     actionListener="#{administratorManager.removeConfigurationArtifact}">
                     <f:param name="deleteConfigurationArtifactId" id="deleteConfigurationArtifactId" 
                        value="#{rowItem.id}" />
                 </b:commandButton>
-            </b:dataTableColumn>
-        </b:dataTable>
-    </h:form>
-    
+            </h:form>
+            <form action="../../../../download" method="post">
+                <input type="text" name="filename" value="#{rowItem.desiredName}" hidden="hidden"/>
+                <input type="text" name="filepath" value="#{rowItem.filepath}" hidden="hidden"/>
+                <input class="btn btn-primary" type="submit" value="Download"/>
+            </form>  
+        </b:dataTableColumn>
+    </b:dataTable> 
+        
     <h3>Parameters:</h3>
     <b:button value="Create" look="success" p:data-target="#parametersModal" p:data-toggle="modal"/>
     <h:form id="formParameters">
@@ -177,6 +183,7 @@
                 <f:selectItems value="#{artifact.allMaterialType}" />
             </b:radiobutton>
             
+            <h3>Resource:</h3>
             <h:inputFile value="#{uploadManager.file}" ></h:inputFile>
             <b:commandButton
                 value="Submit"

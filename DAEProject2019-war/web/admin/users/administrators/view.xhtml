@@ -32,16 +32,15 @@
                 <b:dataTableColumn value="#{rowItem.email}" />
                 <b:dataTableColumn value="#{rowItem.occupation}" />
                 <b:dataTableColumn label="Actions">
-                    <h:commandLink value="Details" class="btn btn-success" action="guest/details">
+                    <h:commandLink value="Details" class="btn btn-success" action="details">
                         <f:setPropertyActionListener value="${rowItem}"
-                            target="#{guestManager.selectedTemplate}" />
+                            target="#{administratorManager.administratorDTO}" />
                     </h:commandLink>
-
+                    
                     <h:commandLink value="Delete" class="btn btn-danger" id="delete" 
                         actionListener="#{administratorManager.removeAdministrator}">
                         <f:param name="deleteAdministratorId" id="deleteAdministratorId" 
-                           value="#{rowItem.username}" />
-
+                           value="#{rowItem.username}"/>
                     </h:commandLink>
                 </b:dataTableColumn>
             </b:dataTable>

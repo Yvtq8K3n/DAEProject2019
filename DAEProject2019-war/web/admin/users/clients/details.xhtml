@@ -19,13 +19,18 @@
         
         <b:inputText label="Username" disabled="true" value="#{client.username}"/>
         
-        <b:inputText label="Name" disabled="true" value="#{client.name}"/>
+        <b:inputText label="Name" value="#{client.name}"/>
         
-        <b:inputText label="Email" disabled="true" value="#{client.email}"/>
+        <b:inputText label="Email" value="#{client.email}"/>
 
-        <b:inputText label="Contact" disabled="true" value="#{client.contact}"/>
+        <b:inputText label="Contact" value="#{client.contact}"/>
         
-        <b:inputText label="Address" disabled="true" value="#{client.address}"/>
+        <b:inputText label="Address" value="#{client.address}"/>
+        
+        <b:commandButton
+            value="Update" class="btn btn-primary"
+            action="${administratorManager.updateClient()}">
+        </b:commandButton>
         
         <h3>Configurations:</h3>
         <b:row>
@@ -39,7 +44,8 @@
             responsive="true" info="false" paginated="false" searching="false">
             <b:dataTableColumn value="#{rowItem.name}" />
             <b:dataTableColumn value="#{rowItem.description}" />
-
+            <b:dataTableColumn value="#{rowItem.status}" />
+            
             <b:dataTableColumn label="Actions">
                 <b:commandButton value="Details" class="btn btn-success" 
                     action="/faces/admin/users/clients/configurations/details?faces-redirect=false">

@@ -33,15 +33,20 @@
         </b:dataTable>
     </h:form>
     <h3>Artifacts:</h3>
-    <h:form id="formArtifacts">
-        <b:dataTable var="rowItem" value="#{guestManager.templateArtifacts}" lang="en" 
-            responsive="true" info="false" paginated="false" searching="false">
-            <b:dataTableColumn value="#{rowItem.desiredName}" />
-            <b:dataTableColumn value="#{rowItem.mimeType}" />
-            <b:dataTableColumn value="#{rowItem.userType}" />
-            <b:dataTableColumn value="#{rowItem.materialType}" />
-        </b:dataTable>
-    </h:form>
+    <b:dataTable var="rowItem" value="#{guestManager.templateArtifacts}" lang="en" 
+        responsive="true" info="false" paginated="false" searching="false">
+        <b:dataTableColumn value="#{rowItem.desiredName}" />
+        <b:dataTableColumn value="#{rowItem.mimeType}" />
+        <b:dataTableColumn value="#{rowItem.userType}" />
+        <b:dataTableColumn value="#{rowItem.materialType}" />
+        <b:dataTableColumn label="Actions">
+            <form action="../download" method="post">
+                <input type="text" name="filename" value="#{rowItem.desiredName}" hidden="hidden"/>
+                <input type="text" name="filepath" value="#{rowItem.filepath}" hidden="hidden"/>
+                <input class="btn btn-primary" type="submit" value="Download"/>
+            </form>  
+        </b:dataTableColumn>
+    </b:dataTable>
  </ui:define>
  </ui:composition>
 </html>

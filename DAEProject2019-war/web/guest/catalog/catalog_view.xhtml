@@ -46,14 +46,14 @@
                                            value="#{template.id}" />
                                     </b:commandButton>
                                 </c:if>
-                                <c:otherwise>
+                                <c:if test="#{!(userManager.someUserAuthenticated and userManager.admin)}">
                                     <b:commandLink value="Details" class="btn btn-success" 
                                     action="/faces/guest/catalog/details?faces-redirect=false">
                                     <f:setPropertyActionListener value="${template}"
                                        target="#{guestManager.templateDTO}" />
-                                </b:commandLink>
-                                    </c:otherwise>
-                                 </p>
+                                    </b:commandLink>
+                                </c:if>
+                            </p>
                             </f:facet>
                       </b:thumbnail>
                 </b:column>

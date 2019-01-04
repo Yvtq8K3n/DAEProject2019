@@ -23,12 +23,6 @@
             <b:dataTableColumn value="#{rowItem.name}" />
             <b:dataTableColumn value="#{rowItem.email}" />
             <b:dataTableColumn label="Role" value="#{rowItem.group}" />
-            <b:dataTableColumn label="Actions">
-                <h:commandLink value="Details" class="btn btn-success" action="guest/details">
-                    <f:setPropertyActionListener value="${rowItem}"
-                        target="#{guestManager.selectedTemplate}" />
-                </h:commandLink>
-            </b:dataTableColumn>
         </b:dataTable>
     </h:form>  
  </ui:define>

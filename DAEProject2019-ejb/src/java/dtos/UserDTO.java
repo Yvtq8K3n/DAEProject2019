@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class UserDTO implements Serializable{
 
     protected String username;
-    protected String password;    
+    protected String password;
     protected String name;
     protected String email;
     protected String group;
@@ -31,6 +31,7 @@ public class UserDTO implements Serializable{
         setPassword(null);
         setName(null);
         setEmail(null);
+        setGroup(null);     
     }        
 
     public String getUsername() {
@@ -48,7 +49,7 @@ public class UserDTO implements Serializable{
     public void setPassword(String password) {
         this.password = password;
     }
-
+    
     public String getName() {
         return name;
     }

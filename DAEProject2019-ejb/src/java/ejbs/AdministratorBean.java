@@ -7,6 +7,7 @@ package ejbs;
 
 import dtos.AdministratorDTO;
 import entities.Administrator;
+import entities.User;
 import exceptions.EntityDoesNotExistException;
 import exceptions.EntityExistsException;
 import exceptions.MyConstraintViolationException;
@@ -14,7 +15,6 @@ import exceptions.Utils;
 import java.util.Collection;
 import java.util.List;
 import javax.annotation.security.DeclareRoles;
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -24,6 +24,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -52,8 +53,8 @@ public class AdministratorBean extends Bean<Administrator>{
         throws EntityExistsException, MyConstraintViolationException {
         
         try{
-            Administrator adminstrator = em.find(Administrator.class, administratorDTO.getUsername());
-            if (adminstrator != null) {
+            User user = em.find(User.class, administratorDTO.getUsername());
+            if (user != null) {
                 throw new EntityExistsException("Username already taken.");
             }
             
@@ -73,6 +74,34 @@ public class AdministratorBean extends Bean<Administrator>{
         }catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
         }  
+    }
+    
+    @PUT
+    @RolesAllowed("Administrator")
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_XML)
+    public Response update(AdministratorDTO administratorDTO) {
+        try{
+  
+            if (administratorDTO.getUsername()== null)
+                throw new EntityDoesNotExistException("Invalid Administrator");
+            Administrator administrator = em.find(Administrator.class, administratorDTO.getUsername());
+            if(administrator == null) 
+                throw new EntityDoesNotExistException("Administrator not found.");
+            
+            administrator.setName(administratorDTO.getName());
+            administrator.setEmail(administratorDTO.getEmail());
+            administrator.setOccupation(administratorDTO.getOccupation());
+                
+            em.persist(administrator);
+        return Response.status(Response.Status.OK).entity("Client was successfully edited.").build();
+        }catch (EntityDoesNotExistException e) {
+            return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
+        }catch (ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
+        }catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
+        } 
     }
     
     @DELETE

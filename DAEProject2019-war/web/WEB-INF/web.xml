@@ -15,19 +15,6 @@
         </param-name>
         <param-value>true</param-value>
     </context-param>
-    <context-param>
-        <param-name>primefaces.THEME</param-name>
-        <param-value>bootstrap</param-value>
-    </context-param>
-    <servlet>
-        <servlet-name>Faces Servlet</servlet-name>
-        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>Faces Servlet</servlet-name>
-        <url-pattern>/faces/*</url-pattern>
-    </servlet-mapping>
     <session-config>
         <session-timeout>
             30
@@ -40,16 +27,6 @@
         <error-code>403</error-code>
         <location>/faces/error.xhtml</location>
     </error-page>
-    
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>Guest WEBAPI</web-resource-name>
-            <description/>
-            <url-pattern>/webapi/templates/*</url-pattern>
-                <http-method>GET</http-method>
-        </web-resource-collection>
-    </security-constraint>
-    
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Client WEBAPI</web-resource-name>
@@ -58,58 +35,10 @@
             <url-pattern>/webapi/comments/*</url-pattern>
             <url-pattern>/webapi/configurations/*</url-pattern>
             <url-pattern>/webapi/templates/*</url-pattern>
-                <http-method>GET</http-method>
-                <http-method>POST</http-method>
+            <http-method>GET</http-method>
+            <http-method>POST</http-method>
         </web-resource-collection>
         <auth-constraint>
-            <role-name>Client</role-name>
-        </auth-constraint>
-    </security-constraint>
-    
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>Admin WEBAPI</web-resource-name>
-            <description/>
-            <url-pattern>/webapi/users/*</url-pattern>
-            <url-pattern>/webapi/administrators/*</url-pattern>
-            <url-pattern>/webapi/clients/*</url-pattern>
-            <url-pattern>/webapi/comments/*</url-pattern>
-            <url-pattern>/webapi/email/*</url-pattern>
-            <url-pattern>/webapi/configurations/*</url-pattern>
-            <url-pattern>/webapi/templates/*</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>Administrator</role-name>
-        </auth-constraint>
-    </security-constraint>
-    
-    
-    <security-constraint>
-        <display-name>AdministratorPages</display-name>
-        <web-resource-collection>
-            <web-resource-name>AdministratorPages</web-resource-name>
-            <description>Pages</description>
-            <url-pattern>/clients</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <description>asdsa</description>
-            <role-name>Administrator</role-name>
-        </auth-constraint>
-    </security-constraint>
-    <security-constraint>
-        <display-name>ClientPages</display-name>
-        <web-resource-collection>
-            <web-resource-name>ClientPages</web-resource-name>
-            <description>Pages</description>
-            <url-pattern>/configurations</url-pattern>
-        </web-resource-collection>
-        <web-resource-collection>
-            <web-resource-name>ClientPagesClients</web-resource-name>
-            <description>Pages</description>
-            <url-pattern>/clients</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <description/>
             <role-name>Client</role-name>
         </auth-constraint>
     </security-constraint>
