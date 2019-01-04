@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDate;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @Entity
 @Table(name = "Configuration")
@@ -37,7 +38,7 @@ public class Configuration extends Software implements Serializable {
     @Enumerated(EnumType.STRING)
     private @Getter @Setter Status status;
     private @Getter @Setter String baseVersion;
-    //private @Getter @Setter String contractDate;
+    
     private @Getter @Setter LocalDate contractDate;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true)
@@ -99,5 +100,5 @@ public class Configuration extends Software implements Serializable {
     public Parameter removeParameter(Parameter parameter) {
         parameters.remove(parameter);
         return parameter;
-    }
+    }   
 }

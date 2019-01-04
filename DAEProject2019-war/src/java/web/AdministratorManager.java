@@ -407,6 +407,7 @@ public class AdministratorManager implements Serializable {
     }
     public void updateConfiguration(){
         logger.warning("ssdasd"+configurationDTO.getId());
+        logger.warning("Date:"+configurationDTO.getContractDate());
         logger.info("sadasd");
         System.out.println("Configuration Status: " + configurationDTO.getStatus());
         try {
@@ -417,10 +418,12 @@ public class AdministratorManager implements Serializable {
             
             Response response = invocationBuilder.put(Entity.xml(configurationDTO));
             
-            String message = response.readEntity(String.class);
             if (response.getStatus() != HTTP_OK){
+                String message = response.readEntity(String.class);
                 throw new Exception(message);
             }
+            String message = response.readEntity(String.class);
+            
             MessageHandler.successMessage("Configuration Updated:",message);
             sendMailUpdate();
         } catch (Exception e) {

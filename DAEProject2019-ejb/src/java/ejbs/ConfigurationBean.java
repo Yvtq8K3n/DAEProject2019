@@ -5,6 +5,7 @@
  */
 package ejbs;
 
+import converter.LocalDateAdapter;
 import dtos.ConfigurationDTO;
 import dtos.ArtifactDTO;
 import dtos.CommentDTO;
@@ -76,7 +77,7 @@ public class ConfigurationBean extends Bean<Configuration>{
                     Configuration.Status.valueOf(confDTO.getStatus().toString()),
                     confDTO.getBaseVersion(), 
                     client, 
-                    confDTO.getContractDate()
+                    LocalDateAdapter.unmarshal(confDTO.getContractDate())
             );
             client.addConfiguration(conf);
             
@@ -109,7 +110,7 @@ public class ConfigurationBean extends Bean<Configuration>{
             conf.setDescription(confDTO.getDescription());
             conf.setStatus(Configuration.Status.valueOf(confDTO.getStatus().toString()));
             conf.setBaseVersion(confDTO.getBaseVersion());
-            conf.setContractDate(confDTO.getContractDate());
+            conf.setContractDate(LocalDateAdapter.unmarshal(confDTO.getContractDate()));
             
             
             em.persist(conf);
@@ -417,7 +418,7 @@ public class ConfigurationBean extends Bean<Configuration>{
                 Configuration.Status.ACTIVE,
                 configurationDTO.getBaseVersion(),
                 owner,
-                configurationDTO.getContractDate()
+                LocalDateAdapter.unmarshal(configurationDTO.getContractDate())
             );
             
             List<Module> modules = new ArrayList<>();
@@ -460,7 +461,7 @@ public class ConfigurationBean extends Bean<Configuration>{
             configuration.getBaseVersion(),
             (configuration.getOwner()!= null)?configuration.getOwner().getUsername(): null,
             ConfigurationDTO.Status.valueOf(configuration.getStatus().toString()),
-            configuration.getContractDate()
+            LocalDateAdapter.marshal(configuration.getContractDate())
         );   
         return DTO;
     }

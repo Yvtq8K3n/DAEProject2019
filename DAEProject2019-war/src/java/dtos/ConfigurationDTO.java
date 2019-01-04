@@ -6,7 +6,7 @@
 package dtos;
 
 import java.io.Serializable;
-import java.util.Arrays;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -23,7 +23,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ConfigurationDTO extends TemplateDTO implements Serializable{
     
     public enum Status {
-        ACTIVE,INACTIVE,SUSPEND
+        ACTIVE,
+        INACTIVE,
+        SUSPEND;
     }
     
     private String baseVersion;
@@ -79,7 +81,7 @@ public class ConfigurationDTO extends TemplateDTO implements Serializable{
         return contractDate;
     }
 
-    public void setContractDate(String contractDate) {
+    public void setContractDate(String LocalDate) {
         this.contractDate = contractDate;
     }
     

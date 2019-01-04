@@ -26,9 +26,8 @@
         <b:inputText label="Owner" disabled="true" value="#{configuration.owner}"/>
         
         <b:inputText label="Base Version:" value="#{configuration.baseVersion}"/>
+        <b:datepicker label="Contract Date:" mode="popup-icon" value="#{configuration.contractDate}"/>
         
-        <b:inputText label="Contract Date:" value="#{configuration.contractDate}"/>
-
         <h3>Status:</h3>
         <b:radiobutton value="#{configuration.status}">
             <f:selectItems value="#{administratorManager.configurationDTO.allStatus}" />

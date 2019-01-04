@@ -5,6 +5,7 @@
  */
 package ejbs;
 
+import converter.LocalDateAdapter;
 import dtos.ArtifactDTO;
 import dtos.ConfigurationDTO;
 import dtos.ModuleDTO;
@@ -18,6 +19,7 @@ import exceptions.EntityDoesNotExistException;
 import exceptions.EntityExistsException;
 import exceptions.MyConstraintViolationException;
 import exceptions.Utils;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -334,7 +336,7 @@ public class TemplateBean extends Bean<Template>{
                 Configuration.Status.ACTIVE,
                 configurationDTO.getBaseVersion(),
                 owner,
-                configurationDTO.getContractDate()
+                LocalDateAdapter.unmarshal(configurationDTO.getContractDate())
             );
             
             List<Module> modules = new ArrayList<>();

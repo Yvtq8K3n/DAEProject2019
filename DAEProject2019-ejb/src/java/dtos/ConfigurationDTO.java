@@ -31,12 +31,12 @@ public class ConfigurationDTO extends TemplateDTO implements Serializable{
     private String baseVersion;
     private String owner;
     private Status status;
-    private LocalDate contractDate;
+    private String contractDate;
 
     public ConfigurationDTO(){
     }
   
-    public ConfigurationDTO(Long id, String name, String description, String baseVersion, String owner, Status status, LocalDate contractDate){
+    public ConfigurationDTO(Long id, String name, String description, String baseVersion, String owner, Status status, String contractDate){
         super(id, name, description);
         this.baseVersion = baseVersion;
         this.owner = owner;
@@ -77,7 +77,7 @@ public class ConfigurationDTO extends TemplateDTO implements Serializable{
         this.status = status;
     }
 
-    public LocalDate getContractDate() {
+    public String getContractDate() {
         return contractDate;
     }
 

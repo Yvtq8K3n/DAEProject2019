@@ -51,10 +51,10 @@ public class ConfigBean {
             adminstratorBean.create(new AdministratorDTO("administrator2", "secret", "João Marques", "dae.ei.ipleiria@gmail.com", "Vendedor"));
             
             //Create Configurations
-            configurationBean.create(new ConfigurationDTO(null,"Office 2017","Service for life", "V1.5.0", "client1",ConfigurationDTO.Status.SUSPEND,LocalDate.of(2018, 12, 16)));
-            configurationBean.create(new ConfigurationDTO(null,"Karsperkey","Securing your information", "V1.7.8", "client1",ConfigurationDTO.Status.ACTIVE,LocalDate.of(2012, 12, 15)));
-            configurationBean.create(new ConfigurationDTO(null,"CMTV","The wost tv news ever created!", "V1.5.0", "client1",ConfigurationDTO.Status.ACTIVE,LocalDate.of(2041, 12, 16)));
-            configurationBean.create(new ConfigurationDTO(null,"Pokemon","Hey! Someone got catche them all, lets hope is not you", "V1.7.8", "client1",ConfigurationDTO.Status.ACTIVE,LocalDate.of(2139, 3, 16)));
+            configurationBean.create(new ConfigurationDTO(null,"Office 2017","Service for life", "V1.5.0", "client1",ConfigurationDTO.Status.SUSPEND,"1/10/1997"));
+            configurationBean.create(new ConfigurationDTO(null,"Karsperkey","Securing your information", "V1.7.8", "client1",ConfigurationDTO.Status.ACTIVE,"1/10/1997"));
+            configurationBean.create(new ConfigurationDTO(null,"CMTV","The wost tv news ever created!", "V1.5.0", "client1",ConfigurationDTO.Status.ACTIVE,"1/10/1997"));
+            configurationBean.create(new ConfigurationDTO(null,"Pokemon","Hey! Someone got catche them all, lets hope is not you", "V1.7.8", "client1",ConfigurationDTO.Status.ACTIVE,"1/10/1997"));
             
             //Create Templates
             templateBean.create(new TemplateDTO(1L, "Office 2017 Professional Edition", "A combination of escencial tools that provide, the best of personal computers"));
