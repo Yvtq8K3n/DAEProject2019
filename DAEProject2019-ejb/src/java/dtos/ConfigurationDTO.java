@@ -6,6 +6,7 @@
 package dtos;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -22,18 +23,20 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ConfigurationDTO extends TemplateDTO implements Serializable{
     
     public enum Status {
-        ACTIVE,INACTIVE,SUSPEND
+        ACTIVE,
+        INACTIVE,
+        SUSPEND;
     }
     
     private String baseVersion;
     private String owner;
     private Status status;
-    private String contractDate;
+    private LocalDate contractDate;
 
     public ConfigurationDTO(){
     }
   
-    public ConfigurationDTO(Long id, String name, String description, String baseVersion, String owner, Status status, String contractDate){
+    public ConfigurationDTO(Long id, String name, String description, String baseVersion, String owner, Status status, LocalDate contractDate){
         super(id, name, description);
         this.baseVersion = baseVersion;
         this.owner = owner;
@@ -74,11 +77,11 @@ public class ConfigurationDTO extends TemplateDTO implements Serializable{
         this.status = status;
     }
 
-    public String getContractDate() {
+    public LocalDate getContractDate() {
         return contractDate;
     }
 
-    public void setContractDate(String contractDate) {
+    public void setContractDate(String LocalDate) {
         this.contractDate = contractDate;
     }
     

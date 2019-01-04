@@ -29,10 +29,11 @@
         
         <h3>Configurations:</h3>
         <b:row>
-                <b:column>
-                    <h:commandLink value="Create" class="btn btn-success"
-                        action="/configurations/create"/>
-                </b:column>
+            <b:column>
+                <h:commandLink value="Create" class="btn btn-success"
+                    actionListener="#{administratorManager.configurationDTO.reset()}"
+                    action="/faces/admin/users/clients/configurations/create?faces-redirect=false"/>
+            </b:column>
         </b:row>
         <b:dataTable var="rowItem" value="#{administratorManager.clientConfigurations}" lang="en" 
             responsive="true" info="false" paginated="false" searching="false">

@@ -52,15 +52,14 @@ public class AdministratorManager implements Serializable {
     private static final Logger logger = Logger.getLogger("web.AdministratorManager");
     
     private @Getter @Setter UIComponent component;
-    private @Getter @Setter TemplateDTO newProductDTO;
+
     private @Getter @Setter ClientDTO clientDTO;
+    private @Getter @Setter AdministratorDTO administratorDTO;
     private @Getter @Setter ModuleDTO moduleDTO;
     private @Getter @Setter ParameterDTO parameterDTO;
     private @Getter @Setter TemplateDTO templateDTO;
     private @Getter @Setter ConfigurationDTO configurationDTO;
-    private @Getter @Setter AdministratorDTO newAdministrator;
     private @Getter @Setter CommentDTO commentDTO;
-    private @Getter @Setter List<ConfigurationDTO> configurationsDTO;
 
     @ManagedProperty(value="#{emailManager}")
     private EmailManager emailManager;
@@ -70,8 +69,7 @@ public class AdministratorManager implements Serializable {
         templateDTO = new TemplateDTO();
         commentDTO = new CommentDTO();
         configurationDTO = new ConfigurationDTO();
-        newProductDTO = new TemplateDTO();
-        newAdministrator = new AdministratorDTO();
+        administratorDTO = new AdministratorDTO();
         moduleDTO = new ModuleDTO();
         parameterDTO = new ParameterDTO();
     }
@@ -141,8 +139,8 @@ public class AdministratorManager implements Serializable {
                     .path("/administrators")
                     .request(MediaType.APPLICATION_XML);
             
-            Response response = invocationBuilder.post(Entity.xml(newAdministrator));
-            newAdministrator.reset();
+            Response response = invocationBuilder.post(Entity.xml(administratorDTO));
+            administratorDTO.reset();
             
             String message = response.readEntity(String.class);
             if (response.getStatus() != HTTP_CREATED){
@@ -157,9 +155,81 @@ public class AdministratorManager implements Serializable {
         return "/admin/users/administrators/view.xhtml?faces-redirect=true";
     }
    
-    public void createConfiguration(){
-        
+    public String createConfiguration(){
+        configurationDTO.setOwner(clientDTO.getUsername());
+        try {
+            Invocation.Builder invocationBuilder = 
+                addHeaderBASIC().target(URILookup.getBaseAPI())
+                    .path("/configurations")
+                    .request(MediaType.APPLICATION_XML);
+            
+            Response response = invocationBuilder.post(Entity.xml(configurationDTO));
+            
+            if (response.getStatus() != HTTP_CREATED){
+                String message = response.readEntity(String.class);
+                throw new Exception(message);
+            }
+            String confId = response.readEntity(String.class);
+            
+            configurationDTO.setId(Long.valueOf(confId));
+            MessageHandler.successMessage("Configuration Created:","Configuration was successfully created");
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
+            return null;
+        }
+        return "/admin/users/clients/configurations/details.xhtml?faces-redirect=true";
     }
+    public String createConfigurationFromTemplate(TemplateDTO templateDTO){
+        configurationDTO.setOwner(clientDTO.getUsername());
+        
+        try {
+            Invocation.Builder invocationBuilder = 
+                addHeaderBASIC().target(URILookup.getBaseAPI())
+                    .path("/templates")
+                    .path(String.valueOf(templateDTO.getId()))
+                    .path("/baseOn/Configuration")                    
+                    .request(MediaType.APPLICATION_XML);
+            
+            Response response = invocationBuilder.post(Entity.xml(configurationDTO));
+            if (response.getStatus() != HTTP_CREATED){
+                String message = response.readEntity(String.class);
+                throw new Exception(message);
+            }
+            this.configurationDTO = response.readEntity(ConfigurationDTO.class);
+           
+            MessageHandler.successMessage("Configuration Created:","Configuration was successfully created");
+        } catch (Exception e) {
+            MessageHandler.successMessage("Create Failed:", e.getMessage());
+            return null;
+        }
+        return "/admin/users/clients/configurations/details.xhtml?faces-redirect=true";
+    }
+    public String createConfigurationFromConfiguration(ConfigurationDTO configurationDTO){
+        configurationDTO.setOwner(clientDTO.getUsername());
+        
+        try {
+            Invocation.Builder invocationBuilder = 
+                addHeaderBASIC().target(URILookup.getBaseAPI())
+                    .path("/configurations")
+                    .path(String.valueOf(configurationDTO.getId()))
+                    .path("/baseOn/Configuration")                    
+                    .request(MediaType.APPLICATION_XML);
+            
+            Response response = invocationBuilder.post(Entity.xml(configurationDTO));
+            if (response.getStatus() != HTTP_CREATED){
+                String message = response.readEntity(String.class);
+                throw new Exception(message);
+            }
+            
+            this.configurationDTO = response.readEntity(ConfigurationDTO.class);      
+            MessageHandler.successMessage("Configuration Created:","Configuration was successfully created");
+        } catch (Exception e) {
+            MessageHandler.successMessage("Create Failed:", e.getMessage());
+            return null;
+        }
+        return "/admin/users/clients/configurations/details.xhtml?faces-redirect=true";
+    }
+    
     public String createTemplate(){
         try {
             Invocation.Builder invocationBuilder = 
@@ -688,6 +758,28 @@ public class AdministratorManager implements Serializable {
             return templateDTO;
         } catch (Exception e) {
             MessageHandler.failMessage("Unexpected error!", e.getMessage());      
+            return null;
+        }
+    }
+    public List<ConfigurationDTO> getAllConfigurations(){
+        try {
+            Invocation.Builder invocationBuilder = addHeaderBASIC()
+                    .target(URILookup.getBaseAPI())
+                    .path("/configurations")
+                    .request(MediaType.APPLICATION_XML);
+            
+            Response response = invocationBuilder.get(Response.class);
+            if (response.getStatus() != HTTP_OK){
+                String message = response.readEntity(String.class);
+                throw new Exception(message);
+            }
+           
+            List<ConfigurationDTO> configurationDTO =
+                response.readEntity(new GenericType<List<ConfigurationDTO>>() {}); 
+            
+            return configurationDTO;
+        } catch (Exception e) {
+            MessageHandler.failMessage("Unexpected error!", e.getMessage());
             return null;
         }
     }

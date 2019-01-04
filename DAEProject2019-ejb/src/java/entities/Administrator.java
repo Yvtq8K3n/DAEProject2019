@@ -5,6 +5,8 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
 import javax.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @NamedQuery(
@@ -14,7 +16,7 @@ import javax.validation.constraints.NotNull;
 public class Administrator extends User implements Serializable {
 
     @NotNull(message = "Occupation must not be empty")
-    private String occupation;
+    private @Getter @Setter String occupation;
 
     public Administrator() {
        
@@ -24,14 +26,4 @@ public class Administrator extends User implements Serializable {
         super(username, password, GROUP.Administrator, name, email);
         this.occupation = occupation;
     }
-
-    public String getOccupation() {
-        return occupation;
-    }
-
-    public void setOccupation(String occupation) {
-        this.occupation = occupation;
-    }
-    
-    
 }

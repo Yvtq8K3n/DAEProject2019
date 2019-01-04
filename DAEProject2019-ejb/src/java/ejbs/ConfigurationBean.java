@@ -78,10 +78,10 @@ public class ConfigurationBean extends Bean<Configuration>{
                     client, 
                     confDTO.getContractDate()
             );
-            client.addProduct(conf);
+            client.addConfiguration(conf);
             
             em.persist(client);
-        return Response.status(Response.Status.CREATED).entity("Configuration was successfully created.").build();
+        return Response.status(Response.Status.CREATED).entity(String.valueOf(conf.getId())).build();
         }catch (EntityDoesNotExistException e) {
             return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
         }catch (ConstraintViolationException e){
@@ -142,7 +142,7 @@ public class ConfigurationBean extends Bean<Configuration>{
             if (client == null) 
                 throw new EntityDoesNotExistException("Invalid Owner");         
             
-            client.removeProduct(configuration);
+            client.removeConfiguration(configuration);
             
             em.persist(client); 
            return Response.status(Response.Status.OK).entity("Configuration was successfully deleted.").build();
@@ -475,12 +475,106 @@ public class ConfigurationBean extends Bean<Configuration>{
     }    
     
     @GET
+    @RolesAllowed("Administrator")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Path("all")
-    public Collection<ConfigurationDTO> getAll(){
-        Collection<Configuration> configurations = em.createNamedQuery("getAllConfigurations").getResultList();
+    public Response getAll(){
+        try{
+            List<Configuration> configurations = 
+                    em.createNamedQuery("getAllConfigurations").getResultList();
+            
+            Collection<ConfigurationDTO> configurationsDTO
+                    = ConfigurationBean.convertDTOs(configurations);
 
-        return toDTOs(configurations, ConfigurationDTO.class);
+            GenericEntity<List<ConfigurationDTO>> entity =
+                new GenericEntity<List<ConfigurationDTO>>(new ArrayList<>(configurationsDTO)) {};     
+
+            return Response.status(Response.Status.OK).entity(entity).build();
+        }catch (ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
+        }catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
+        } 
     }
-
+    
+    //Base On
+    @POST
+    @Path("{confId}/baseOn/Configuration")
+    @RolesAllowed("Administrator")
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_XML)
+    public Response createConfigurationBasedOnTemplate(
+            @PathParam("confId") Long confId, ConfigurationDTO configurationDTO){
+        try{
+            if (confId == null)
+                throw new EntityDoesNotExistException("Invalid configuration");
+            
+            Configuration configuration = em.find(Configuration.class, confId);
+            if(configuration == null) 
+                throw new EntityDoesNotExistException("Configuration not found.");
+    
+            if (configurationDTO.getOwner() == null)
+                throw new EntityDoesNotExistException("Invalid Owner.");
+            Client owner = em.find(Client.class, configurationDTO.getOwner());
+              
+            Configuration newConfiguration = new Configuration(
+                configurationDTO.getName(),
+                configurationDTO.getDescription(),
+                Configuration.Status.ACTIVE,
+                configurationDTO.getBaseVersion(),
+                owner,
+                configurationDTO.getContractDate()
+            );
+            
+            List<Module> modules = new ArrayList<>();
+            configuration.getModules().forEach((module) -> {
+                modules.add(new Module(
+                    module.getName(), 
+                    module.getVersion()
+                ));
+            });
+            newConfiguration.setModules(modules);
+            
+            List<Artifact> artifacts = new ArrayList<>();
+            configuration.getArtifacts().forEach((arti) -> {
+                artifacts.add(new Artifact(
+                        arti.getFilepath(),
+                        arti.getDesiredName(),
+                        arti.getMimeType()
+                ));
+            });
+            newConfiguration.setArtifacts(artifacts);
+            
+            owner.addConfiguration(newConfiguration);
+            em.persist(owner);
+            
+            ConfigurationDTO newConfigurationDTO = ConfigurationBean.convertDTO(newConfiguration);
+            return Response.status(Response.Status.CREATED).entity(newConfigurationDTO).build();
+        }catch (ConstraintViolationException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(Utils.getConstraintViolationMessages(e)).build();
+        }catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("An unexpected error has occurred.").build();
+        }
+    }
+    
+    
+    static ConfigurationDTO convertDTO(Configuration configuration){
+        ConfigurationDTO DTO = new ConfigurationDTO(
+            configuration.getId(),
+            configuration.getName(),
+            configuration.getDescription(),
+            configuration.getBaseVersion(),
+            (configuration.getOwner()!= null)?configuration.getOwner().getUsername(): null,
+            ConfigurationDTO.Status.valueOf(configuration.getStatus().toString()),
+            configuration.getContractDate()
+        );   
+        return DTO;
+    }
+    
+    static List<ConfigurationDTO> convertDTOs(List<Configuration> configurations){
+        List<ConfigurationDTO> configurationsDTO = new ArrayList<>();
+        configurations.forEach((configuration) -> {
+            configurationsDTO.add(convertDTO(configuration));
+        });
+        return configurationsDTO;
+    }
 }

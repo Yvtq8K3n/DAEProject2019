@@ -18,6 +18,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -28,24 +30,24 @@ import javax.validation.constraints.NotNull;
 public class Comment implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private @Getter @Setter  Long id;
     
     @NotNull(message = "Message must not be empty")
-    String message;
+    private @Getter @Setter String message;
     
     @ManyToOne
-    private Comment parent;
+    private @Getter @Setter Comment parent;
 
     @OneToMany(mappedBy="parent", cascade = CascadeType.ALL, orphanRemoval=true)
-    private List<Comment> children;
+    private @Getter @Setter List<Comment> children;
     
     @ManyToOne
     @JoinColumn(name="config_id")
-    private Configuration configuration;
+    private @Getter @Setter Configuration configuration;
     
     @ManyToOne
     @JoinColumn(name="author_id")
-    private User author;
+    private @Getter @Setter User author;
 
     public Comment() {
         this.children = new ArrayList<>();
@@ -58,60 +60,11 @@ public class Comment implements Serializable{
         this.configuration=configuration;
         this.author = author;
     }  
-    
-    public void setParent(Comment parent){
-        this.parent = parent;
-    }
-    
+   
     public void addChildren(Comment children){
         this.children.add(children);
-    }
-    
+    }   
     public void removeChildren(Comment children){
         this.children.remove(children);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public List<Comment> getChildren() {
-        return children;
-    }
-
-    public void setChildren(List<Comment> children) {
-        this.children = children;
-    }
-    
-    public Configuration getConfiguration() {
-        return configuration;
-    }
-
-    public void setConfiguration(Configuration configuration) {
-        this.configuration = configuration;
-    }
-
-    public User getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(User author) {
-        this.author = author;
-    }
-
-    public Comment getParent() {
-        return parent;
     }
 }

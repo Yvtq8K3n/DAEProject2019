@@ -13,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -25,21 +27,16 @@ public class UserGroup{
     public enum GROUP{
         Client,
         Administrator;
-        
-        @Override
-        public String toString() {
-            return this.name();
-        }
     }
     
     @Enumerated(EnumType.STRING)
     @Column(name="GROUP_NAME")
-    private GROUP groupName;
+    private @Getter @Setter GROUP groupName;
     
     @Id
     @OneToOne
     @JoinColumn(name = "USERNAME")
-    private User user;
+    private @Getter @Setter User user;
 
     public UserGroup() {
     }
@@ -48,22 +45,4 @@ public class UserGroup{
         this.groupName = groupName;
         this.user = user;
     }
-
-    public String getGroupName() {
-        return groupName.name();
-    }
-    
-    public void setGroupName(GROUP groupName) {
-        this.groupName = groupName;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-    
-    
 }

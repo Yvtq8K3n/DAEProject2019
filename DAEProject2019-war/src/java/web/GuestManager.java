@@ -5,7 +5,6 @@ import dtos.ConfigurationDTO;
 import dtos.ModuleDTO;
 import dtos.TemplateDTO;
 import ejbs.TemplateBean;
-import entities.Configuration;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

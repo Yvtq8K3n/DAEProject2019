@@ -1,50 +1,91 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:b="http://bootsfaces.net/ui"
     xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-    xmlns:f="http://java.sun.com/jsf/core">
- <ui:composition template="../../templates/skeleton.xhtml">
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+ <ui:composition template="../../../../templates/skeleton.xhtml">
      
- <ui:define name="title"> Details </ui:define> 
+ <ui:define name="title"> Create Configuration </ui:define> 
  
  <ui:define name="main">
-    <h:form id="formId">
-        <c:set var="client" value="#{administratorManager.clientDTO}"/>
-        <h2>Configuration #{template.name}</h2>
-        <b:inputText label="Username" disabled="true" value="#{client.username}"/>
-        
-        <b:inputText label="Name" disabled="true" value="#{client.name}"/>
-        
-        <b:inputText label="Email" disabled="true" value="#{client.email}"/>
+    <h2>Creating Configuration</h2>
+    <c:set var="configuration" value="#{administratorManager.configurationDTO}"/>
 
-        <b:inputText label="Contact" disabled="true" value="#{client.contact}"/>
+    <h:form id="createOptions">
+        <b:button value="Whit Template" look="success" p:data-target="#createByTemplate" p:data-toggle="modal"/>
+        <b:button value="Whit Configuration" look="warning" p:data-target="#createByConfiguration" p:data-toggle="modal"/>
+    </h:form>
+    
+    <h:form id="formId">
+        <b:row>
+            <b:column span="6">
+            <b:inputText required="true" label="Name" value="#{configuration.name}"/>
+            <b:inputTextarea required="true" label="Description" value="#{configuration.description}"/>
         
-        <b:inputText label="Address" disabled="true" value="#{client.address}"/>
-        
-        <h:outputText value="Modules" style="font-weight:bold"/>
-        <b:dataTable var="rowItem" value="#{administratorManager.clientConfigurations}" lang="en" 
-            responsive="true" info="false" paginated="false" searching="false">
-            <b:dataTableColumn value="#{rowItem.name}" />
-            <b:dataTableColumn value="#{rowItem.description}" />
-            <b:dataTableColumn label="Actions">
-                <b:commandButton value="Details" class="btn btn-success" 
-                    action="/faces/guest/catalog/details?faces-redirect=false">
-                    <f:setPropertyActionListener value="${rowItem}"
-                        target="#{null}" />
-                </b:commandButton>
-                <b:commandButton value="Delete" class="btn btn-danger" id="delete" 
-                    rendered="${userManager.someUserAuthenticated and userManager.admin}"
-                    actionListener="#{administratorManager.removeTemplate}">
-                    <f:param name="deletetemplateId" id="deleteTemplateId" 
-                       value="#{rowItem.id}" />
-                </b:commandButton>
-            </b:dataTableColumn>
-        </b:dataTable>
-    </h:form>  
+            <b:inputText required="true" label="Base Version:" value="#{configuration.baseVersion}"/>
+
+            <b:inputText required="true" label="Contract Date:" value="#{configuration.contractDate}"/>
+
+            <h3>Status:</h3>
+            <b:radiobutton value="#{configuration.status}">
+                <f:selectItems value="#{administratorManager.configurationDTO.allStatus}" />
+            </b:radiobutton>
+            </b:column>
+        </b:row>
+        <b:commandButton
+            value="Create" class="btn btn-primary"
+            binding="#{administratorManager.component}"
+            action="${administratorManager.createConfiguration}" />
+    </h:form>
+     
+     <b:modal id="createByTemplate" title="Create by Template" styleClass="modalPseudoClass">
+        <h:form id="templates">
+            <h1>Create whit Template:</h1>
+            <b:dataTable id="Templates" value="#{administratorManager.allTemplates}" 
+                var="rowItem" print="true" lang="en"
+                excel="true" csv="true" pdf="true" copy="true">
+                <b:dataTableColumn value="#{rowItem.name}" />
+                <b:dataTableColumn value="#{rowItem.description}" />
+                <b:dataTableColumn label="Actions">
+                    <b:commandButton value="Base On" class="btn btn-success"
+                        actionListener="#{administratorManager.createConfigurationFromTemplate(rowItem)}"
+                        action="/faces/admin/users/clients/configurations/details?faces-redirect=false">
+                    </b:commandButton>
+                </b:dataTableColumn>
+            </b:dataTable>
+        </h:form>
+        <f:facet name="footer">
+            <b:button value="Close" dismiss="modal" />
+        </f:facet>
+    </b:modal>
+     
+    <b:modal id="createByConfiguration" title="Create by Configuration" styleClass="modalPseudoClass">
+        <h:form id="configurations">
+            <h1>Create whit Configuration</h1>
+            <b:dataTable id="Templates" value="#{administratorManager.allConfigurations}" 
+                var="rowItem" print="true" lang="en"
+                excel="true" csv="true" pdf="true" copy="true">
+                <b:dataTableColumn value="#{rowItem.name}" />
+                <b:dataTableColumn value="#{rowItem.description}" />
+                <b:dataTableColumn value="#{rowItem.owner}" />
+                
+                <b:dataTableColumn label="Actions">
+                    <b:commandButton value="Base On" class="btn btn-success"
+                        actionListener="#{administratorManager.createConfigurationFromConfiguration(rowItem)}"
+                        action="/faces/admin/users/clients/configurations/details?faces-redirect=false">
+                    </b:commandButton>
+                </b:dataTableColumn>
+            </b:dataTable>
+        </h:form>
+        <f:facet name="footer">
+            <b:button value="Close" dismiss="modal" />
+        </f:facet>
+    </b:modal>
  </ui:define>
  </ui:composition>
 </html>
+
