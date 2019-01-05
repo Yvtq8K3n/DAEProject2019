@@ -8,9 +8,9 @@ This is a Enterprise Application made on Netbeans that implements the 3-layer mo
  | Presentation Logic Layer[PLL]            |
  |       ○ ------------------->  ≣  ≣      | 
  |  AdminManager              xhtml pages   |
- |              whit Transform View Pattern |   
- |                           Bootfaces[JSF] |
- |------------------------------------------|
+ |       |       whit Transform View Pattern|   
+ |       v                   Bootfaces[JSF] |
+ |------------------------------------------| Use Rest to access Service Layer
  
 -|------------------------------------------|  Service Layer [whit Jersey]
  | Business Logic Layer[BLL]                |
