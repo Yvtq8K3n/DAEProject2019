@@ -1,6 +1,6 @@
 # DAEProject2019
 
-This is a enterprise application project made on Netbeans that implements the 3-layer module arquitecture.
+This is a enterprise application project made on Netbeans that implements the 3-layer module architecture.
 
 It combines the following frameworks:
 * JPA(entites)
