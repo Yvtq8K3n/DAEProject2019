@@ -1,0 +1,32 @@
+US 1. As Administrator, I want to be able to create,consult/list/browse/filter,update and
+remove users of type Administrator or Client so that I keep the list of users updated;
+
+US 2. As Administrator, I want to create,consult/list/browse/filter,update and remove
+templates for software product configurations, so I can then reuse them when creating
+configurations for clients;
+
+US 3. As Administrator, I want to create,consult/list/browse/filter,update and remove
+configurations of software products associated with a particular customer, so that I
+can keep the list and status of these settings installed on my clients updated.
+A new configuration can be pre-populated by copying base of a configurations template;
+
+US 4. As Administrator, I want to be able to reuse/copy/clone a customer and associate 
+it with another customer, so that I can save time in creating a new configuration for 
+one client, which is very similar to that of another client;
+
+US 5. As Administrator, I want to be able to notify a customer by email, for each change
+to the client list of configurations (creation/change/removal), so that my client can
+Keep up to date with these updates.
+
+US 6. As a Client, I want to be able to list/browse/filter my settings so that I can be
+aware of all the configuration history installed/in production in my company;
+
+US 7. As a Customer, I want to be able to view the details of a configuration, as well as
+the support materials so you can keep up with all your features and supporting information;
+
+US 8. As a Customer, I want to be able to ask questions about a particular software product
+in my company, as well as having access to all questions and answers related to this configuration;
+
+US 9. As a general public, I want to consult/list/browse/filter software products so I you can
+keep up with all features/functionalities, and view the support materials such as
+marketing materials, tutorials, demo versions, user manuals, etc.
