@@ -47,7 +47,7 @@ public class UserBean extends Bean<User>{
             user.getPassword(),
             user.getName(),
             user.getEmail(),
-            user.getGroup().toString()
+            user.getGroup().getGroupName().name()
         );   
         return DTO;
     }
