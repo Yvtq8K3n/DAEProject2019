@@ -38,7 +38,7 @@ public class UserBean extends Bean<User>{
         List<User> users =
             em.createNamedQuery("getAllUsers").getResultList();
         
-        return toDTOs(users, UserDTO.class);       
+        return convertDTOs(users);       
     }
     
     static UserDTO convertDTO(User user){
@@ -47,7 +47,7 @@ public class UserBean extends Bean<User>{
             user.getPassword(),
             user.getName(),
             user.getEmail(),
-            user.getGroup().toString()
+            user.getGroup().getGroupName().name()
         );   
         return DTO;
     }
