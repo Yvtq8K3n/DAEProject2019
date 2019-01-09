@@ -28,8 +28,8 @@
         
             <b:inputText required="true" label="Base Version:" value="#{configuration.baseVersion}"/>
 
-            <b:inputText required="true" label="Contract Date:" value="#{configuration.contractDate}"/>
-
+            <b:dateTimePicker label="Contract Date:" format="DD/MM/YYYY" value="#{configuration.contractDate}"/>
+            
             <h3>Status:</h3>
             <b:radiobutton value="#{configuration.status}">
                 <f:selectItems value="#{administratorManager.configurationDTO.allStatus}" />
