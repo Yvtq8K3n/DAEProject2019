@@ -1,3 +1,4 @@
+
 package web;
 
 import dtos.AdministratorDTO;
@@ -10,7 +11,6 @@ import dtos.ModuleDTO;
 import dtos.ParameterDTO;
 import dtos.TemplateDTO;
 import dtos.UserDTO;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Logger;
@@ -179,7 +179,7 @@ public class AdministratorManager implements Serializable {
     }
     public String createConfigurationFromTemplate(TemplateDTO templateDTO){
         configurationDTO.setOwner(clientDTO.getUsername());
-        
+        logger.info(String.valueOf(templateDTO.getId()));
         try {
             Invocation.Builder invocationBuilder = 
                 addHeaderBASIC().target(URILookup.getBaseAPI())

@@ -20,6 +20,7 @@ import exceptions.EntityExistsException;
 import exceptions.MyConstraintViolationException;
 import exceptions.Utils;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -333,12 +334,12 @@ public class TemplateBean extends Bean<Template>{
             Client owner = em.find(Client.class, configurationDTO.getOwner());
             
             Configuration newConfiguration = new Configuration(
-                configurationDTO.getName(),
-                configurationDTO.getDescription(),
+                template.getName(),
+                template.getDescription(),
                 Configuration.Status.ACTIVE,
                 configurationDTO.getBaseVersion(),
                 owner,
-                LocalDateAdapter.unmarshal(configurationDTO.getContractDate())
+                LocalDate.now().plusYears(2)
             );
             
             List<Module> modules = new ArrayList<>();

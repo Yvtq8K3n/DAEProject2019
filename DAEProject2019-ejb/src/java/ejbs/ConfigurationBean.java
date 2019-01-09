@@ -507,7 +507,7 @@ public class ConfigurationBean extends Bean<Configuration>{
     @RolesAllowed("Administrator")
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_XML)
-    public Response createConfigurationBasedOnTemplate(
+    public Response createConfigurationBasedOnConfiguration(
             @PathParam("confId") Long confId, ConfigurationDTO configurationDTO){
         try{
             if (confId == null)

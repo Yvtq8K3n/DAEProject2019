@@ -40,13 +40,12 @@
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Client WEBAPI</web-resource-name>
+            <url-pattern>/webapi/clients/*</url-pattern>
             <url-pattern>/webapi/comments/*</url-pattern>
             <url-pattern>/webapi/configurations/*</url-pattern>
             <url-pattern>/webapi/templates/*</url-pattern>
                 <http-method>GET</http-method>
                 <http-method>POST</http-method>
-            <http-method>GET</http-method>
-            <http-method>POST</http-method>
         </web-resource-collection>
         <auth-constraint>
             <role-name>Client</role-name>
