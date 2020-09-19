@@ -8,19 +8,19 @@ This is a Enterprise Application made on Netbeans that implements the 3-layer mo
  | Presentation Logic Layer[PLL]            |
  |       ○ ------------------->  ≣  ≣      | 
  |  AdminManager              xhtml pages   |
- |       |        whit Template View Pattern|   
+ |       |       whit Template View Pattern |   
  |       v                   Bootfaces[JSF] |
  |------------------------------------------| Use Rest to access Service Layer
  
 -|------------------------------------------|  Service Layer [whit Jersey]
  | Business Logic Layer[BLL]                |
  |     ⦼                      ⦼           |
- | ManagedBean            ManagedBean       |                                                    ¸.···.¸
- |     v                       v            |                 |≣≣≣≣|                           |·.¸¸.·|
-+|----------------------Entity Manager[EM]--|---------------->|≣≣≣≣| --------Connect BD------->|      |
- | Data Access Layer[DAL]        ^          |                 |≣≣≣≣|                           |¸.··.¸|
- |                           Entities       |                                                    `·...·´
- |                     JPA whit EclipseLink |              persistence.xml                    DAE[JAVA BD]
+ | ManagedBean            ManagedBean       |                                     ¸.···.¸
+ |     v                       v            |       |≣≣≣≣|                      |·.¸¸.·|
++|----------------------Entity Manager[EM]--|------>|≣≣≣≣| ---- Connect BD----->|      |
+ | Data Access Layer[DAL]        ^          |       |≣≣≣≣|                      |¸.··.¸|
+ |                           Entities       |                                     `·...·´
+ |                     JPA whit EclipseLink |    persistence.xml                DAE[JAVA BD]
  |------------------------------------------|                                                       
 
 
